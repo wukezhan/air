@@ -46,18 +46,14 @@ void air_config_merge_default(zval *data TSRMLS_DC){
 	MAKE_STD_ZVAL(exec);
 	array_init(exec);
 	add_assoc_stringl_ex(exec, ZEND_STRS("path"), ZEND_STRL("exec"), 1);
-	Z_ADDREF_P(exec);
 	add_assoc_zval_ex(app, ZEND_STRS("exec"), exec);
-	zval_ptr_dtor(&exec);
 
 
 	zval *site;
 	MAKE_STD_ZVAL(site);
 	array_init(site);
 	add_assoc_stringl_ex(site, ZEND_STRS("path"), ZEND_STRL("site"), 1);
-	Z_ADDREF_P(site);
 	add_assoc_zval_ex(app, ZEND_STRS("site"), site);
-	zval_ptr_dtor(&site);
 
 	zval *view;
 	MAKE_STD_ZVAL(view);
@@ -65,13 +61,9 @@ void air_config_merge_default(zval *data TSRMLS_DC){
 	add_assoc_stringl_ex(view, ZEND_STRS("engine"), ZEND_STRL("air\\view"), 1);
 	add_assoc_stringl_ex(view, ZEND_STRS("path"), ZEND_STRL("view"), 1);
 	add_assoc_stringl_ex(view, ZEND_STRS("type"), ZEND_STRL(".php"), 1);
-	Z_ADDREF_P(view);
 	add_assoc_zval_ex(app, ZEND_STRS("view"), view);
-	zval_ptr_dtor(&view);
 
-	Z_ADDREF_P(app);
 	add_assoc_zval_ex(_data, ZEND_STRS("app"), app);
-	zval_ptr_dtor(&app);
 	if(data != NULL && Z_TYPE_P(data) == IS_ARRAY){
 		php_array_replace_recursive(Z_ARRVAL_P(_data), Z_ARRVAL_P(data) TSRMLS_CC);
 	}
