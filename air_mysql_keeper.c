@@ -112,7 +112,7 @@ zval *air_mysql_keeper_make_entry(){
 	return conf_entry;
 }
 
-/** {{{ ARG_INFO */
+/* {{{ ARG_INFO */
 ZEND_BEGIN_ARG_INFO_EX(air_mysql_keeper_factory_arginfo, 0, 0, 1)
 	ZEND_ARG_INFO(0, config)
 	ZEND_ARG_INFO(0, mode)
@@ -120,7 +120,7 @@ ZEND_END_ARG_INFO()
 
 /* }}} */
 
-/** {{{ PHP METHODS */
+/* {{{ PHP METHODS */
 PHP_METHOD(air_mysql_keeper, __construct) {
 }
 
@@ -258,7 +258,7 @@ PHP_METHOD(air_mysql_keeper, __destruct) {
 
 /* }}} */
 
-/** {{{ air_mysql_keeper_methods */
+/* {{{ air_mysql_keeper_methods */
 zend_function_entry air_mysql_keeper_methods[] = {
 	PHP_ME(air_mysql_keeper, __construct, NULL,  ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
 	PHP_ME(air_mysql_keeper, __destruct, NULL,  ZEND_ACC_PUBLIC | ZEND_ACC_DTOR)
@@ -268,7 +268,7 @@ zend_function_entry air_mysql_keeper_methods[] = {
 };
 /* }}} */
 
-/** {{{ AIR_MINIT_FUNCTION */
+/* {{{ AIR_MINIT_FUNCTION */
 AIR_MINIT_FUNCTION(air_mysql_keeper) {
 	zend_class_entry ce;
 	INIT_CLASS_ENTRY(ce, "air\\mysql\\keeper", air_mysql_keeper_methods);

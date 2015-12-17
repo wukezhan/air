@@ -132,7 +132,7 @@ int air_config_get_path(zval *data, const char *path, int path_len, zval **val T
 	return status;
 }
 
-/** {{{ ARG_INFO */
+/* {{{ ARG_INFO */
 ZEND_BEGIN_ARG_INFO_EX(air_config_get_arginfo, 0, 0, 0)
 	ZEND_ARG_INFO(0, key)
 	ZEND_ARG_INFO(0, default_value)
@@ -142,7 +142,7 @@ ZEND_BEGIN_ARG_INFO_EX(air_config_set_arginfo, 0, 0, 1)
 ZEND_END_ARG_INFO()
 /* }}} */
 
-/** {{{ PHP METHODS */
+/* {{{ PHP METHODS */
 PHP_METHOD(air_config, get) {
 	zval *data = air_config_get_data();
 	char *key;
@@ -201,7 +201,7 @@ PHP_METHOD(air_config, set) {
 }
 /* }}} */
 
-/** {{{ air_config_methods */
+/* {{{ air_config_methods */
 zend_function_entry air_config_methods[] = {
 	PHP_ME(air_config, get,	air_config_get_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
 	PHP_ME(air_config, get_path,	air_config_get_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
@@ -210,7 +210,7 @@ zend_function_entry air_config_methods[] = {
 };
 /* }}} */
 
-/** {{{ AIR_MINIT_FUNCTION */
+/* {{{ AIR_MINIT_FUNCTION */
 AIR_MINIT_FUNCTION(air_config) {
 	zend_class_entry ce;
 	INIT_CLASS_ENTRY(ce, "air\\config", air_config_methods);

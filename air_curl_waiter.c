@@ -145,7 +145,7 @@ void air_curl_waiter_select(zval *self, zval *map){
 	}AIR_HASH_FOREACH_END();
 }
 
-/** {{{ ARG_INFO */
+/* {{{ ARG_INFO */
 /*
 ZEND_BEGIN_ARG_INFO_EX(air_curl_waiter_construct_arginfo, 0, 0, 1)
 	ZEND_ARG_INFO(0, config)
@@ -153,7 +153,7 @@ ZEND_END_ARG_INFO()
 */
 /* }}} */
 
-/** {{{ PHP METHODS */
+/* {{{ PHP METHODS */
 
 PHP_METHOD(air_curl_waiter, _response) {
 	AIR_INIT_THIS;
@@ -179,7 +179,7 @@ PHP_METHOD(air_curl_waiter, __destruct) {
 }
 /* }}} */
 
-/** {{{ air_curl_waiter_methods */
+/* {{{ air_curl_waiter_methods */
 zend_function_entry air_curl_waiter_methods[] = {
 	PHP_ME(air_curl_waiter, _response, NULL,  ZEND_ACC_PUBLIC)
 	PHP_ME(air_curl_waiter, __destruct, NULL,  ZEND_ACC_PUBLIC | ZEND_ACC_DTOR)
@@ -187,7 +187,7 @@ zend_function_entry air_curl_waiter_methods[] = {
 };
 /* }}} */
 
-/** {{{ AIR_MINIT_FUNCTION */
+/* {{{ AIR_MINIT_FUNCTION */
 AIR_MINIT_FUNCTION(air_curl_waiter) {
 	zend_class_entry ce;
 	INIT_CLASS_ENTRY(ce, "air\\curl\\waiter", air_curl_waiter_methods);

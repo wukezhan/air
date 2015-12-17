@@ -36,7 +36,7 @@
 
 zend_class_entry *air_view_ce;
 
-/** {{{ ARG_INFO */
+/* {{{ ARG_INFO */
 ZEND_BEGIN_ARG_INFO_EX(air_view_set_config_arginfo, 0, 0, 1)
 	ZEND_ARG_INFO(0, config)
 ZEND_END_ARG_INFO()
@@ -52,7 +52,7 @@ ZEND_BEGIN_ARG_INFO_EX(air_view_assign_arginfo, 0, 0, 1)
 ZEND_END_ARG_INFO()
 /* }}} */
 
-/** {{{ PHP METHODS */
+/* {{{ PHP METHODS */
 PHP_METHOD(air_view, __construct) {
 	AIR_INIT_THIS;
 	zval *data;
@@ -201,7 +201,7 @@ PHP_METHOD(air_view, set_config) {
 }
 /* }}} */
 
-/** {{{ air_view_methods */
+/* {{{ air_view_methods */
 zend_function_entry air_view_methods[] = {
 	PHP_ME(air_view, __construct, NULL,  ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
 	PHP_ME(air_view, set_config, air_view_set_config_arginfo,  ZEND_ACC_PUBLIC)
@@ -211,7 +211,7 @@ zend_function_entry air_view_methods[] = {
 };
 /* }}} */
 
-/** {{{ AIR_MINIT_FUNCTION */
+/* {{{ AIR_MINIT_FUNCTION */
 AIR_MINIT_FUNCTION(air_view) {
 	zend_class_entry ce;
 	INIT_CLASS_ENTRY(ce, "air\\view", air_view_methods);
