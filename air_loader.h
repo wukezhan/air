@@ -25,8 +25,8 @@ AIR_MINIT_FUNCTION(air_loader);
 
 extern zend_class_entry *air_loader_ce;
 
-int air_loader_include_file(char *filename TSRMLS_DC);
-zend_class_entry *air_loader_lookup_class(const char *classname, int len TSRMLS_DC);
+int air_loader_execute_file(int type, zend_string *filename, zval *retval);
+zend_class_entry *air_loader_lookup_class(zend_string *classname, int autoload);
 
 #endif
 

@@ -67,45 +67,34 @@ static inline char *air_mysqli_get_error(zval *mysql_link){
 	return (char *)mysql_error(mysql->mysql);
 }
 
-static inline zval *air_mysqli_get_insert_id(zval *mysql_link){
+static inline void air_mysqli_get_insert_id(zval *mysql_link, zval *retval){
 	MY_MYSQL *mysql;
 	_AIR_INIT_MYSQL(mysql, mysql_link);
 	my_longlong id = mysql_insert_id(mysql->mysql);
-	zval *ret;
-	MAKE_STD_ZVAL(ret);
-	if (id == (my_longlong) -1) {
-		ZVAL_LONG(ret, -1);
-	}
-	if (id < LONG_MAX) {
-		ZVAL_LONG(ret, (long) id);
+	if (id < ZEND_LONG_MAX) {
+		ZVAL_LONG(retval, (zend_long) id);
 	} else {
-		char *num_str;
-		/* always used with my_ulonglong -> %llu */
-		int l = spprintf(&num_str, 0, MYSQLI_LLU_SPEC, id);
-		ZVAL_STRINGL(ret, num_str, l, 0);
+		zend_string *num_str = strpprintf(0, MYSQLI_LLU_SPEC, id);
+		ZVAL_STR(retval, num_str);
+		zend_string_release(num_str);
 	}
-	return ret;
 }
 
-static inline zval *air_mysqli_get_total_rows(zval *mysql_link){
+static inline void air_mysqli_get_total_rows(zval *mysql_link, zval *retval){
 	MY_MYSQL *mysql;
 	_AIR_INIT_MYSQL(mysql, mysql_link);
 	//refer to ext/mysqli/mysqli_api.c: 157
 	my_longlong ar = mysql_affected_rows(mysql->mysql);
-	zval *ret;
-	MAKE_STD_ZVAL(ret);
 	if (ar == (my_longlong) -1) {
-		ZVAL_LONG(ret, -1);
+		ZVAL_LONG(retval, -1);
 	}
-	if (ar < LONG_MAX) {
-		ZVAL_LONG(ret, (long) ar);
+	if (ar < ZEND_LONG_MAX) {
+		ZVAL_LONG(retval, (zend_long) ar);
 	} else {
-		char *num_str;
-		/* always used with my_ulonglong -> %llu */
-		int l = spprintf(&num_str, 0, MYSQLI_LLU_SPEC, ar);
-		ZVAL_STRINGL(ret, num_str, l, 0);
+		zend_string *num_str = strpprintf(0, MYSQLI_LLU_SPEC, ar);
+		ZVAL_STR(retval, num_str);
+		zend_string_release(num_str);
 	}
-	return ret;
 }
 
 #endif

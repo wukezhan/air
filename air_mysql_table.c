@@ -34,27 +34,24 @@
 
 zend_class_entry *air_mysql_table_ce;
 
-zval *air_mysql_table_get_builder(zval *self){
-	zval *config = zend_read_property(air_mysql_table_ce, self, ZEND_STRL("_config"), 1 TSRMLS_CC);
-	zval *db = zend_read_property(air_mysql_table_ce, self, ZEND_STRL("_db"), 1 TSRMLS_CC);
-	zval *table = zend_read_property(air_mysql_table_ce, self, ZEND_STRL("_table"), 1 TSRMLS_CC);
+void air_mysql_table_get_builder(zval *self, zval *builder){
+	zval *config = zend_read_property(air_mysql_table_ce, self, ZEND_STRL("_config"), 1, NULL);
+	zval *db = zend_read_property(air_mysql_table_ce, self, ZEND_STRL("_db"), 1, NULL);
+	zval *table = zend_read_property(air_mysql_table_ce, self, ZEND_STRL("_table"), 1, NULL);
 	if(Z_TYPE_P(db) == IS_NULL || Z_TYPE_P(table) == IS_NULL){
 		AIR_NEW_EXCEPTION(1, "error air\\mysql\\table");
 	}
 	char *str;
 	int len = spprintf(&str, 0, "`%s`.`%s`", Z_STRVAL_P(db), Z_STRVAL_P(table));
-	zval *db_table;
-	MAKE_STD_ZVAL(db_table);
-	ZVAL_STRINGL(db_table, str, len, 1);
-	zval **params[2] = {&config, &db_table};
-	zval *builder = air_new_object(ZEND_STRL("air\\mysql\\builder"));
-	air_call_method(&builder, air_mysql_builder_ce, NULL, ZEND_STRL("__construct"), NULL, 2, params);
+	zval db_table;
+	ZVAL_STRINGL(&db_table, str, len);
+	zval params[2] = {*config, db_table};
+	air_call_object_method(builder, air_mysql_builder_ce, "__construct", NULL, 2, params);
 	zval_ptr_dtor(&db_table);
 	efree(str);
-	return builder;
 }
 
-/* {{{ ARG_INFO */
+/** {{{ ARG_INFO */
 ZEND_BEGIN_ARG_INFO_EX(air_mysql_table_construct_arginfo, 0, 0, 1)
 	ZEND_ARG_INFO(0, config)
 ZEND_END_ARG_INFO()
@@ -66,58 +63,68 @@ ZEND_BEGIN_ARG_INFO_EX(air_mysql_table_set_arginfo, 0, 0, 1)
 ZEND_END_ARG_INFO()
 /* }}} */
 
-/* {{{ PHP METHODS */
+/** {{{ PHP METHODS */
 PHP_METHOD(air_mysql_table, __construct) {
 }
 
 PHP_METHOD(air_mysql_table, async) {
 	AIR_INIT_THIS;
-	zval *builder = air_mysql_table_get_builder(self);
-	air_call_method(&builder, air_mysql_builder_ce, NULL, ZEND_STRL("async"), NULL, 0, NULL);
-	RETURN_ZVAL(builder, 1, 1);
+	zval builder;
+	AIR_OBJ_INIT(&builder, "air\\mysql\\builder");
+	air_mysql_table_get_builder(self, &builder);
+	air_call_object_method(&builder, air_mysql_builder_ce, "async", NULL, 0, NULL);
+	RETURN_ZVAL(&builder, 1, 1);
 }
 
 PHP_METHOD(air_mysql_table, add) {
 	AIR_INIT_THIS;
 	zval *data;
-	if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a", &data) == FAILURE){
+	if(zend_parse_parameters(ZEND_NUM_ARGS(), "a", &data) == FAILURE){
 		return ;
 	}
-	zval **params[1] = {&data};
-	zval *builder = air_mysql_table_get_builder(self);
-	air_call_method(&builder, air_mysql_builder_ce, NULL, ZEND_STRL("add"), NULL, 1, params);
-	RETURN_ZVAL(builder, 1, 1);
+	zval builder;
+	AIR_OBJ_INIT(&builder, "air\\mysql\\builder");
+	air_mysql_table_get_builder(self, &builder);
+	zval params[1] = {*data};
+	air_call_object_method(&builder, air_mysql_builder_ce, "add", NULL, 1, params);
+	RETURN_ZVAL(&builder, 1, 1);
 }
 
 PHP_METHOD(air_mysql_table, get) {
 	AIR_INIT_THIS;
 	zval *fields;
-	if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &fields) == FAILURE){
+	if(zend_parse_parameters(ZEND_NUM_ARGS(), "z", &fields) == FAILURE){
 		return ;
 	}
-	zval **params[1] = {&fields};
-	zval *builder = air_mysql_table_get_builder(self);
-	air_call_method(&builder, air_mysql_builder_ce, NULL, ZEND_STRL("get"), NULL, 1, params);
-	RETURN_ZVAL(builder, 1, 1);
+	zval builder;
+	AIR_OBJ_INIT(&builder, "air\\mysql\\builder");
+	air_mysql_table_get_builder(self, &builder);
+	zval params[1] = {*fields};
+	air_call_object_method(&builder, air_mysql_builder_ce, "get", NULL, 1, params);
+	RETURN_ZVAL(&builder, 1, 1);
 }
 
 PHP_METHOD(air_mysql_table, set) {
 	AIR_INIT_THIS;
 	zval *data;
-	if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a", &data) == FAILURE){
+	if(zend_parse_parameters(ZEND_NUM_ARGS(), "a", &data) == FAILURE){
 		return ;
 	}
-	zval **params[1] = {&data};
-	zval *builder = air_mysql_table_get_builder(self);
-	air_call_method(&builder, air_mysql_builder_ce, NULL, ZEND_STRL("set"), NULL, 1, params);
-	RETURN_ZVAL(builder, 1, 1);
+	zval builder;
+	AIR_OBJ_INIT(&builder, "air\\mysql\\builder");
+	air_mysql_table_get_builder(self, &builder);
+	zval params[1] = {*data};
+	air_call_object_method(&builder, air_mysql_builder_ce, "set", NULL, 1, params);
+	RETURN_ZVAL(&builder, 1, 1);
 }
 
 PHP_METHOD(air_mysql_table, del) {
 	AIR_INIT_THIS;
-	zval *builder = air_mysql_table_get_builder(self);
-	air_call_method(&builder, air_mysql_builder_ce, NULL, ZEND_STRL("del"), NULL, 0, NULL);
-	RETURN_ZVAL(builder, 1, 1);
+	zval builder;
+	AIR_OBJ_INIT(&builder, "air\\mysql\\builder");
+	air_mysql_table_get_builder(self, &builder);
+	air_call_object_method(&builder, air_mysql_builder_ce, "del", NULL, 0, NULL);
+	RETURN_ZVAL(&builder, 1, 1);
 }
 
 PHP_METHOD(air_mysql_table, __destruct) {
@@ -125,7 +132,7 @@ PHP_METHOD(air_mysql_table, __destruct) {
 
 /* }}} */
 
-/* {{{ air_mysql_table_methods */
+/** {{{ air_mysql_table_methods */
 zend_function_entry air_mysql_table_methods[] = {
 	PHP_ME(air_mysql_table, __construct, NULL,  ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
 	PHP_ME(air_mysql_table, async, NULL,  ZEND_ACC_PUBLIC)
@@ -138,15 +145,15 @@ zend_function_entry air_mysql_table_methods[] = {
 };
 /* }}} */
 
-/* {{{ AIR_MINIT_FUNCTION */
+/** {{{ AIR_MINIT_FUNCTION */
 AIR_MINIT_FUNCTION(air_mysql_table) {
 	zend_class_entry ce;
 	INIT_CLASS_ENTRY(ce, "air\\mysql\\table", air_mysql_table_methods);
 
-	air_mysql_table_ce = zend_register_internal_class_ex(&ce, NULL, NULL TSRMLS_CC);
-	zend_declare_property_null(air_mysql_table_ce, ZEND_STRL("_config"), ZEND_ACC_PROTECTED TSRMLS_CC);
-	zend_declare_property_null(air_mysql_table_ce, ZEND_STRL("_db"), ZEND_ACC_PROTECTED TSRMLS_CC);
-	zend_declare_property_null(air_mysql_table_ce, ZEND_STRL("_table"), ZEND_ACC_PROTECTED TSRMLS_CC);
+	air_mysql_table_ce = zend_register_internal_class_ex(&ce, NULL);
+	zend_declare_property_null(air_mysql_table_ce, ZEND_STRL("_config"), ZEND_ACC_PROTECTED);
+	zend_declare_property_null(air_mysql_table_ce, ZEND_STRL("_db"), ZEND_ACC_PROTECTED);
+	zend_declare_property_null(air_mysql_table_ce, ZEND_STRL("_table"), ZEND_ACC_PROTECTED);
 	return SUCCESS;
 }
 /* }}} */

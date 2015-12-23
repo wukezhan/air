@@ -31,7 +31,7 @@
 
 zend_class_entry *air_handler_ce;
 
-/* {{{ ARG_INFO */
+/** {{{ ARG_INFO */
 ZEND_BEGIN_ARG_INFO_EX(air_handler_construct_arginfo, 0, 0, 1)
 	ZEND_ARG_INFO(0, config)
 ZEND_END_ARG_INFO()
@@ -50,57 +50,47 @@ ZEND_BEGIN_ARG_INFO_EX(air_handler_on_shutdown_arginfo, 0, 0, 1)
 ZEND_END_ARG_INFO()
 /* }}} */
 
-/* {{{ PHP METHODS */
-PHP_METHOD(air_handler, __construct) {
-}
-
+/** {{{ PHP METHODS */
 PHP_METHOD(air_handler, on_error) {
-	zval *params[2] = {0};
+	zval params[2];
 	zval *callback, *error_type = NULL;
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z|z", &callback, &error_type) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "z|z", &callback, &error_type) == FAILURE) {
 		return ;
 	}
-	params[0] = callback;
+	//ZVAL_COPY(&params[0], callback);
+	params[0] = *callback;
 	if(error_type){
-		params[1] = error_type;
+		//ZVAL_COPY(&params[1], error_type);
+		params[1] = *error_type;
 	}
-	zval *ret = air_call_function(ZEND_STRL("set_error_handler"), ZEND_NUM_ARGS(), params);
-	if(ret){
-		RETURN_ZVAL(ret, 1, 1);
+	if(air_call_func("set_error_handler", error_type?2: 1, params, return_value) == FAILURE){
+		php_error(E_ERROR, "air\\handler::on_error() call error");
 	}
 }
 
 PHP_METHOD(air_handler, on_exception) {
-	zval *params[1] = {0};
+	zval params[1];
 	zval *callback;
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &callback) == FAILURE) {
 		return ;
 	}
-	params[0] = callback;
-	zval *ret = air_call_function(ZEND_STRL("set_exception_handler"), ZEND_NUM_ARGS(), params);
-	if(ret){
-		RETURN_ZVAL(ret, 1, 1);
-	}
+	params[0] = *callback;
+	air_call_func("set_exception_handler", 1, params, return_value);
 }
 
 PHP_METHOD(air_handler, on_shutdown) {
-	zval *params[1] = {0};
+	zval params[1];
 	zval *callback;
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &callback) == FAILURE) {
 		return ;
 	}
-	params[0] = callback;
-	zval *ret = air_call_function(ZEND_STRL("register_shutdown_function"), ZEND_NUM_ARGS(), params);
-	if(ret){
-		RETURN_ZVAL(ret, 1, 1);
-	}
+	params[0] = *callback;
+	air_call_func("register_shutdown_function", 1, params, return_value);
 }
-
 /* }}} */
 
-/* {{{ air_handler_methods */
+/** {{{ air_handler_methods */
 zend_function_entry air_handler_methods[] = {
-	PHP_ME(air_handler, __construct, air_handler_construct_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
 	PHP_ME(air_handler, on_error, air_handler_on_error_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
 	PHP_ME(air_handler, on_exception, air_handler_on_exception_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
 	PHP_ME(air_handler, on_shutdown, air_handler_on_shutdown_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
@@ -108,13 +98,12 @@ zend_function_entry air_handler_methods[] = {
 };
 /* }}} */
 
-/* {{{ AIR_MINIT_FUNCTION */
+/** {{{ AIR_MINIT_FUNCTION */
 AIR_MINIT_FUNCTION(air_handler) {
 	zend_class_entry ce;
 	INIT_CLASS_ENTRY(ce, "air\\handler", air_handler_methods);
 
-	air_handler_ce = zend_register_internal_class_ex(&ce, NULL, NULL TSRMLS_CC);
-	air_handler_ce->ce_flags |= ZEND_ACC_FINAL_CLASS;
+	air_handler_ce = zend_register_internal_class_ex(&ce, NULL);
 	return SUCCESS;
 }
 /* }}} */
