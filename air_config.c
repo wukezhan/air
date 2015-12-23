@@ -92,7 +92,7 @@ int air_config_get(zval *data, const char *key, int key_len, zval **val TSRMLS_D
 	return status;
 }
 
-int air_config_get_path(zval *data, const char *path, int path_len, zval **val TSRMLS_DC) {
+int air_config_path_get(zval *data, const char *path, int path_len, zval **val TSRMLS_DC) {
 	zval *_data = data;
 	if(data == NULL){
 		_data = air_config_get_data(TSRMLS_CC);
@@ -158,20 +158,20 @@ PHP_METHOD(air_config, get) {
 	}
 }
 
-PHP_METHOD(air_config, get_path) {
+PHP_METHOD(air_config, path_get) {
 	char *key;
 	int key_len = 0;
 	zval *val = NULL;
 	zval *def_val = NULL;
 	if( zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|sz", &key, &key_len, &def_val) == FAILURE )
 	{
-		AIR_NEW_EXCEPTION(1, "invalid get_path params");
+		AIR_NEW_EXCEPTION(1, "invalid path_get params");
 	}
 	if(!key_len){
 		val = air_config_get_data();
 		RETURN_ZVAL(val, 1, 0);
 	}
-	if(air_config_get_path(NULL, key, key_len, &val TSRMLS_CC) == FAILURE) {
+	if(air_config_path_get(NULL, key, key_len, &val TSRMLS_CC) == FAILURE) {
 		if(def_val){
 			RETURN_ZVAL(def_val, 1, 0);
 		}
@@ -196,7 +196,7 @@ PHP_METHOD(air_config, set) {
 /* {{{ air_config_methods */
 zend_function_entry air_config_methods[] = {
 	PHP_ME(air_config, get,	air_config_get_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
-	PHP_ME(air_config, get_path,	air_config_get_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+	PHP_ME(air_config, path_get,	air_config_get_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
 	PHP_ME(air_config, set,	air_config_set_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
 	{NULL, NULL, NULL}
 };
