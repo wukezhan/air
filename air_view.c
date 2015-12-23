@@ -102,16 +102,13 @@ PHP_METHOD(air_view, render){
 
 	smart_str ss_path = {0};
 	if(tpl_str[0] != '/'){
-		zval *root_path = NULL;
-		MAKE_STD_ZVAL(root_path);
-		if(zend_get_constant(ZEND_STRL("ROOT_PATH"), root_path) == FAILURE){
+		zval root_path;
+		if(zend_get_constant(ZEND_STRL("ROOT_PATH"), &root_path) == FAILURE){
 			php_error_docref(NULL TSRMLS_CC, E_ERROR,  "ROOT_PATH not defined");
 		}
-		smart_str_appendl(&ss_path, Z_STRVAL_P(root_path), Z_STRLEN_P(root_path));
+		smart_str_appendl(&ss_path, Z_STRVAL(root_path), Z_STRLEN(root_path));
 		smart_str_appendc(&ss_path, '/');
-		if(root_path != NULL){
-			zval_ptr_dtor(&root_path);
-		}
+		zval_dtor(&root_path);
 
 		zval *tmp = NULL;
 		zval **tmp_pp;
