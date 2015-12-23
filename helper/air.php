@@ -5,6 +5,7 @@
  * 2015-10-25 19:51
  *
  */
+
 namespace {
     define('AIR_SITE', 1);
     define('AIR_EXEC', 2);
@@ -12,8 +13,7 @@ namespace {
     define('AIR_W', 2);
 }
 
-namespace air
-{
+namespace air {
     /**
      * Class app
      * @package air\site
@@ -26,10 +26,11 @@ namespace air
 
         /**
          * @param int $type app type, can be \AIR_SITE or \AIR_EXEC, default is \AIR_SITE
+         * @return app
          */
         public function __construct($type=\AIR_SITE)
         {
-            //
+            return $this;
         }
 
         /**
@@ -47,23 +48,16 @@ namespace air
          */
         public function set_router($router)
         {
-            //
+            return $this;
         }
 
         /**
          * Dispatch the request
+         * @return $this
          */
         public function dispatch()
         {
-            //
-        }
-
-        /**
-         * Not used yet
-         */
-        public function try_route()
-        {
-            //
+            return $this;
         }
     }
 
@@ -81,6 +75,7 @@ namespace air
 
         /**
          * The construct function
+         * @return controller
          */
         public function __construct()
         {
@@ -89,18 +84,20 @@ namespace air
 
         /**
          * The init function
+         * @return $this;
          */
         public function init()
         {
-            //
+            return $this;
         }
 
         /**
          * The function execute before the action
+         * @return $this
          */
         public function before_action()
         {
-            //
+            return $this;
         }
 
         /**
@@ -108,7 +105,7 @@ namespace air
          * if $o1 is an array, then the $o2 will be ignored
          * if $o1 is a string or int, $o2 will be used as value
          * @param string|array $o1
-         * @param mixed|null $o2
+         * @param mixed $o2
          * @return $this
          */
         public function assign($o1, $o2=null)
@@ -138,7 +135,7 @@ namespace air
          * Call the view's render_view function
          * @param string $view_path
          * @param bool $return
-         * @return string|null
+         * @return string|bool
          */
         public function render_view($view_path='', $return=false)
         {
@@ -147,10 +144,11 @@ namespace air
 
         /**
          * The function called after action
+         * @return $this
          */
         public function after_action()
         {
-            //
+            return $this;
         }
 
         public function __destruct()
@@ -170,6 +168,9 @@ namespace air
         protected $_compiled_rules = [];
         protected $_route;
 
+        /**
+         * @return router
+         */
         public function __construct()
         {
             //
@@ -187,7 +188,7 @@ namespace air
 
         /**
          * Set the route rules
-         * @param array $rules
+         * @param array $rules route rules
          * @return $this
          */
         public function set_rules($rules)
@@ -197,7 +198,9 @@ namespace air
 
         /**
          * Do routing
-         * @return array
+         * @return array [
+         *     ''
+         * ]
          */
         public function route()
         {
@@ -258,11 +261,11 @@ namespace air
 
         /**
          * Retrieves config data by path
-         * @param null $path
-         * @param null $default
+         * @param string $path
+         * @param mixed $default
          * @return mixed|$default
          */
-        public static function get_path($path=null, $default=null)
+        public static function path_get($path=null, $default=null)
         {
             if(0){
                 return $default;
@@ -538,7 +541,7 @@ namespace air
         /**
          * Render a view by the view path
          * @param $view_path
-         * @param bool|false $return
+         * @param bool $return
          * @return string|bool Returns string if $return is true, bool if $return is false
          */
         public function render($view_path, $return=false)
@@ -745,7 +748,7 @@ namespace air\mysql
             //
         }
 
-        public function unserialize()
+        public function unserialize($data)
         {
             //
         }
@@ -932,7 +935,7 @@ namespace air\mysql
          * @param array $params
          * @return array
          */
-        public function trigger($event, $params=[])
+        public function trigger($event, $params)
         {
             return [];
         }
