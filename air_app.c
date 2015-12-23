@@ -135,7 +135,7 @@ int air_app_dispatch(air_app_t *self) {
 	air_call_object_method(router, router_ce, "route", &route, 0, NULL);
 	int status = FAILURE;
 	do{
-		if(Z_ISUNDEF(route)){
+		if(Z_ISUNDEF(route) || Z_ISNULL(route)){
 			zval_ptr_dtor(&route);
 			break;
 		}else{
@@ -172,9 +172,10 @@ ZEND_END_ARG_INFO()
 /** {{{ PHP METHODS */
 PHP_METHOD(air_app, __construct) {
 	AIR_INIT_THIS;
-	int type = 1;
+	zend_ulong type = AIR_SITE;
 	if(zend_parse_parameters(ZEND_NUM_ARGS(), "|l", &type) == FAILURE){
 		//use default
+		return ;
 	}
 	zend_update_property_long(air_app_ce, self, ZEND_STRL("_type"), type);
 }
