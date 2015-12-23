@@ -39,8 +39,7 @@
 zend_class_entry *air_app_ce;
 
 int air_app_try_controller_action(air_app_t *self, smart_str c, smart_str a, zval *route TSRMLS_DC){
-	zend_class_entry *ce = NULL;
-	ce = air_loader_lookup_class(c.c, c.len TSRMLS_CC);
+	zend_class_entry *ce = air_loader_lookup_class(c.c, c.len TSRMLS_CC);
 	if (!ce){
 		php_error(E_NOTICE, "controller %s not found", c.c);
 		return FAILURE;
@@ -58,7 +57,6 @@ int air_app_try_controller_action(air_app_t *self, smart_str c, smart_str a, zva
 	zend_call_method_with_0_params(&controller, ce, NULL, "__construct", NULL);
 	zend_call_method_with_0_params(&controller, ce, NULL, "init", NULL);
 	zend_call_method_with_0_params(&controller, ce, NULL, "before_action", NULL);
-	zval *tmp = air_config_get_data();
 	air_call_method(&controller, ce, NULL, a.c, a.len, NULL, 0, NULL TSRMLS_CC);
 	zend_call_method_with_0_params(&controller, ce, NULL, "after_action", NULL);
 	zend_call_method_with_0_params(&controller, ce, NULL, "__destruct", NULL);
@@ -173,9 +171,10 @@ ZEND_END_ARG_INFO()
 /* {{{ PHP METHODS */
 PHP_METHOD(air_app, __construct) {
 	AIR_INIT_THIS;
-	int type = 1;
+	long type = AIR_SITE;
 	if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|l", &type) == FAILURE){
 		//use default
+		return ;
 	}
 	zend_update_property_long(air_app_ce, self, ZEND_STRL("_type"), type TSRMLS_CC);
 }

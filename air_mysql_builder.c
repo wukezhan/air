@@ -532,8 +532,9 @@ PHP_METHOD(air_mysql_builder, __construct) {
 	zval_ptr_dtor(&cb_arr);
 	int is_debug = 0;
 	zval _debug;
-	if(zend_get_constant(ZEND_STRL("DEBUG"), &_debug TSRMLS_CC) == SUCCESS && Z_TYPE(_debug) != IS_NULL){
+	if(zend_get_constant(ZEND_STRL("DEBUG"), &_debug TSRMLS_CC) == SUCCESS){
 		is_debug = Z_LVAL(_debug);
+		zval_dtor(&_debug);
 	}
 	zend_execute_data *ced = EG(current_execute_data);
 	while(ced && is_debug){

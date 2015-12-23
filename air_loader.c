@@ -166,12 +166,12 @@ int air_loader_autoload_class(char *classname, int len TSRMLS_DC) {
 			php_error(E_ERROR, "LIB_PATH is not defined");
 		}
 		status = air_loader_load_class_from_dir(classname, len, &lib_dir TSRMLS_CC);
+		zval_dtor(&lib_dir);
 		if(status == FAILURE){
 			status = air_loader_load_class_from_dir(classname, len, &root_dir);
 		}
 	}
 	zval_dtor(&root_dir);
-	zval_dtor(&lib_dir);
 	return status;
 }
 
