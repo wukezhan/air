@@ -150,10 +150,9 @@ PHP_METHOD(air_controller, render_view) {
 	AIR_INIT_THIS;
 	zend_call_method_with_0_params(self, air_controller_ce, NULL, "init_view", NULL);
 
-	zval ret_res;
-	zend_string *tpl_str;
+	zend_string *tpl_str = NULL;
 	int _ret = 0;
-	if(zend_parse_parameters(ZEND_NUM_ARGS(), "|Sl", &tpl_str, &ret_res) == FAILURE)
+	if(zend_parse_parameters(ZEND_NUM_ARGS(), "|Sl", &tpl_str, &_ret) == FAILURE)
 	{
 		RETURN_FALSE;
 	}
@@ -183,6 +182,8 @@ PHP_METHOD(air_controller, render_view) {
 	zval *data = zend_read_property(air_controller_ce, self, ZEND_STRL("_data"), 0, NULL);
 	zval *view = zend_read_property(air_controller_ce, self, ZEND_STRL("_view_engine"), 0, NULL);
 
+	zval ret_res;
+	ZVAL_LONG(&ret_res, _ret);
 	zval ret;
 	zend_call_method_with_1_params(view, Z_OBJCE_P(view), NULL, "assign", NULL, data);
 	zend_call_method_with_2_params(view, Z_OBJCE_P(view), NULL, "render", &ret, &view_path, &ret_res);
