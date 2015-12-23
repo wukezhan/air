@@ -107,7 +107,7 @@ zval *air_config_path_get(zval *data, zend_string *path) {
 		}
 		_data = zend_hash_str_find(Z_ARRVAL_P(_data), seg, strlen(seg));
 		if(!_data){
-			php_error(E_NOTICE, "config path '%s' not found\n", path);
+			php_error(E_NOTICE, "config path '%s' not found\n", ZSTR_VAL(path));
 			break;
 		}
 		seg = php_strtok_r(NULL, ".", &sptr);
