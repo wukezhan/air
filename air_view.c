@@ -132,7 +132,7 @@ PHP_METHOD(air_view, render){
 				AIR_NEW_EXCEPTION(1, "@error config: app.path");
 			}
 			zval *view_path = NULL;
-			if(air_config_get_path(app_conf, ZEND_STRS("view.path"), &view_path) == FAILURE){
+			if(air_config_path_get(app_conf, ZEND_STRS("view.path"), &view_path) == FAILURE){
 				AIR_NEW_EXCEPTION(1, "@view config not found");
 			}
 			smart_str_appendl(&ss_path, Z_STRVAL_P(app_path), Z_STRLEN_P(app_path));

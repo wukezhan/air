@@ -136,7 +136,7 @@ int air_loader_autoload_class(char *classname, int len TSRMLS_DC) {
 	char *class_str = classname;
 	smart_str ss_app_ns = {0};
 	zval *app_path = NULL;
-	if(air_config_get_path(NULL, ZEND_STRS("app.path"), &app_path TSRMLS_CC) == FAILURE || Z_TYPE_P(app_path) != IS_STRING){
+	if(air_config_path_get(NULL, ZEND_STRS("app.path"), &app_path TSRMLS_CC) == FAILURE || Z_TYPE_P(app_path) != IS_STRING){
 		smart_str_appendl(&ss_app_ns, "app\\", 4);
 	}else{
 		smart_str_appendl(&ss_app_ns, Z_STRVAL_P(app_path), Z_STRLEN_P(app_path));

@@ -96,7 +96,7 @@ int air_app_try_route(air_app_t *self, zval *route TSRMLS_DC){
 		if(air_config_get(app_conf, ZEND_STRS("path"), &app_path TSRMLS_CC) == FAILURE){
 			php_error(E_ERROR, "error config: app.path");
 		}
-		if(air_config_get_path(app_conf, ctrl_path_name, 10, &controller_path TSRMLS_CC) == FAILURE){
+		if(air_config_path_get(app_conf, ctrl_path_name, 10, &controller_path TSRMLS_CC) == FAILURE){
 			php_error(E_ERROR, "app.%s not found", ctrl_path_name);
 		}
 		if(Z_TYPE_P(controller_path) != IS_STRING){

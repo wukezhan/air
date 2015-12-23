@@ -167,7 +167,7 @@ PHP_METHOD(air_mysql_keeper, factory) {
 	int status = 0;
 	if(!zend_hash_num_elements(Z_ARRVAL_P(free))){
 		zval *config;
-		int found_conf_path = air_config_get_path(NULL, conf_name, len, &config TSRMLS_CC);
+		int found_conf_path = air_config_path_get(NULL, conf_name, len, &config TSRMLS_CC);
 		if(found_conf_path == FAILURE){
 			air_throw_exception_ex(1, "mysql config %s not found", conf_name);
 			return ;
