@@ -1017,26 +1017,44 @@ namespace air\mysql
             //
         }
 
+        /**
+         * @return builder
+         */
         public function async()
         {
             return new builder('mysql.config.default', 'test.test');
         }
 
+        /**
+         * @param $data
+         * @return builder
+         */
         public function add($data)
         {
             return new builder('mysql.config.default', 'test.test');
         }
 
+        /**
+         * @param $data
+         * @return builder
+         */
         public function set($data)
         {
             return new builder('mysql.config.default', 'test.test');
         }
 
+        /**
+         * @param $fields
+         * @return builder
+         */
         public function get($fields)
         {
             return new builder('mysql.config.default', 'test.test');
         }
 
+        /**
+         * @return builder
+         */
         public function del()
         {
             return new builder('mysql.config.default', 'test.test');
