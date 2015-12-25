@@ -37,9 +37,9 @@ $b1->async()->query('SELECT 1 AS a, sleep(1) AS b');
 $b2->async()->query('SELECT 2 AS a, sleep(1) AS b');
 $b3->async()->query('SELECT 3 AS a, sleep(1) AS b');
 // really start all the async queries
-echo $b1->data()."\n";
-echo $b2->data()."\n";
-echo $b3->data()."\n";
+var_dump($b1->data()); // or var_dump($b[0]); // or foreach($b as $k=>$v){...}
+var_dump($b2->data());
+var_dump($b3->data());
 // will totally use 1 second but not 3 seconds
 echo time()-$start, "\n";
 ```
