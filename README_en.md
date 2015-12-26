@@ -135,5 +135,5 @@ follow me for more information:
 
 * blog: [http://www.wukezhan.com](http://www.wukezhan.com)
 * twitter: [wukezhan](https://twitter.com/wukezhan)
-* github: [wukezhan/air](https://github.com/wukezhan/air
+* github: [wukezhan/air](https://github.com/wukezhan/air)
 
