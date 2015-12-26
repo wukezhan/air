@@ -157,8 +157,8 @@ PHP_METHOD(air_config, get) {
 	zend_string *key = NULL;
 	zval *val = NULL;
 	zval *def_val = NULL;
-	if(zend_parse_parameters(ZEND_NUM_ARGS(), "|Sz", &key, &def_val) == FAILURE)
-	{
+	if(zend_parse_parameters(ZEND_NUM_ARGS(), "|Sz", &key, &def_val) == FAILURE){
+		return ;
 	}
 	if(!key){
 		RETURN_ZVAL(data, 1, 0);
@@ -179,9 +179,8 @@ PHP_METHOD(air_config, path_get) {
 	zend_string *key;
 	zval *val = NULL;
 	zval *def_val = NULL;
-	if( zend_parse_parameters(ZEND_NUM_ARGS(), "|Sz", &key, &def_val) == FAILURE )
-	{
-		AIR_NEW_EXCEPTION(1, "invalid get_path params");
+	if( zend_parse_parameters(ZEND_NUM_ARGS(), "|Sz", &key, &def_val) == FAILURE ){
+		AIR_NEW_EXCEPTION(1, "invalid air\\config::path_get() params");
 	}
 	val = air_config_get_data();
 	if(!ZSTR_LEN(key)){
@@ -198,13 +197,10 @@ PHP_METHOD(air_config, path_get) {
 }
 
 PHP_METHOD(air_config, set) {
-	zval *data;
-	data = zend_read_static_property(air_config_ce, ZEND_STRL("_data"), 1);
-	if(!ZVAL_IS_NULL(data)){
-		AIR_NEW_EXCEPTION(1, "config can only be set once");
-	}
+	zval *data = NULL;
 	if( zend_parse_parameters(ZEND_NUM_ARGS(), "z", &data) == FAILURE )
 	{
+		return ;
 	}
 	air_config_merge_default(data);
 }

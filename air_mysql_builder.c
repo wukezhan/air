@@ -866,11 +866,11 @@ PHP_METHOD(air_mysql_builder, by_key) {
 		return ;
 	}
 	zval *original = zend_read_property(air_mysql_builder_ce, self, ZEND_STRL("_original"), 1, NULL);
-	char *pk_place_holder = NULL;
-	int len = spprintf(&pk_place_holder, 0, ":%s", pk_name?ZSTR_VAL(pk_name): "id");
+	char *pk_placeholder = NULL;
+	int len = spprintf(&pk_placeholder, 0, ":%s", pk_name?ZSTR_VAL(pk_name): "id");
 	char *conds;
-	len = spprintf(&conds, 0, "`%s`=%s", (pk_name?ZSTR_VAL(pk_name): "id"), pk_place_holder);
-	efree(pk_place_holder);
+	len = spprintf(&conds, 0, "`%s`=%s", (pk_name?ZSTR_VAL(pk_name): "id"), pk_placeholder);
+	efree(pk_placeholder);
 	zval zconds;
 	ZVAL_STRINGL(&zconds, conds, len);
 	zval where;
