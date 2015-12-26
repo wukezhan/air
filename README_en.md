@@ -6,11 +6,11 @@ a high performance, lightweight framework for php written in c
 
 ### high performance and lightweight
 
-the QPS, CPU and memory uses performance are all much better than the other web frameworks.
+the QPS, CPU and memory uses performance are all much better than the other php web frameworks.
 
 ### simple and extensible
 
-simple to use, and easy to extend it. the **`air framework`** helps building site from tiny to large, and simple to complex more efficiently.
+simple to use, and easy to extend it. the **`air framework`** helps building sites from tiny to large and simple to complex more efficiently.
 
 the MVC core can processed in only microseconds.
 
@@ -133,7 +133,7 @@ extension = air.so
 
 follow me for more information:
 
-* blog: [http://www.wukezhan.com](http://www.wukezhan.com)
+* blog: [www.wukezhan.com](http://www.wukezhan.com)
 * twitter: [wukezhan](https://twitter.com/wukezhan)
 * github: [wukezhan/air](https://github.com/wukezhan/air)
 
