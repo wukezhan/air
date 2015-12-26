@@ -1,16 +1,18 @@
 # air framework
 
-一款使用 `C` 语言写成的，高性能、轻量级的现代`PHP``web`框架。
+一款使用 `C` 语言写成的，高性能、轻量级的现代`PHP` `web`框架。
+
+> see [README_en.md](README_en.md) for english introduction.
 
 ## 特性
 
 ### 1. 高性能、轻量级
 
-在所有`PHP``web`框架的对比测试中，**`air framework`** 在并发数、CPU内存占用等多方面评价指标上均以显著优势领先其他框架。
+在所有`PHP``web`框架的对比测试中，**`air framework`** 在并发数(QPS)、CPU及内存占用等多方面评价指标上均以显著的优势领先于其他框架。
 
 ### 2. 高效的`MVC`机制
 
-简单完备的`MVC`机制，帮助开发者快速高效搭建从简单到复杂、从个人到企业，各种规模、各种类型的`web`站点。
+简单可扩展的`MVC`机制，高效灵活的路由功能，帮助开发者快速高效搭建从简单到复杂、从个人到企业，各种规模、各种类型的`web`站点。
 
 传统框架需要几到几十毫秒才能完成的核心模块加载流程，使用本框架仅需微秒级别时间即可极速完成。
 
@@ -18,14 +20,14 @@
 
 在实际的`web`应用中，整个请求流程中业务逻辑（主要是同步阻塞的数据库查询和远程API访问）耗时往往远远大于核心模块的加载耗时。
 
-**`air framework`** 从设计之初即从实际考虑，独创 `waiter/service` 异步并发请求模式，同时提供强大的数据库异步并发查询和远程HTTP异步并发请求特性，帮助开发者在这两大主要耗时场景中轻松获得数倍乃至数十倍的速度提升，从而使整个应用的运行性能得到真正的质的提升。
+**`air framework`** 从设计之初即着眼于解决实际难题，独创 `request/waiter/service` 异步并发请求模式，同时提供强大的数据库异步并发查询和远程HTTP异步并发请求特性，帮助开发者在这两大主要耗时场景中轻松获得数倍乃至数十倍的速度提升，从而使整个应用的运行性能得到真正的质的提升。
 
 #### 3.1 异步并发的数据库查询
 
 ```php
 <?php
 /**
- * air\config::get_path('mysql.config.air');
+ * air\config::path_get('mysql.config.air');
  * @see https://github.com/wukezhan/air/blob/master/tests/mysqli.inc.php
  * @see https://github.com/wukezhan/air/blob/master/tests/004.mysql.phpt
  */
@@ -125,6 +127,8 @@ extension = air.so
 
 ## 更多
 
+* **[快速开始](hello-world/README.md)**
+
 * **实例**
 	* [hello-world](hello-world) 入门演示实例
 	* [docker-ui](https://github.com/wukezhan/docker-ui) 一个简单的docker管理界面
@@ -132,10 +136,11 @@ extension = air.so
 * **文档**
 	* [接口文档](helper/doc.md)
 	* [air-book](http://air.wukezhan.com) [预备中]
+	* [代码补全 & 函数原型](helper/air.php)
 
 ## 关于
 
-对本项目感兴趣的朋友，可以关注微博 [wukezhan](http://weibo.com/wukezhan) 或通过以下方式与我进行联系和交流：
+对本项目感兴趣的朋友，可以关注微博 [weibo.com/wukezhan](http://weibo.com/wukezhan) 或通过以下方式与我进行联系和交流：
 
 * blog: [http://www.wukezhan.com](http://www.wukezhan.com)
 * twitter: [wukezhan](https://twitter.com/wukezhan)

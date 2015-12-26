@@ -30,5 +30,4 @@ $router->set_rules([
 ])->set_url($url);
 
 $app = new air\app(AIR_EXEC);
-//include __DIR__.'/../app/exec/hello.php';
 $app->set_router($router)->run();

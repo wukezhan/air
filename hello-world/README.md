@@ -45,7 +45,7 @@ define('LIB_PATH', ROOT_PATH . '/lib');
 air\config::set([
     'app' => [
         'path' => 'app', // app 目录名，同时也作为应用类命名空间前缀，必须为单级目录名
-                         // 可以以 air\config::get_path('app.path') 方式进行访问
+                         // 可以以 air\config::path_get('app.path') 方式进行访问
         'exec' => [
             'path' => 'exec', // 命令行可执行控制器相对路径名
         ],
