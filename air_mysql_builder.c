@@ -46,28 +46,7 @@ extern PHPAPI zend_class_entry *spl_ce_Countable;
 
 #define AIR_MYSQL_BUILDER_PLACEHOLDER "/:([a-z0-9_:]+?)/isU"
 
-void air_mysql_builder_data_set(zval *data, smart_str *sql, zval *param){
-	ulong idx, _idx = 0;
-	zend_string *key;
-	zval *val;
-	ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(data), idx, key, val) {
-		smart_str skey = {0};
-		if(_idx++){
-			smart_str_appends(sql, ", ");
-		}
-		smart_str_appendc(&skey, ':');
-		smart_str_appendl(&skey, ZSTR_VAL(key), ZSTR_LEN(key));
-		smart_str_0(&skey);
-		smart_str_appendl(sql, ZSTR_VAL(key), ZSTR_LEN(key));
-		smart_str_appends(sql, "=:");
-		smart_str_append_smart_str(sql, &skey);
-		Z_TRY_ADDREF_P(val);
-		add_assoc_zval_ex(param, ZSTR_VAL(skey.s), ZSTR_LEN(skey.s), val);
-		smart_str_free(&skey);
-	} ZEND_HASH_FOREACH_END();
-}
-
-void air_mysql_builder_data_add(zval *data, smart_str *sql, zval *origin_param){
+void air_mysql_builder_build_data_add(zval *data, smart_str *sql, zval *origin_param){
 	smart_str values = {0};
 	smart_str_appendc(sql, '(');
 	smart_str_appendc(&values, '(');
@@ -96,6 +75,29 @@ void air_mysql_builder_data_add(zval *data, smart_str *sql, zval *origin_param){
 	smart_str_append_smart_str(sql, &values);
 	smart_str_free(&values);
 }
+
+void air_mysql_builder_build_data_set(zval *data, smart_str *sql, zval *param){
+	smart_str_appends(sql, " SET ");
+	ulong idx, _idx = 0;
+	zend_string *key;
+	zval *val;
+	ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(data), idx, key, val) {
+		smart_str skey = {0};
+		if(_idx++){
+			smart_str_appends(sql, ", ");
+		}
+		smart_str_appendc(&skey, ':');
+		smart_str_appendl(&skey, ZSTR_VAL(key), ZSTR_LEN(key));
+		smart_str_0(&skey);
+		smart_str_appendl(sql, ZSTR_VAL(key), ZSTR_LEN(key));
+		smart_str_appends(sql, "=:");
+		smart_str_append_smart_str(sql, &skey);
+		Z_TRY_ADDREF_P(val);
+		add_assoc_zval_ex(param, ZSTR_VAL(skey.s), ZSTR_LEN(skey.s), val);
+		smart_str_free(&skey);
+	} ZEND_HASH_FOREACH_END();
+}
+
 void air_mysql_builder_build(zval *self){
 	zval *original = zend_read_property(air_mysql_builder_ce, self, ZEND_STRL("_original"), 1, NULL);
 	zval *action = zend_hash_str_find(Z_ARRVAL_P(original), ZEND_STRL("action"));
@@ -133,7 +135,7 @@ void air_mysql_builder_build(zval *self){
 			data = zend_hash_str_find(Z_ARRVAL_P(original), ZEND_STRL("data"));
 			smart_str_appends(&sql, "INSERT INTO ");
 			smart_str_append(&sql, Z_STR_P(table));
-			air_mysql_builder_data_add(data, &sql, &origin_param);
+			air_mysql_builder_build_data_add(data, &sql, &origin_param);
 			break;
 		case AIR_GET:
 			tmp = zend_hash_str_find(Z_ARRVAL_P(original), ZEND_STRL("fields"));
@@ -145,9 +147,8 @@ void air_mysql_builder_build(zval *self){
 		case AIR_SET:
 			smart_str_appends(&sql, "UPDATE ");
 			smart_str_append(&sql, Z_STR_P(table));
-			smart_str_appends(&sql, " SET ");
 			data = zend_hash_str_find(Z_ARRVAL_P(original), ZEND_STRL("data"));
-			air_mysql_builder_data_set(data, &sql, &origin_param);
+			air_mysql_builder_build_data_set(data, &sql, &origin_param);
 			break;
 		case AIR_DEL:
 			smart_str_appends(&sql, "DELETE FROM ");
