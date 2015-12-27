@@ -32,7 +32,7 @@
 
 zend_class_entry *air_config_ce;
 
-void air_config_merge_default(zval *data){
+void air_config_init_default(){
 	zval _data;
 	array_init(&_data);
 
@@ -58,9 +58,6 @@ void air_config_merge_default(zval *data){
 	add_assoc_zval_ex(&app, ZEND_STRL("view"), &view);
 
 	add_assoc_zval_ex(&_data, ZEND_STRL("app"), &app);
-	if(data != NULL && Z_TYPE_P(data) == IS_ARRAY){
-		php_array_replace_recursive(Z_ARRVAL_P(&_data), Z_ARRVAL_P(data));
-	}
 	zend_update_static_property(air_config_ce, ZEND_STRL("_data"), &_data);
 	zval_ptr_dtor(&_data);
 }
@@ -68,7 +65,7 @@ void air_config_merge_default(zval *data){
 zval *air_config_get_data(){
 	zval *data = zend_read_static_property(air_config_ce, ZEND_STRL("_data"), 1);
 	if(Z_TYPE_P(data) == IS_NULL){
-		air_config_merge_default(data);
+		air_config_init_default();
 		data = zend_read_static_property(air_config_ce, ZEND_STRL("_data"), 1);
 	}
 	return data;
@@ -198,11 +195,16 @@ PHP_METHOD(air_config, path_get) {
 
 PHP_METHOD(air_config, set) {
 	zval *data = NULL;
-	if( zend_parse_parameters(ZEND_NUM_ARGS(), "z", &data) == FAILURE )
+	if( zend_parse_parameters(ZEND_NUM_ARGS(), "a", &data) == FAILURE )
 	{
 		return ;
 	}
-	air_config_merge_default(data);
+	zval *origin_data = zend_read_static_property(air_config_ce, ZEND_STRL("_data"), 1);
+	if(Z_TYPE_P(origin_data) == IS_NULL){
+		air_config_init_default();
+		origin_data = zend_read_static_property(air_config_ce, ZEND_STRL("_data"), 1);
+	}
+	php_array_merge(Z_ARRVAL_P(origin_data), Z_ARRVAL_P(data));
 }
 /* }}} */
 

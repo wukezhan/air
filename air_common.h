@@ -124,7 +124,7 @@ static inline zval* air_call_method(zval *object, zend_class_entry *obj_ce, zend
 	zend_fcall_info fci;
 	zval retval;
 	HashTable *function_table;
-	if(param_count >= AIR_METHOD_MAX_PARAM_SIZE){
+	if(param_count > AIR_METHOD_MAX_PARAM_SIZE){
 		php_error(E_ERROR, "too many params");
 	}
 
