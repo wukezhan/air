@@ -45,6 +45,64 @@ extern PHPAPI zend_class_entry *spl_ce_Countable;
 
 #define AIR_MYSQL_BUILDER_PLACEHOLDER "/:([a-z0-9_:]+?)/isU"
 
+void air_mysql_builder_build_data_add(zval *data, smart_str *sql, zval **origin_param){
+	smart_str_appendc(sql, '(');
+	smart_str values = {0};
+	smart_str_appendc(&values, '(');
+	ulong idx, _idx = 0;
+	zval *val;
+	char *key;
+	int key_len;
+	AIR_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(data), idx, key, key_len, val) {
+		if(_idx++){
+			smart_str_appends(&sql, ", ");
+			smart_str_appends(&values, ", ");
+		}
+		smart_str skey = {0};
+		//should be specially renamed
+		//if it's necessary?
+		smart_str_appendc(&skey, ':');
+		smart_str_appendl(&skey, key, key_len-1);
+		smart_str_0(&skey);
+		smart_str_appendl(sql, key, key_len-1);
+		smart_str_appendc(&values, ':');
+		smart_str_appendl(&values, skey.c, skey.len);
+		Z_ADDREF_P(val);
+		add_assoc_zval_ex(*origin_param, skey.c, skey.len+1, val);
+		smart_str_free(&skey);
+	} AIR_HASH_FOREACH_END();
+	smart_str_appendc(sql, ')');
+	smart_str_appendc(&values, ')');
+	smart_str_appends(sql, " VALUES");
+	smart_str_appendl(sql, values.c, values.len);
+	smart_str_free(&values);
+}
+
+void air_mysql_builder_build_data_set(zval *data, smart_str *sql, zval **origin_param){
+	smart_str_appends(sql, " SET ");
+	ulong idx, _idx = 0;
+	zval *val;
+	char *key;
+	int key_len;
+	AIR_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(data), idx, key, key_len, val) {
+		if(_idx++){
+			smart_str_appends(&sql, ", ");
+		}
+		smart_str skey = {0};
+		//should be specially renamed
+		//if it's necessary?
+		smart_str_appendc(&skey, ':');
+		smart_str_appendl(&skey, key, key_len-1);
+		smart_str_0(&skey);
+		smart_str_appendl(sql, key, key_len-1);
+		smart_str_appends(sql, "=:");
+		smart_str_appendl(sql, skey.c, skey.len);
+		Z_ADDREF_P(val);
+		add_assoc_zval_ex(*origin_param, skey.c, skey.len+1, val);
+		smart_str_free(&skey);
+	} AIR_HASH_FOREACH_END();
+}
+
 void air_mysql_builder_build(zval *self){
 	smart_str sql = {0};
 	zval *original = zend_read_property(air_mysql_builder_ce, self, ZEND_STRL("_original"), 1 TSRMLS_CC);
@@ -85,33 +143,8 @@ void air_mysql_builder_build(zval *self){
 		case AIR_ADD:
 			smart_str_appends(&sql, "INSERT INTO ");
 			smart_str_appendl(&sql, Z_STRVAL_P(table), Z_STRLEN_P(table));
-			smart_str_appendc(&sql, '(');
-			smart_str_appendc(&values, '(');
 			data = air_arr_find(original, ZEND_STRS("data"));
-			_idx = 0;
-			AIR_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(data), idx, key, key_len, val) {
-				if(_idx++){
-					smart_str_appends(&sql, ", ");
-					smart_str_appends(&values, ", ");
-				}
-				smart_str_free(&skey);
-				//should be specially renamed
-				//if it's necessary?
-				smart_str_appendc(&skey, ':');
-				smart_str_appendl(&skey, key, key_len-1);
-				smart_str_0(&skey);
-				smart_str_appendl(&sql, key, key_len-1);
-				smart_str_appendc(&values, ':');
-				smart_str_appendl(&values, skey.c, skey.len);
-				Z_ADDREF_P(val);
-				add_assoc_zval_ex(origin_param, skey.c, skey.len+1, val);
-				smart_str_free(&skey);
-			} AIR_HASH_FOREACH_END();
-			smart_str_appendc(&sql, ')');
-			smart_str_appendc(&values, ')');
-			smart_str_appends(&sql, " VALUES");
-			smart_str_appendl(&sql, values.c, values.len);
-			smart_str_free(&values);
+			air_mysql_builder_build_data_add(data, &sql, &origin_param);
 			break;
 		case AIR_GET:
 			tmp = air_arr_find(original, ZEND_STRS("fields"));
@@ -123,26 +156,8 @@ void air_mysql_builder_build(zval *self){
 		case AIR_SET:
 			smart_str_appends(&sql, "UPDATE ");
 			smart_str_appendl(&sql, Z_STRVAL_P(table), Z_STRLEN_P(table));
-			smart_str_appends(&sql, " SET ");
 			data = air_arr_find(original, ZEND_STRS("data"));
-			_idx = 0;
-			AIR_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(data), idx, key, key_len, val) {
-				if(_idx++){
-					smart_str_appends(&sql, ", ");
-				}
-				smart_str_free(&skey);
-				//should be specially renamed
-				//if it's necessary?
-				smart_str_appendc(&skey, ':');
-				smart_str_appendl(&skey, key, key_len-1);
-				smart_str_0(&skey);
-				smart_str_appendl(&sql, key, key_len-1);
-				smart_str_appends(&sql, "=:");
-				smart_str_appendl(&sql, skey.c, skey.len);
-				Z_ADDREF_P(val);
-				add_assoc_zval_ex(origin_param, skey.c, skey.len+1, val);
-				smart_str_free(&skey);
-			} AIR_HASH_FOREACH_END();
+			air_mysql_builder_build_data_set(data, &sql, &origin_param);
 			break;
 		case AIR_DEL:
 			smart_str_appends(&sql, "DELETE FROM ");
@@ -380,7 +395,7 @@ void air_mysql_builder_execute(zval *self){
 			zval *mysqli = NULL;
 			zval *config = zend_read_property(air_mysql_builder_ce, self, ZEND_STRL("_config"), 0 TSRMLS_CC);
 			zval **factory_params[2] = {&config, &mode};
-			air_call_static_method(mysql_keeper_ce, NULL, "factory", &mysqli, 2, factory_params);
+			air_call_static_method(mysql_keeper_ce, "factory", &mysqli, 2, factory_params);
 			if(mysqli == NULL || Z_TYPE_P(mysqli) != IS_OBJECT){
 				php_error(E_ERROR, "can not get a mysqli instance: config '%s', mode '%lu'", Z_STRVAL_P(config), Z_LVAL_P(mode));
 			}
@@ -399,7 +414,7 @@ void air_mysql_builder_execute(zval *self){
 				zval_ptr_dtor(&sql);
 			}
 			zval **release_params[3] = {&mysqli, &config, &mode};
-			air_call_static_method(mysql_keeper_ce, NULL, "release", NULL, 3, release_params);
+			air_call_static_method(mysql_keeper_ce, "release", NULL, 3, release_params);
 			zval_ptr_dtor(&mysqli);
 		}
 	}
@@ -900,10 +915,10 @@ PHP_METHOD(air_mysql_builder, by_key) {
 	zval *where;
 	MAKE_STD_ZVAL(where);
 	array_init(where);
-	char *pk_place_holder = NULL;
-	int len = spprintf(&pk_place_holder, 0, ":%s", Z_STRVAL_P(pk_name));
+	char *pk_placeholder = NULL;
+	int len = spprintf(&pk_placeholder, 0, ":%s", Z_STRVAL_P(pk_name));
 	char *conds;
-	len = spprintf(&conds, 0, "`%s`=%s", Z_STRVAL_P(pk_name), pk_place_holder);
+	len = spprintf(&conds, 0, "`%s`=%s", Z_STRVAL_P(pk_name), pk_placeholder);
 	zval *zconds;
 	MAKE_STD_ZVAL(zconds);
 	ZVAL_STRINGL(zconds, conds, len, 0);
@@ -919,7 +934,7 @@ PHP_METHOD(air_mysql_builder, by_key) {
 	if(free_pk_name){
 		zval_ptr_dtor(&free_pk_name);
 	}
-	efree(pk_place_holder);
+	efree(pk_placeholder);
 
 	AIR_RET_THIS;
 }

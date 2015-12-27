@@ -73,34 +73,6 @@ extern PHPAPI void php_debug_zval_dump(zval **struc, int level TSRMLS_DC);
 		}\
 	}while(0)
 
-static inline int air_arr_get(zval *data, const char *key, int key_len, zval **val TSRMLS_DC) {
-	if(data == NULL){
-		return FAILURE;
-	}
-	int status = SUCCESS;
-	zval **tmp;
-	if(zend_hash_find(Z_ARRVAL_P(data), key, key_len, (void **)&tmp) == SUCCESS) {
-		SEPARATE_ZVAL(tmp);
-		*val = *tmp;
-	}else{
-		status = FAILURE;
-	}
-	return status;
-}
-static inline int air_hash_get(HashTable *ht, const char *key, int key_len, void **val TSRMLS_DC) {
-	if(ht == NULL){
-		return FAILURE;
-	}
-	int status = SUCCESS;
-	zval **tmp = NULL;
-	if(zend_hash_find(ht, key, key_len, (void **)&tmp) == SUCCESS) {
-		*val = *tmp;
-	}else{
-		status = FAILURE;
-	}
-	return status;
-}
-
 static inline zval *air_arr_find(zval *data, const char *key, int key_len) {
 	if(data == NULL){
 		return NULL;
@@ -112,6 +84,7 @@ static inline zval *air_arr_find(zval *data, const char *key, int key_len) {
 		return NULL;
 	}
 }
+
 static inline zval *air_arr_idx_find(zval *data, int idx) {
 	if(data == NULL){
 		return NULL;
@@ -125,11 +98,11 @@ static inline zval *air_arr_idx_find(zval *data, int idx) {
 }
 
 static inline zend_class_entry *air_get_ce(char *classname, int len){
-	zend_class_entry *ce = NULL;
-	if(air_hash_get(EG(class_table), classname, len + 1, (void **)&ce) == FAILURE) {
+	zend_class_entry **ce = NULL;
+	if(zend_hash_find(EG(class_table), classname, len + 1, (void **)&ce) == FAILURE) {
 		return NULL;
 	}
-	return ce;
+	return *ce;
 }
 
 static inline zval *air_new_object(char *classname, int len){
@@ -246,8 +219,8 @@ static inline zval* air_call_method(zval **object_pp, zend_class_entry *obj_ce, 
 	return *retval_ptr_ptr;
 }
 
-#define air_call_object_method(obj_pp, obj_ce, fn_proxy, function_name, retval_ptr_ptr, param_count, params) air_call_method(obj_pp, obj_ce, fn_proxy, function_name, sizeof(function_name)-1, retval_ptr_ptr, param_count, params TSRMLS_CC)
-#define air_call_static_method(obj_ce, fn_proxy, function_name, retval_ptr_ptr, param_count, params) air_call_method(NULL, obj_ce, fn_proxy, function_name, sizeof(function_name)-1, retval_ptr_ptr, param_count, params TSRMLS_CC)
+#define air_call_object_method(obj_pp, obj_ce, function_name, retval_ptr_ptr, param_count, params) air_call_method(obj_pp, obj_ce, NULL, function_name, sizeof(function_name)-1, retval_ptr_ptr, param_count, params TSRMLS_CC)
+#define air_call_static_method(obj_ce, function_name, retval_ptr_ptr, param_count, params) air_call_method(NULL, obj_ce, NULL, function_name, sizeof(function_name)-1, retval_ptr_ptr, param_count, params TSRMLS_CC)
 
 #else
 //larger than php 70

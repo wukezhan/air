@@ -80,7 +80,7 @@ void air_mysql_waiter_pool_init(zval **services, zval **wait_pool, zval **m2s){
 		}
 		zval **factory_params[2] = {&builder_config, &mode};
 		mysqli = NULL;
-		air_call_static_method(air_mysql_keeper_ce, NULL, "factory", &mysqli, 2, factory_params);
+		air_call_static_method(air_mysql_keeper_ce, "factory", &mysqli, 2, factory_params);
 		if(Z_TYPE_P(mysqli) != IS_NULL){
 			zval **build_params[1] = {&mysqli};
 			zval *sql = NULL;
@@ -125,7 +125,7 @@ void air_mysql_waiter_pool_poll(zval **responses_pp, zval **services_pp, zval *w
 		ZVAL_ZVAL(rejects, wait_pool, 1, 0);
 		zval **poll_params[4] = {&reads, &errors, &rejects, &timeout};
 		zval *count;
-		air_call_static_method(mysqli_ce, NULL, "poll", &count, 4, poll_params);
+		air_call_static_method(mysqli_ce, "poll", &count, 4, poll_params);
 		if(Z_LVAL_P(count)){
 			ulong idx;
 			char *key;
@@ -169,7 +169,7 @@ void air_mysql_waiter_pool_poll(zval **responses_pp, zval **services_pp, zval *w
 				zval *builder_config = zend_read_property(air_mysql_builder_ce, builder, ZEND_STRL("_config"), 0 TSRMLS_CC);
 				zval *mode = zend_read_property(air_mysql_builder_ce, builder, ZEND_STRL("_mode"), 0 TSRMLS_CC);
 				zval **release_params[3] = {&mysqli, &builder_config, &mode};
-				air_call_static_method(air_mysql_keeper_ce, NULL, "release", NULL, 3, release_params);
+				air_call_static_method(air_mysql_keeper_ce, "release", NULL, 3, release_params);
 			}AIR_HASH_FOREACH_END();
 			processed += Z_LVAL_P(count);
 		}

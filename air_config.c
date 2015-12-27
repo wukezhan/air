@@ -32,7 +32,7 @@
 
 zend_class_entry *air_config_ce;
 
-void air_config_merge_default(zval *data TSRMLS_DC){
+void air_config_init_default(TSRMLS_DC){
 	zval *_data = NULL;
 	MAKE_STD_ZVAL(_data);
 	array_init(_data);
@@ -64,9 +64,6 @@ void air_config_merge_default(zval *data TSRMLS_DC){
 	add_assoc_zval_ex(app, ZEND_STRS("view"), view);
 
 	add_assoc_zval_ex(_data, ZEND_STRS("app"), app);
-	if(data != NULL && Z_TYPE_P(data) == IS_ARRAY){
-		php_array_replace_recursive(Z_ARRVAL_P(_data), Z_ARRVAL_P(data) TSRMLS_CC);
-	}
 	zend_update_static_property(air_config_ce, ZEND_STRL("_data"), _data TSRMLS_CC);
 	zval_ptr_dtor(&_data);
 }
@@ -74,7 +71,7 @@ void air_config_merge_default(zval *data TSRMLS_DC){
 zval *air_config_get_data(TSRMLS_DC){
 	zval *data = zend_read_static_property(air_config_ce, ZEND_STRL("_data"), 1 TSRMLS_CC);
 	if(Z_TYPE_P(data) == IS_NULL){
-		air_config_merge_default(data TSRMLS_CC);
+		air_config_init_default(TSRMLS_CC);
 		data = zend_read_static_property(air_config_ce, ZEND_STRL("_data"), 1 TSRMLS_CC);
 	}
 	return data;
@@ -85,9 +82,10 @@ int air_config_get(zval *data, const char *key, int key_len, zval **val TSRMLS_D
 	if(data == NULL){
 		_data = air_config_get_data(TSRMLS_CC);
 	}
-	int status = air_arr_get(_data, key, key_len, val);
-	if(status == FAILURE) {
-		php_error(E_NOTICE, "config key '%s' not found\n", key);
+	zval **ppzval;
+	int status = zend_hash_find(Z_ARRVAL_P(_data), key, key_len, (void **)&ppzval);
+	if(status == SUCCESS) {
+		*val = *ppzval;
 	}
 	return status;
 }
@@ -108,7 +106,6 @@ int air_config_path_get(zval *data, const char *path, int path_len, zval **val T
 			break;
 		}
 		if(zend_hash_find(Z_ARRVAL_P(_data), seg, strlen(seg)+1, (void **)&tmp) == SUCCESS) {
-			SEPARATE_ZVAL(tmp);
 			_data = *tmp;
 		}else{
 			php_error(E_NOTICE, "config path '%s' not found\n", path);
@@ -136,18 +133,19 @@ ZEND_END_ARG_INFO()
 
 /* {{{ PHP METHODS */
 PHP_METHOD(air_config, get) {
-	zval *data = air_config_get_data();
 	char *key;
 	int key_len = 0;
 	zval *val = NULL;
 	zval *def_val = NULL;
 	if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|sz", &key, &key_len, &def_val) == FAILURE)
 	{
+		return ;
 	}
 	if(!key_len){
-		RETURN_ZVAL(data, 1, 0);
+		val = air_config_get_data();
+		RETURN_ZVAL(val, 1, 0);
 	}
-	if(air_arr_get(data, key, key_len, &val TSRMLS_CC) == FAILURE) {
+	if(air_config_get(NULL, key, key_len, &val) == FAILURE) {
 		if(def_val){
 			RETURN_ZVAL(def_val, 1, 0);
 		}else{
@@ -181,15 +179,12 @@ PHP_METHOD(air_config, path_get) {
 }
 
 PHP_METHOD(air_config, set) {
-	zval *data;
-	data = zend_read_static_property(air_config_ce, ZEND_STRL("_data"), 1 TSRMLS_CC);
-	if(!ZVAL_IS_NULL(data)){
-		AIR_NEW_EXCEPTION(1, "config can only be set once");
+	zval *data = NULL;
+	if( zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a", &data) == FAILURE ){
+		return ;
 	}
-	if( zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &data) == FAILURE )
-	{
-	}
-	air_config_merge_default(data TSRMLS_CC);
+	zval *origin_data = air_config_get_data(TSRMLS_CC);
+	php_array_merge(Z_ARRVAL_P(origin_data), Z_ARRVAL_P(data));
 }
 /* }}} */
 
