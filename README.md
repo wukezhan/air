@@ -141,6 +141,6 @@ extension = air.so
 
 对本项目感兴趣的朋友，可以关注微博 [weibo.com/wukezhan](http://weibo.com/wukezhan) 或通过以下方式与我进行联系和交流：
 
-* blog: [www.wukezhan.com](http://www.wukezhan.com)
+* QQ群: 141971669
 * twitter: [wukezhan](https://twitter.com/wukezhan)
 * github: [wukezhan/air](https://github.com/wukezhan/air)
