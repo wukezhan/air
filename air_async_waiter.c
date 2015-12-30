@@ -33,7 +33,7 @@
 
 zend_class_entry *air_async_waiter_ce;
 
-/** {{{ ARG_INFO */
+/* {{{ ARG_INFO */
 ZEND_BEGIN_ARG_INFO_EX(air_async_waiter_construct_arginfo, 0, 0, 1)
 	ZEND_ARG_INFO(0, config)
 ZEND_END_ARG_INFO()
@@ -48,7 +48,7 @@ ZEND_END_ARG_INFO()
 
 /* }}} */
 
-/** {{{ PHP METHODS */
+/* {{{ PHP METHODS */
 PHP_METHOD(air_async_waiter, __construct) {
 	AIR_INIT_THIS;
 
@@ -104,7 +104,7 @@ PHP_METHOD(air_async_waiter, response) {
 }
 /* }}} */
 
-/** {{{ air_async_waiter_methods */
+/* {{{ air_async_waiter_methods */
 zend_function_entry air_async_waiter_methods[] = {
 	PHP_ME(air_async_waiter, __construct, air_async_waiter_construct_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
 	PHP_ME(air_async_waiter, serve, air_async_waiter_serve_arginfo, ZEND_ACC_PUBLIC)
@@ -114,7 +114,7 @@ zend_function_entry air_async_waiter_methods[] = {
 };
 /* }}} */
 
-/** {{{ AIR_MINIT_FUNCTION */
+/* {{{ AIR_MINIT_FUNCTION */
 AIR_MINIT_FUNCTION(air_async_waiter) {
 	zend_class_entry ce;
 	INIT_CLASS_ENTRY(ce, "air\\async\\waiter", air_async_waiter_methods);

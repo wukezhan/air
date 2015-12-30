@@ -31,7 +31,7 @@
 
 zend_class_entry *air_handler_ce;
 
-/** {{{ ARG_INFO */
+/* {{{ ARG_INFO */
 ZEND_BEGIN_ARG_INFO_EX(air_handler_construct_arginfo, 0, 0, 1)
 	ZEND_ARG_INFO(0, config)
 ZEND_END_ARG_INFO()
@@ -50,7 +50,7 @@ ZEND_BEGIN_ARG_INFO_EX(air_handler_on_shutdown_arginfo, 0, 0, 1)
 ZEND_END_ARG_INFO()
 /* }}} */
 
-/** {{{ PHP METHODS */
+/* {{{ PHP METHODS */
 PHP_METHOD(air_handler, on_error) {
 	zval params[2];
 	zval *callback, *error_type = NULL;
@@ -89,7 +89,7 @@ PHP_METHOD(air_handler, on_shutdown) {
 }
 /* }}} */
 
-/** {{{ air_handler_methods */
+/* {{{ air_handler_methods */
 zend_function_entry air_handler_methods[] = {
 	PHP_ME(air_handler, on_error, air_handler_on_error_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
 	PHP_ME(air_handler, on_exception, air_handler_on_exception_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
@@ -98,7 +98,7 @@ zend_function_entry air_handler_methods[] = {
 };
 /* }}} */
 
-/** {{{ AIR_MINIT_FUNCTION */
+/* {{{ AIR_MINIT_FUNCTION */
 AIR_MINIT_FUNCTION(air_handler) {
 	zend_class_entry ce;
 	INIT_CLASS_ENTRY(ce, "air\\handler", air_handler_methods);

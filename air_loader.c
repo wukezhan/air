@@ -143,14 +143,14 @@ zend_class_entry *air_loader_autoload_class(zend_string *classname) {
 	return ce;
 }
 
-/** {{{ ARG_INFO */
+/* {{{ ARG_INFO */
 ZEND_BEGIN_ARG_INFO_EX(air_loader_load_arginfo, 0, 0, 0)
 	ZEND_ARG_INFO(0, classname)
 ZEND_END_ARG_INFO()
 
 /* }}} */
 
-/** {{{ PHP METHODS */
+/* {{{ PHP METHODS */
 PHP_METHOD(air_loader, autoload) {
 	zval loader;
 	ZVAL_STRING(&loader, "air\\loader::load");
@@ -177,7 +177,7 @@ PHP_METHOD(air_loader, load) {
 }
 /* }}} */
 
-/** {{{ air_loader_methods */
+/* {{{ air_loader_methods */
 zend_function_entry air_loader_methods[] = {
 	PHP_ME(air_loader, autoload, NULL,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
 	PHP_ME(air_loader, load, air_loader_load_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
@@ -185,7 +185,7 @@ zend_function_entry air_loader_methods[] = {
 };
 /* }}} */
 
-/** {{{ AIR_MINIT_FUNCTION */
+/* {{{ AIR_MINIT_FUNCTION */
 AIR_MINIT_FUNCTION(air_loader) {
 	zend_class_entry ce;
 	INIT_CLASS_ENTRY(ce, "air\\loader", air_loader_methods);

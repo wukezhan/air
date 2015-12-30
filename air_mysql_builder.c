@@ -407,7 +407,7 @@ void air_mysql_builder_execute(zval *self){
 	}
 }
 
-/** {{{ ARG_INFO */
+/* {{{ ARG_INFO */
 ZEND_BEGIN_ARG_INFO_EX(air_mysql_builder_construct_arginfo, 0, 0, 1)
 	ZEND_ARG_INFO(0, config)
 	ZEND_ARG_INFO(0, table)
@@ -482,7 +482,7 @@ ZEND_BEGIN_ARG_INFO_EX(air_mysql_builder_on_arginfo, 0, 0, 1)
 ZEND_END_ARG_INFO()
 /* }}} */
 
-/** {{{ PHP METHODS */
+/* {{{ PHP METHODS */
 PHP_METHOD(air_mysql_builder, __construct) {
 	AIR_INIT_THIS;
 
@@ -1068,7 +1068,7 @@ PHP_METHOD(air_mysql_builder, __destruct) {
 	}
 }
 
-/** {{{ air_mysql_builder_methods */
+/* {{{ air_mysql_builder_methods */
 zend_function_entry air_mysql_builder_methods[] = {
 	PHP_ME(air_mysql_builder, __construct, air_mysql_builder_construct_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
 	PHP_ME(air_mysql_builder, __destruct, air_mysql_builder_void_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_DTOR)
@@ -1114,7 +1114,7 @@ zend_function_entry air_mysql_builder_methods[] = {
 };
 /* }}} */
 
-/** {{{ AIR_MINIT_FUNCTION */
+/* {{{ AIR_MINIT_FUNCTION */
 AIR_MINIT_FUNCTION(air_mysql_builder) {
 	zend_class_entry ce;
 	INIT_CLASS_ENTRY(ce, "air\\mysql\\builder", air_mysql_builder_methods);

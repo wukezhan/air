@@ -109,7 +109,7 @@ void air_curl_execute(zval *self){
 	}
 }
 
-/** {{{ ARG_INFO */
+/* {{{ ARG_INFO */
 ZEND_BEGIN_ARG_INFO_EX(air_curl_construct_arginfo, 0, 0, 1)
 	ZEND_ARG_INFO(0, config)
 ZEND_END_ARG_INFO()
@@ -143,7 +143,7 @@ ZEND_BEGIN_ARG_INFO_EX(air_curl_on_arginfo, 0, 0, 1)
 ZEND_END_ARG_INFO()
 /* }}} */
 
-/** {{{ PHP METHODS */
+/* {{{ PHP METHODS */
 PHP_METHOD(air_curl, __construct) {
 	AIR_INIT_THIS;
 
@@ -413,7 +413,7 @@ PHP_METHOD(air_curl, __destruct) {
 }
 /* }}} */
 
-/** {{{ air_curl_methods */
+/* {{{ air_curl_methods */
 zend_function_entry air_curl_methods[] = {
 	PHP_ME(air_curl, __construct, air_curl_construct_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
 	PHP_ME(air_curl, offsetUnset, air_curl_k_arginfo, ZEND_ACC_PUBLIC)
@@ -436,7 +436,7 @@ zend_function_entry air_curl_methods[] = {
 };
 /* }}} */
 
-/** {{{ AIR_MINIT_FUNCTION */
+/* {{{ AIR_MINIT_FUNCTION */
 AIR_MINIT_FUNCTION(air_curl) {
 	zend_class_entry ce;
 	INIT_CLASS_ENTRY(ce, "air\\curl", air_curl_methods);

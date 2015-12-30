@@ -190,7 +190,7 @@ int air_router_route(air_router_t *self, zval *return_value) {
 	return SUCCESS;
 }
 
-/** {{{ ARG_INFO */
+/* {{{ ARG_INFO */
 ZEND_BEGIN_ARG_INFO_EX(air_router_construct_arginfo, 0, 0, 1)
 	ZEND_ARG_INFO(0, config)
 ZEND_END_ARG_INFO()
@@ -207,7 +207,7 @@ ZEND_BEGIN_ARG_INFO_EX(air_router_0_arginfo, 0, 0, 0)
 ZEND_END_ARG_INFO()
 /* }}} */
 
-/** {{{ PHP METHODS */
+/* {{{ PHP METHODS */
 PHP_METHOD(air_router, __construct) {
 	AIR_INIT_THIS;
 
@@ -262,7 +262,7 @@ PHP_METHOD(air_router, route) {
 }
 /* }}} */
 
-/** {{{ air_router_methods */
+/* {{{ air_router_methods */
 zend_function_entry air_router_methods[] = {
 	PHP_ME(air_router, __construct, air_router_construct_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
 	PHP_ME(air_router, set_url, air_router_set_url_arginfo,  ZEND_ACC_PUBLIC)
@@ -273,7 +273,7 @@ zend_function_entry air_router_methods[] = {
 };
 /* }}} */
 
-/** {{{ AIR_MINIT_FUNCTION */
+/* {{{ AIR_MINIT_FUNCTION */
 AIR_MINIT_FUNCTION(air_router) {
 	zend_class_entry ce;
 	INIT_CLASS_ENTRY(ce, "air\\router", air_router_methods);

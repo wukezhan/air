@@ -172,11 +172,11 @@ void air_mysql_waiter_pool_poll(zval **responses_pp, zval **services_pp, zval *w
 	zval_ptr_dtor(&timeout);
 }
 
-/** {{{ ARG_INFO */
+/* {{{ ARG_INFO */
 
 /* }}} */
 
-/** {{{ PHP METHODS */
+/* {{{ PHP METHODS */
 
 PHP_METHOD(air_mysql_waiter, _response) {
 	AIR_INIT_THIS;
@@ -197,14 +197,14 @@ PHP_METHOD(air_mysql_waiter, _response) {
 
 /* }}} */
 
-/** {{{ air_mysql_waiter_methods */
+/* {{{ air_mysql_waiter_methods */
 zend_function_entry air_mysql_waiter_methods[] = {
 	PHP_ME(air_mysql_waiter, _response, NULL,  ZEND_ACC_PUBLIC)
 	{NULL, NULL, NULL}
 };
 /* }}} */
 
-/** {{{ AIR_MINIT_FUNCTION */
+/* {{{ AIR_MINIT_FUNCTION */
 AIR_MINIT_FUNCTION(air_mysql_waiter) {
 	zend_class_entry ce;
 	INIT_CLASS_ENTRY(ce, "air\\mysql\\waiter", air_mysql_waiter_methods);
