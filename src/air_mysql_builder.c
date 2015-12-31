@@ -33,12 +33,12 @@
 
 #include "php_air.h"
 
-#include "air_async_service.h"
-#include "air_exception.h"
-#include "air_mysqli.h"
-#include "air_mysql_waiter.h"
+#include "src/air_async_service.h"
+#include "src/air_exception.h"
+#include "src/air_mysqli.h"
+#include "src/air_mysql_waiter.h"
 
-#include "air_mysql_builder.h"
+#include "src/air_mysql_builder.h"
 
 zend_class_entry *air_mysql_builder_ce;
 

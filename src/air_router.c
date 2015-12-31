@@ -31,8 +31,8 @@
 
 #include "php_air.h"
 
-#include "air_exception.h"
-#include "air_router.h"
+#include "src/air_exception.h"
+#include "src/air_router.h"
 
 zend_class_entry *air_router_ce;
 

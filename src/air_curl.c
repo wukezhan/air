@@ -28,8 +28,8 @@
 
 #include "php_air.h"
 
-#include "air_curl.h"
-#include "air_curl_waiter.h"
+#include "src/air_curl.h"
+#include "src/air_curl_waiter.h"
 
 zend_class_entry *air_curl_ce;
 

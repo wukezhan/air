@@ -27,8 +27,8 @@
 
 #include "php_air.h"
 
-#include "air_config.h"
-#include "air_exception.h"
+#include "src/air_config.h"
+#include "src/air_exception.h"
 
 zend_class_entry *air_config_ce;
 

@@ -29,12 +29,12 @@
 
 #include "php_air.h"
 
-#include "air_config.h"
-#include "air_exception.h"
-#include "air_loader.h"
-#include "air_router.h"
+#include "src/air_config.h"
+#include "src/air_exception.h"
+#include "src/air_loader.h"
+#include "src/air_router.h"
 
-#include "air_app.h"
+#include "src/air_app.h"
 
 zend_class_entry *air_app_ce;
 

@@ -66,7 +66,7 @@ ZEND_END_MODULE_GLOBALS(air)
 #define AIR_G(v) (air_globals.v)
 #endif
 
-#include "air_common.h"
-#include "air_exception.h"
+#include "src/air_common.h"
+#include "src/air_exception.h"
 
 #endif	/* PHP_AIR_H */
