@@ -61,22 +61,22 @@ if test "$PHP_AIR" != "no"; then
 
   PHP_NEW_EXTENSION(air,
     air.c \
-    air_app.c \
-    air_async_service.c \
-    air_async_waiter.c \
-    air_config.c \
-    air_controller.c \
-    air_curl.c \
-    air_curl_waiter.c \
-    air_exception.c \
-    air_handler.c \
-    air_loader.c \
-    air_mysql_builder.c \
-    air_mysql_keeper.c \
-    air_mysql_table.c \
-    air_mysql_waiter.c \
-    air_router.c \
-    air_view.c \
+    src/air_app.c \
+    src/air_async_service.c \
+    src/air_async_waiter.c \
+    src/air_config.c \
+    src/air_controller.c \
+    src/air_curl.c \
+    src/air_curl_waiter.c \
+    src/air_exception.c \
+    src/air_handler.c \
+    src/air_loader.c \
+    src/air_mysql_builder.c \
+    src/air_mysql_keeper.c \
+    src/air_mysql_table.c \
+    src/air_mysql_waiter.c \
+    src/air_router.c \
+    src/air_view.c \
     ,
   $ext_shared)
 fi

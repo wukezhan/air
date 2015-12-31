@@ -28,9 +28,9 @@
 
 #include "php_air.h"
 
-#include "air_config.h"
-#include "air_mysqli.h"
-#include "air_mysql_keeper.h"
+#include "src/air_config.h"
+#include "src/air_mysqli.h"
+#include "src/air_mysql_keeper.h"
 
 zend_class_entry *air_mysql_keeper_ce;
 

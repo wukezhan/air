@@ -28,9 +28,9 @@
 
 #include "php_air.h"
 
-#include "air_exception.h"
-#include "air_mysql_builder.h"
-#include "air_mysql_table.h"
+#include "src/air_exception.h"
+#include "src/air_mysql_builder.h"
+#include "src/air_mysql_table.h"
 
 zend_class_entry *air_mysql_table_ce;
 

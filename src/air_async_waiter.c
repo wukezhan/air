@@ -28,8 +28,8 @@
 
 #include "php_air.h"
 
-#include "air_async_service.h"
-#include "air_async_waiter.h"
+#include "src/air_async_service.h"
+#include "src/air_async_waiter.h"
 
 zend_class_entry *air_async_waiter_ce;
 

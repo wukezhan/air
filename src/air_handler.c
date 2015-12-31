@@ -27,7 +27,7 @@
 
 #include "php_air.h"
 
-#include "air_handler.h"
+#include "src/air_handler.h"
 
 zend_class_entry *air_handler_ce;
 

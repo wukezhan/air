@@ -30,9 +30,9 @@
 
 #include "php_air.h"
 
-#include "air_config.h"
-#include "air_loader.h"
-#include "air_view.h"
+#include "src/air_config.h"
+#include "src/air_loader.h"
+#include "src/air_view.h"
 
 zend_class_entry *air_view_ce;
 

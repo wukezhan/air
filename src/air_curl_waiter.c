@@ -28,9 +28,9 @@
 
 #include "php_air.h"
 
-#include "air_async_waiter.h"
-#include "air_curl.h"
-#include "air_curl_waiter.h"
+#include "src/air_async_waiter.h"
+#include "src/air_curl.h"
+#include "src/air_curl_waiter.h"
 
 #define CURLM_OK 0
 #define CURLM_CALL_MULTI_PERFORM -1
