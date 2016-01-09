@@ -18,21 +18,21 @@ air\config::set([
             'air' => [
                 'auth' => [
                     R => [
-                        'username' => 'root',
-                        'password' => '',
+                        'username' => 'core',
+                        'password' => '222222',
                     ],
                     W => [
-                        'username' => 'root',
-                        'password' => '',
+                        'username' => 'core',
+                        'password' => '222222',
                     ],
                 ],
                 'pool' => [
                     R => [[
-                        'host' => 'localhost',
+                        'host' => 'wdb.io',
                         'port' => 3306,
                     ]],
                     W => [[
-                        'host' => 'localhost',
+                        'host' => 'wdb.io',
                         'port' => 3306,
                     ]],
                 ],

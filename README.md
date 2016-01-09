@@ -1,6 +1,6 @@
-# air framework
+# <img src="docs/air.svg" alt="air" style="width:32px;height:32px;"/> air framework
 
-一款使用 `C` 语言写成的、现代的、高性能轻量级的`PHP` `web`框架。
+一款使用 `C` 语言写成的、现代的高性能轻量级`PHP` `web`框架。
 
 > ####see [README_en.md](README_en.md) for english introduction.
 
@@ -8,19 +8,19 @@
 
 ### 1. 高性能、轻量级
 
-在所有`PHP``web`框架的对比测试中，**`air framework`** 在并发数(QPS)、CPU及内存占用等多方面评价指标上均以显著的优势领先于其他框架。
+在所有`PHP``web`框架的对比测试中，**`air framework`** 在并发数(RPS)、CPU及内存占用等多方面评价指标上均以显著优势领先于其他框架。
 
-### 2. 高效的`MVC`机制
+### 2. 先进的框架理念
 
-简单可扩展的`MVC`机制，高效灵活的路由功能，帮助开发者快速高效搭建从个人到企业、从简单到复杂，各种类型、各种规模的`web`站点。
+高效灵活的路由功能，简单可扩展的`MVC`机制，规范优雅的自动加载。
 
-传统框架需要几到几十毫秒才能完成的核心模块加载流程，使用本框架仅需微秒级别时间即可极速完成。
+帮助开发者快速高效搭建从个人到企业、从简单到复杂，各种类型、各种规模的`web`站点。
 
 ### 3. 强大的异步并发能力
 
 在实际的`web`应用中，整个请求流程中业务逻辑（主要是同步阻塞的数据库查询和远程API访问）耗时往往远远大于核心模块的加载耗时。
 
-**`air framework`** 从设计之初即着眼于解决实际困难，独创 `request/waiter/service` 异步并发请求模式，同时提供强大的数据库异步并发查询和远程HTTP异步并发请求两大特性，帮助开发者在这两大主要耗时场景中轻松获得数倍乃至数十倍的速度提升，从而使整个应用的运行性能得到真正的质的提升。
+**`air framework`** 从设计之初即立足于解决实际问题，独创 `request/waiter/service` 异步并发请求模式，同时提供强大的数据库异步并发查询和远程HTTP异步并发请求两大特性，帮助开发者在这两大主要耗时场景中轻松获得数倍乃至数十倍的速度提升，从而使整个应用的运行性能得到真正的质的提升。
 
 #### 3.1 异步并发的数据库查询
 
@@ -74,13 +74,20 @@ echo $c1->data();
 var_dump($c2->data());
 ```
 
-### 4. 先进的代码组织理念
+## 文档及实例
 
-默认基于命名空间的自动加载机制，让应用几乎不需要任何显式的配置，即可实现全部代码的自动加载。
+* **[快速开始](docs/hello-world/README.md)**
+* **实例**
+	* [hello-world](docs/hello-world) 入门演示实例
+	* [docker-ui](https://github.com/wukezhan/docker-ui) 一个简单的docker管理界面
+	* [tests](tests) 测试实例
+* **文档**
+	* [接口文档](docs/api.md)
+	* [air-book](http://air.wukezhan.com) [预备中]
+	* [代码补全 & 函数原型](docs/helper/air.php)
 
-而通过对路由、配置的灵活设置，可以实现几乎任意复杂度的`web`应用的代码组织和构建。
 
-## 安装
+## 安装及使用
 
 ### 环境要求
 
@@ -95,7 +102,27 @@ var_dump($c2->data());
 ./configure --prefix=/path/to/php --enable-mysqlnd --with-mysqli --with-curl
 ```
 
-### 安装步骤
+### 安装使用
+
+- 一键体验
+
+对于 docker 用户，可以通过以下命令一键体验 ** `air framework` **
+
+```sh
+# php5
+docker run -it -p 2355:80 --name=airstack5 wukezhan/airstack5
+# visit
+curl http://localhost:2355/
+# or
+curl http://localhost:2355/hello/world
+
+#php7
+docker run -it -p 2357:80 --name=airstack7 wukezhan/airstack7
+# visit
+curl http://localhost:2357/
+# or
+curl http://localhost:2357/hello/world
+```
 
 - 从源码安装
 
@@ -126,18 +153,6 @@ extension = air.so
 ```
 
 ## 更多
-
-* **[快速开始](hello-world/README.md)**
-* **实例**
-	* [hello-world](hello-world) 入门演示实例
-	* [docker-ui](https://github.com/wukezhan/docker-ui) 一个简单的docker管理界面
-	* [tests](tests) 测试实例
-* **文档**
-	* [接口文档](helper/doc.md)
-	* [air-book](http://air.wukezhan.com) [预备中]
-	* [代码补全 & 函数原型](helper/air.php)
-
-## 关于
 
 对本项目感兴趣的朋友，可以关注微博 [weibo.com/wukezhan](http://weibo.com/wukezhan) 或通过以下方式与我进行联系和交流：
 

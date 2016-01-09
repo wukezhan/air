@@ -74,7 +74,38 @@ var_dump($c2->data());
 
 the default class autoloading is namespace based, which can help developer load almost all the classes without having to write a long list of needed includes. 
 
-## Installation
+## Documents and examples
+
+* **[quick start](docs/hello-world/README_en.md)**
+* **examples**
+	* [hello-world](docs/hello-world) hello-world app
+	* [docker-ui](https://github.com/wukezhan/docker-ui) a simple web interface for docker, powered by air framework
+	* [tests](tests) test cases
+* **documents**
+	* [manual](docs/api.md)
+	* [air-book](http://air.wukezhan.com) [coming soon]
+	* [code assistant & function prototype](docs/helper/air.php)
+
+
+## Installation and usage
+
+### Run in docker
+
+```sh
+# php5
+docker run -it -p 2355:80 --name=airstack5 wukezhan/airstack5
+# visit
+curl http://localhost:2355/
+# or
+curl http://localhost:2355/hello/world
+
+#php7
+docker run -it -p 2357:80 --name=airstack7 wukezhan/airstack7
+# visit
+curl http://localhost:2357/
+# or
+curl http://localhost:2357/hello/world
+```
 
 ### Requirements
 
@@ -117,18 +148,6 @@ extension = air.so
 ```
 
 ## More
-
-* **[quick start](hello-world/README_en.md)**
-* **examples**
-	* [hello-world](hello-world) hello-world app
-	* [docker-ui](https://github.com/wukezhan/docker-ui) a simple web interface for docker, powered by air framework
-	* [tests](tests) test cases
-* **documents**
-	* [manual](helper/doc.md)
-	* [air-book](http://air.wukezhan.com) [coming soon]
-	* [code assistants & function prototype](helper/air.php)
-
-## About
 
 follow me for more information:
 

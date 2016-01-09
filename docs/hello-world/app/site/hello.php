@@ -16,4 +16,9 @@ class hello extends controller
         $this->assign('hello', htmlspecialchars($this->_route['a']));
         $this->render_view();
     }
+
+    public function action_info()
+    {
+        phpinfo();
+    }
 }
