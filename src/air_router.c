@@ -238,10 +238,9 @@ PHP_METHOD(air_router, set_rules) {
 	AIR_INIT_THIS;
 
 	zval *rules;
-	if (zend_parse_parameters(ZEND_NUM_ARGS(), "a", &rules) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS(), "a/", &rules) == FAILURE) {
 		php_error(E_ERROR, "invalid air\\router::set_rules($rules) param, it must be an array");
 	}else{
-		zend_hash_internal_pointer_reset(Z_ARRVAL_P(rules));
 		zend_update_property(air_router_ce, self, ZEND_STRL("_original_rules"), rules);
 	}
 
