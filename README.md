@@ -106,7 +106,7 @@ var_dump($c2->data());
 
 - 一键体验
 
-对于 docker 用户，可以通过以下命令一键体验 ** `air framework` **
+对于 docker 用户，可以通过以下命令一键体验 **`air framework`**
 
 ```sh
 # php5
