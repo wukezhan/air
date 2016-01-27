@@ -204,7 +204,7 @@ PHP_METHOD(air_config, set) {
 		air_config_init_default();
 		origin_data = zend_read_static_property(air_config_ce, ZEND_STRL("_data"), 1);
 	}
-	php_array_merge(Z_ARRVAL_P(origin_data), Z_ARRVAL_P(data));
+	php_array_merge_recursive(Z_ARRVAL_P(origin_data), Z_ARRVAL_P(data));
 }
 /* }}} */
 
