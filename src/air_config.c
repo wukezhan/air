@@ -184,7 +184,7 @@ PHP_METHOD(air_config, set) {
 		return ;
 	}
 	zval *origin_data = air_config_get_data(TSRMLS_CC);
-	php_array_merge(Z_ARRVAL_P(origin_data), Z_ARRVAL_P(data), 1 TSRMLS_CC);
+	php_array_replace_recursive(Z_ARRVAL_P(origin_data), Z_ARRVAL_P(data) TSRMLS_CC);
 }
 /* }}} */
 
