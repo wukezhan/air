@@ -28,11 +28,11 @@ air\config::set([
                 ],
                 'pool' => [
                     R => [[
-                        'host' => 'localhost',
+                        'host' => 'wdb.io',
                         'port' => 3306,
                     ]],
                     W => [[
-                        'host' => 'localhost',
+                        'host' => 'wdb.io',
                         'port' => 3306,
                     ]],
                 ],
@@ -77,7 +77,12 @@ EOT;
     air\mysql\keeper::release($mysqli, DB_CONF, W);
 }
 
-
-
+try{
+    $mysqli = air\mysql\keeper::factory(DB_CONF, R);
+    air\mysql\keeper::release($mysqli, DB_CONF, R);
+}catch(Exception $e){
+    echo "skip";
+    exit;
+}
 
 

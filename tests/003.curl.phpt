@@ -89,7 +89,7 @@ HTTP/1.1 200 OK
 Host: 127.0.0.1:12345
 Connection: close
 X-Powered-By: PHP/%s
-Content-type: %s
+Content-type: text/html
 
 array(1) {
   ["hello"]=>
@@ -99,7 +99,7 @@ HTTP/1.1 200 OK
 Host: 127.0.0.1:12345
 Connection: close
 X-Powered-By: PHP/%s
-Content-type: %s
+Content-type: text/html
 
 array(1) {
   ["hello"]=>
@@ -109,7 +109,7 @@ HTTP/1.1 200 OK
 Host: 127.0.0.1:12345
 Connection: close
 X-Powered-By: PHP/%s
-Content-type: %s
+Content-type: text/html
 
 array(1) {
   ["hello"]=>
@@ -119,7 +119,7 @@ HTTP/1.1 200 OK
 Host: 127.0.0.1:12345
 Connection: close
 X-Powered-By: PHP/%s
-Content-type: %s
+Content-type: text/html
 
 array(1) {
   ["hello"]=>
@@ -129,13 +129,13 @@ HTTP/1.1 200 OK
 Host: 127.0.0.1:12345
 Connection: close
 X-Powered-By: PHP/%s
-Content-type: %s
+Content-type: text/html
 
 HTTP/1.1 200 OK
 Host: 127.0.0.1:12345
 Connection: close
 X-Powered-By: PHP/%s
-Content-type: %s
+Content-type: text/html
 
 array(1) {
   ["hello"]=>
@@ -149,7 +149,7 @@ HTTP/1.1 200 OK
 Host: 127.0.0.1:12345
 Connection: close
 X-Powered-By: PHP/%s
-Content-type: %s
+Content-type: text/html
 
 array(1) {
   ["hello"]=>
@@ -159,7 +159,7 @@ HTTP/1.1 200 OK
 Host: 127.0.0.1:12345
 Connection: close
 X-Powered-By: PHP/%s
-Content-type: %s
+Content-type: text/html
 
 array(1) {
   ["hello"]=>

@@ -2,6 +2,7 @@
 Check for air\mysql
 --SKIPIF--
 <?php if (!extension_loaded("air")) print "skip"; ?>
+<?php include 'mysqli.inc.php'; ?>
 --FILE--
 <?php
 
