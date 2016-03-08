@@ -1,4 +1,4 @@
-# <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAyNTYgMjU2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSI+PHRpdGxlPmFpciBmcmFtZXdvcms8L3RpdGxlPjxkZXNjPjwhW0NEQVRBW3RoZSBsb2dvIG9mIGFpciBmcmFtZXdvcmssIGRlc2lnbmVkIGJ5IHd1a2V6aGFuPHd1a2V6aGFuQGdtYWlsLmNvbT5dXT48L2Rlc2M+PHN0eWxlPjwhW0NEQVRBW3BhdGgubG9vcHtzdHJva2UtZGFzaGFycmF5OjEwMDA7c3Ryb2tlLWRhc2hvZmZzZXQ6MjAwMDthbmltYXRpb246bG9vcCAycyBsaW5lYXIgaW5maW5pdGU7c3Ryb2tlLXdpZHRoOjRweDtzdHJva2UtbGluZWNhcDogcm91bmQ7fUBrZXlmcmFtZXMgbG9vcHtmcm9te3N0cm9rZTojZmZmO310b3tzdHJva2U6I2ZmZjtzdHJva2UtZGFzaG9mZnNldDowO319XV0+PC9zdHlsZT48cGF0aCBkPSJNMjI0IDIyNCBMMjI0IDEyOCBBOTYgOTYsIDAsIDEsIDAsIDEyOCAyMjQgTDIyNCAyMjQgWiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDBhMWYxIiBzdHJva2Utd2lkdGg9IjY0IiBzdHJva2UtbGluZWNhcD0icm91bmQiPjwvcGF0aD48cGF0aCBjbGFzcz0ibG9vcCIgZD0iTTIyNCAyMjQgTDIyNCAxMjggQTk2IDk2LCAwLCAxLCAwLCAxMjggMjI0IEwyMjQgMjI0IFoiIGZpbGw9Im5vbmUiLz48L3N2Zz4=" style="width: 32px;height: 32px;"> air framework
+# air framework
 
 一款使用 `C` 语言写成的、现代的高性能轻量级`PHP` `web`框架。
 
@@ -154,7 +154,7 @@ extension = air.so
 
 ## 更多
 
-对本项目感兴趣的朋友，可以关注微博 [weibo.com/wukezhan](http://weibo.com/wukezhan) 或通过以下方式与我进行联系和交流：
+对本项目感兴趣的朋友，可以关注微博 [weibo.com/wukezhan](http://weibo.com/wukezhan) 或通过以下方式进行交流：
 
 * QQ群: 141971669
 * twitter: [wukezhan](https://twitter.com/wukezhan)
