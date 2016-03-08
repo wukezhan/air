@@ -448,6 +448,8 @@ zend_function_entry air_curl_methods[] = {
 	PHP_ME(air_curl, async, NULL,  ZEND_ACC_PUBLIC)
 	PHP_ME(air_curl, exec, NULL,  ZEND_ACC_PUBLIC)
 	PHP_ME(air_curl, data, NULL,  ZEND_ACC_PUBLIC)
+	PHP_ME(air_curl, errno, NULL,  ZEND_ACC_PUBLIC)
+	PHP_ME(air_curl, error, NULL,  ZEND_ACC_PUBLIC)
 	PHP_ME(air_curl, trigger, air_curl_trigger_arginfo, ZEND_ACC_PUBLIC)
 	PHP_ME(air_curl, on_success, air_curl_on_arginfo, ZEND_ACC_PUBLIC)
 	PHP_ME(air_curl, on_error, air_curl_on_arginfo, ZEND_ACC_PUBLIC)
