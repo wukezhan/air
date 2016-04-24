@@ -7,71 +7,62 @@
 ## 特性
 
 ### 1. 高性能、轻量级
+  - 在各PHP框架的基准压力测试中，air framework 在并发请求数、CPU及内存资源占用等各方面指标上均以显著优势大幅领先于其他框架
+  - 更针对实际业务中最耗时的IO场景做特别的异步并发优化
 
-在所有`PHP``web`框架的对比测试中，**`air framework`** 在并发数(RPS)、CPU及内存占用等多方面评价指标上均以显著优势领先于其他框架。
+### 2. 独家首创的全局异步并发模式
+  - 基于独创的 RWS 异步并发模式
+  - 多种IO同时并发，全局异步统一调度
+  - 支持以顺序、自然的同步风格书写异步、并发的代码逻辑
+  - 已支持MySQL、curl两大主要IO场景，理论上可支持任意类型IO的并发执行
 
-### 2. 先进的框架理念
+### 3. 极简高效的代码运行组织机制
+  - 设计良好的 MVC 机制，轻松处理前端请求与后端任务
+  - 基于正则的路由机制，高效满足各种刁钻路由需求
+  - 基于命名空间的自动加载，最大化提升类库加载效率
+  - 天然无限制扩展特性，air framework 始终以轻量高效为基本原则，拒绝冗长庞杂和面面俱到，只提供最基本、最核心底层机制，不会预置任何诸如表单验证之类的具体业务功能实现，而是强烈建议、鼓励开发者基于自身特点选用最适合自己的解决方案
 
-高效灵活的路由功能，简单可扩展的`MVC`机制，规范优雅的自动加载。
+### 全局的异步并发模式
 
-帮助开发者快速高效搭建从个人到企业、从简单到复杂，各种类型、各种规模的`web`站点。
+在以下的场景中，每个数据库请求和curl请求都将需要1秒的等待时间，如果完全使用传统同步阻塞方案，完成全部将总共需要6秒的时间。
 
-### 3. 强大的异步并发能力
+使用普通的PHP原生异步解决方案时，MySQL和curl将各需要1秒等待时间，此时完成全部请求将总共需要2秒时间，可3倍的提升响应速度。
 
-在实际的`web`应用中，整个请求流程中业务逻辑（主要是同步阻塞的数据库查询和远程API访问）耗时往往远远大于核心模块的加载耗时。
-
-**`air framework`** 从设计之初即立足于解决实际问题，独创 `request/waiter/service` 异步并发请求模式，同时提供强大的数据库异步并发查询和远程HTTP异步并发请求两大特性，帮助开发者在这两大主要耗时场景中轻松获得数倍乃至数十倍的速度提升，从而使整个应用的运行性能得到真正的质的提升。
-
-#### 3.1 异步并发的数据库查询
+但使用 air framework 的全局异步并发模式，完成全部的6个请求将总共只需要1秒等待时间，轻而易举即可取得6倍的响应性能提升。
 
 ```php
 <?php
 /**
  * air\config::path_get('mysql.config.air');
- * @see https://github.com/wukezhan/air/blob/master/tests/mysqli.inc.php
+ * @see https://github.com/wukezhan/air/blob/master/tests/003.curl.phpt
+ * @see https://github.com/wukezhan/air/blob/master/tests/mysql.inc.php
  * @see https://github.com/wukezhan/air/blob/master/tests/004.mysql.phpt
  */
-$b1 = new air\mysql\builder('mysql.config.air');
-$b2 = new air\mysql\builder('mysql.config.air');
-$b3 = new air\mysql\builder('mysql.config.air');
-$start = time();
-$b1->async()->query('SELECT 1 AS a, sleep(1) AS b');
-$b2->async()->query('SELECT 2 AS a, sleep(1) AS b');
-$b3->async()->query('SELECT 3 AS a, sleep(1) AS b');
-// really start all the async queries
-var_dump($b1->data()); // or var_dump($b[0]); // or foreach($b as $k=>$v){...}
-var_dump($b2->data());
-var_dump($b3->data());
-// will totally use 1 second but not 3 seconds
-echo time()-$start, "\n";
-```
+define('URL', 'http://localhost/test/sleep');
+$time = microtime(1);
+$t = 1;
+// each request below will use 1 second
+$m1 = new mysql(DB_CONF);
+$m1->async()->query("select sleep({$t}) as a");
+$m2 = new mysql(DB_CONF);
+$m2->async()->query("select sleep({$t}) as b");
+$m3 = new mysql(DB_CONF);
+$m3->async()->query("select sleep({$t}) as b");
+$c1 = new curl();
+$c1->async()->get(URL , ['sleep' => $t]);
+$c2 = new curl();
+$c2->async()->get(URL , ['sleep' => $t]);
+$c3 = new curl();
+$c3->async()->get(URL , ['sleep' => $t]);
 
-#### 3.2 异步并发的远程HTTP请求
-
-```php
-<?php
-/**
- * @see https://github.com/wukezhan/air/blob/master/tests/server.inc.php
- * @see https://github.com/wukezhan/air/blob/master/tests/003.curl.phpt
- */
-function data2arr($ch, $data){
-    return json_decode($data, 1);
-}
-
-$c1 = new air\curl();
-$c1->async();
-$c1->setopt(CURLOPT_RETURNTRANSFER, 1);
-$c1->get(local_server::$host_port . '/get.php?hello=world-1');
-
-$c2 = new air\curl();
-$c2->async()
-    ->setopt(CURLOPT_RETURNTRANSFER, 1)
-    ->get(local_server::$host_port . '/json.php?hello=world-2')
-    ->on_success('data2arr')
-;
-
-echo $c1->data();
+var_dump($c3->data());
+var_dump($c1->data());
 var_dump($c2->data());
+var_dump($m1->data());
+var_dump($m2->data());
+var_dump($m3->data());
+echo "time used: ", microtime(1)-$time,"s\n";
+// this will totally use 1 second but not 6 seconds
 ```
 
 ## 文档及实例

@@ -28,11 +28,11 @@ air\config::set([
                 ],
                 'pool' => [
                     R => [[
-                        'host' => 'wdb.io',
+                        'host' => 'localhost',
                         'port' => 3306,
                     ]],
                     W => [[
-                        'host' => 'wdb.io',
+                        'host' => 'localhost',
                         'port' => 3306,
                     ]],
                 ],
@@ -43,7 +43,7 @@ air\config::set([
 
 function create_database(){
     $db = DB_NAME;
-    $mysqli = air\mysql\keeper::factory(DB_CONF, W);
+    $mysqli = air\mysql\keeper::simplex(DB_CONF, W);
     $sql = "DROP DATABASE IF EXISTS `{$db}`";
     $mysqli->query($sql);
     $sql = "CREATE DATABASE `{$db}` DEFAULT CHARACTER SET `utf8`";
@@ -51,13 +51,12 @@ function create_database(){
     if($mysqli->errno){
          exit("create database {$db} error: ".$mysqli->error."\n");
     }
-    air\mysql\keeper::release($mysqli, DB_CONF, W);
 }
 
 function create_table(){
     $db = DB_NAME;
     $table = TABLE_NAME;
-    $mysqli = air\mysql\keeper::factory(DB_CONF, W);
+    $mysqli = air\mysql\keeper::simplex(DB_CONF, W);
     $sql = "DROP TABLE IF EXISTS `{$table}`";
     $mysqli->query($sql);
     $sql = <<<EOT
@@ -74,12 +73,10 @@ EOT;
     if($mysqli->errno){
         exit("create table {$table} error: ".$mysqli->error."\n");
     }
-    air\mysql\keeper::release($mysqli, DB_CONF, W);
 }
 
 try{
-    $mysqli = air\mysql\keeper::factory(DB_CONF, R);
-    air\mysql\keeper::release($mysqli, DB_CONF, R);
+    $mysqli = air\mysql\keeper::simplex(DB_CONF, R);
 }catch(Exception $e){
     echo "skip";
     exit;
