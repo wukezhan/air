@@ -2,11 +2,11 @@
 Check for air\mysql
 --SKIPIF--
 <?php if (!extension_loaded("air")) print "skip"; ?>
-<?php include 'mysqli.inc.php'; ?>
+<?php include 'mysql.inc.php'; ?>
 --FILE--
 <?php
 
-include 'mysqli.inc.php';
+include 'mysql.inc.php';
 
 class db_air extends air\mysql\table
 {
@@ -81,13 +81,12 @@ $test->add_rows();
 $test->set_rows();
 $test->get_rows();
 
-$b = new air\mysql\builder(DB_CONF);
+$b = new air\mysql(DB_CONF);
 $b->table('air.test')->async()->get('*')->where('id>:id', ['id'=>9]);
 var_dump($b->data());
 
 $test->del_rows();
 echo "all ok!\n";
-
 
 ?>
 

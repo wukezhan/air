@@ -37,9 +37,34 @@
 
 zend_class_entry *air_curl_waiter_ce;
 
-void air_curl_waiter_build_multi_curl(zval *self, zval *map){
-	zval *mh = zend_read_property(air_curl_waiter_ce, self, ZEND_STRL("_mh"), 1, NULL);
+/* {{{ ARG_INFO */
+/*
+ZEND_BEGIN_ARG_INFO_EX(air_curl_waiter_construct_arginfo, 0, 0, 1)
+	ZEND_ARG_INFO(0, config)
+ZEND_END_ARG_INFO()
+*/
+/* }}} */
+
+/* {{{ PHP METHODS */
+
+PHP_METHOD(air_curl_waiter, step_0) {
+	AIR_INIT_THIS;
+	zval *context = zend_read_property(air_curl_waiter_ce, self, ZEND_STRL("_context"), 1, NULL);
 	zval *services = zend_read_property(air_curl_waiter_ce, self, ZEND_STRL("_services"), 1, NULL);
+	if(!zend_hash_num_elements(Z_ARRVAL_P(services))){
+		add_assoc_long(context, "step", -1);
+		return ;
+	}
+	zval *mh = zend_read_property(air_curl_waiter_ce, self, ZEND_STRL("_mh"), 1, NULL);
+	if(!mh || Z_TYPE_P(mh) == IS_NULL){
+		zval _mh;
+		air_call_func("curl_multi_init", 0, NULL, &_mh);
+		zend_update_property(air_curl_waiter_ce, self, ZEND_STRL("_mh"), &_mh);
+		zval_ptr_dtor(&_mh);
+		mh = zend_read_property(air_curl_waiter_ce, self, ZEND_STRL("_mh"), 1, NULL);
+	}
+	zval map;
+	array_init(&map);
 	zval *service;
 	ulong idx;
 	zend_string *key;
@@ -50,23 +75,23 @@ void air_curl_waiter_build_multi_curl(zval *self, zval *map){
 		zval *service_id = zend_read_property(service_ce, service, ZEND_STRL("_id"), 1, NULL);
 		Z_TRY_ADDREF_P(service_id);
 		add_next_index_zval(&arr, service_id);
-		zval *curl = zend_read_property(service_ce, service, ZEND_STRL("request"), 1, NULL);
-		air_curl_set_opt_array(curl);
+		zval *curl = zend_read_property(service_ce, service, ZEND_STRL("_request"), 1, NULL);
+		air_call_object_method(curl, Z_OBJCE_P(curl), "init", NULL, 0, NULL);
 		zval *ch = zend_read_property(Z_OBJCE_P(curl), curl, ZEND_STRL("_ch"), 1, NULL);
 		Z_TRY_ADDREF_P(ch);
 		add_next_index_zval(&arr, ch);
-		add_next_index_zval(map, &arr);
+		add_next_index_zval(&map, &arr);
 		zval am_params[2] = {*mh, *ch};
 		air_call_func("curl_multi_add_handle", 2, am_params, NULL);
 	}ZEND_HASH_FOREACH_END();
+	add_assoc_zval(context, "map", &map);
+	add_assoc_long(context, "step", 1);
 }
 
-void air_curl_waiter_select(zval *self, zval *map){
+PHP_METHOD(air_curl_waiter, step_1) {
+	AIR_INIT_THIS;
+	zval *context = zend_read_property(air_curl_waiter_ce, self, ZEND_STRL("_context"), 1, NULL);
 	zval *mh = zend_read_property(air_curl_waiter_ce, self, ZEND_STRL("_mh"), 1, NULL);
-
-	zval sleep_us;
-	ZVAL_LONG(&sleep_us, 20);
-	zval usleep_params[1] = { sleep_us };
 
 	zval active;
 	ZVAL_LONG(&active, 0);
@@ -75,20 +100,22 @@ void air_curl_waiter_select(zval *self, zval *map){
 
 	zval *active_value = NULL;
 	zval mrc;
-	do{
-		air_call_func("curl_multi_exec", 2, mh_params, &mrc);
-		zval sel_ret;
-		air_call_func("curl_multi_select", 1, mh_params, &sel_ret);
-		if(Z_LVAL(sel_ret) == -1){
-			air_call_func("usleep", 1, usleep_params, NULL);
-		}
-		zval_ptr_dtor(&sel_ret);
-		active_value = Z_REFVAL(active);
-	}while(Z_LVAL(mrc) == CURLM_CALL_MULTI_PERFORM || (Z_LVAL_P(active_value) && Z_LVAL(mrc)==CURLM_OK));
+	air_call_func("curl_multi_exec", 2, mh_params, &mrc);
+	active_value = Z_REFVAL(active);
+	if(!(Z_LVAL(mrc) == CURLM_CALL_MULTI_PERFORM || (Z_LVAL_P(active_value) && Z_LVAL(mrc)==CURLM_OK))){
+		add_assoc_long(context, "step", 2);
+	}
 	ZVAL_UNREF(&active);
 	zval_ptr_dtor(&active);
 	zval_ptr_dtor(&mrc);
-	zval_ptr_dtor(&sleep_us);
+}
+
+PHP_METHOD(air_curl_waiter, step_2) {
+	AIR_INIT_THIS;
+	zval *context = zend_read_property(air_curl_waiter_ce, self, ZEND_STRL("_context"), 1, NULL);
+	zval *mh = zend_read_property(air_curl_waiter_ce, self, ZEND_STRL("_mh"), 1, NULL);
+	zval *step = zend_hash_str_find(Z_ARRVAL_P(context), ZEND_STRL("step"));
+	zval *map = zend_hash_str_find(Z_ARRVAL_P(context), ZEND_STRL("map"));
 
 	zval *services = zend_read_property(air_curl_waiter_ce, self, ZEND_STRL("_services"), 1, NULL);
 	zval *responses = zend_read_property(air_curl_waiter_ce, self, ZEND_STRL("_responses"), 1, NULL);
@@ -99,7 +126,7 @@ void air_curl_waiter_select(zval *self, zval *map){
 		zval *service_id = zend_hash_index_find(Z_ARRVAL_P(arr), 0);
 		zval *ch = zend_hash_index_find(Z_ARRVAL_P(arr), 1);
 		zval *service = zend_hash_index_find(Z_ARRVAL_P(services), Z_LVAL_P(service_id));
-		zval *curl = zend_read_property(Z_OBJCE_P(service), service, ZEND_STRL("request"), 1, NULL);
+		zval *curl = zend_read_property(Z_OBJCE_P(service), service, ZEND_STRL("_request"), 1, NULL);
 
 		zval event_params;
 		array_init(&event_params);
@@ -135,39 +162,13 @@ void air_curl_waiter_select(zval *self, zval *map){
 		air_call_func("curl_multi_remove_handle", 2, rm_params, NULL);
 		zend_hash_index_del(Z_ARRVAL_P(services), Z_LVAL_P(service_id));
 	}ZEND_HASH_FOREACH_END();
-}
-
-/* {{{ ARG_INFO */
-/*
-ZEND_BEGIN_ARG_INFO_EX(air_curl_waiter_construct_arginfo, 0, 0, 1)
-	ZEND_ARG_INFO(0, config)
-ZEND_END_ARG_INFO()
-*/
-/* }}} */
-
-/* {{{ PHP METHODS */
-
-PHP_METHOD(air_curl_waiter, _response) {
-	AIR_INIT_THIS;
-	zval *mh = zend_read_property(air_curl_waiter_ce, self, ZEND_STRL("_mh"), 1, NULL);
-	if(!mh || Z_TYPE_P(mh) == IS_NULL){
-		zval _mh;
-		air_call_func("curl_multi_init", 0, NULL, &_mh);
-		zend_update_property(air_curl_waiter_ce, self, ZEND_STRL("_mh"), &_mh);
-		zval_ptr_dtor(&_mh);
-		mh = zend_read_property(air_curl_waiter_ce, self, ZEND_STRL("_mh"), 1, NULL);
-	}
-	zval map;
-	array_init(&map);
-	air_curl_waiter_build_multi_curl(self, &map);
-	air_curl_waiter_select(self, &map);
-	zval_ptr_dtor(&map);
+	add_assoc_long(context, "step", -1);
 }
 
 PHP_METHOD(air_curl_waiter, __destruct) {
 	AIR_INIT_THIS;
 	zval *mh = zend_read_property(air_curl_waiter_ce, self, ZEND_STRL("_mh"), 1, NULL);
-	if(mh){
+	if(!AIR_ZVAL_IS_NULL(mh)){
 		zval close_params[1] = {*mh};
 		air_call_func("curl_multi_close", 1, close_params, NULL);
 	}
@@ -176,7 +177,9 @@ PHP_METHOD(air_curl_waiter, __destruct) {
 
 /* {{{ air_curl_waiter_methods */
 zend_function_entry air_curl_waiter_methods[] = {
-	PHP_ME(air_curl_waiter, _response, NULL,  ZEND_ACC_PUBLIC)
+	PHP_ME(air_curl_waiter, step_0, NULL,  ZEND_ACC_PUBLIC)
+	PHP_ME(air_curl_waiter, step_1, NULL,  ZEND_ACC_PUBLIC)
+	PHP_ME(air_curl_waiter, step_2, NULL,  ZEND_ACC_PUBLIC)
 	PHP_ME(air_curl_waiter, __destruct, NULL,  ZEND_ACC_PUBLIC | ZEND_ACC_DTOR)
 	{NULL, NULL, NULL}
 };

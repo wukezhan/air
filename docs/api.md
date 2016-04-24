@@ -117,7 +117,7 @@ public air\controller::assign( string|array $o1 [, mixed $o2 = NULL ] ) : $this
 public air\controller::set_view( $view_path ) : $this
 ```
 ##### parameters
-* **$view_path** 
+* **$view_path**
 
 ##### return
 * **$this**
@@ -324,7 +324,7 @@ public air\curl::offsetExists( $key )
 public air\curl::offsetGet( $key ) : bool
 ```
 ##### parameters
-* **$key** 
+* **$key**
 
 ##### return
 * **bool**
@@ -349,7 +349,7 @@ public air\curl::offsetSet( $key, $value )
 public air\curl::offsetUnset( $key )
 ```
 ##### parameters
-* **$key** 
+* **$key**
 
 ##### return
 * none
@@ -772,7 +772,7 @@ public air\view::assign( string|int $key, mixed $value ) : $this
 public air\view::render( $view_path [, bool $return = false ] ) : string
 ```
 ##### parameters
-* **$view_path** 
+* **$view_path**
 * **$return**  `bool`
 
 ##### return
@@ -786,7 +786,7 @@ public air\view::render( $view_path [, bool $return = false ] ) : string
 public air\view::set_config( $config )
 ```
 ##### parameters
-* **$config** 
+* **$config**
 
 ##### return
 * none
@@ -802,7 +802,7 @@ public air\async\service::__construct( waiter $waiter, $request )
 ```
 ##### parameters
 * **$waiter**  `waiter`
-* **$request** 
+* **$request**
 
 ##### return
 * none
@@ -846,7 +846,7 @@ public air\async\waiter::__construct( void )
 public air\async\waiter::serve( $request )
 ```
 ##### parameters
-* **$request** 
+* **$request**
 
 ##### return
 
@@ -872,7 +872,7 @@ protected air\async\waiter::_response( void )
 public air\async\waiter::response( $service_id )
 ```
 ##### parameters
-* **$service_id** 
+* **$service_id**
 
 ##### return
 
@@ -928,7 +928,7 @@ public air\async\waiter::__construct( void )
 public air\async\waiter::serve( $request )
 ```
 ##### parameters
-* **$request** 
+* **$request**
 
 ##### return
 
@@ -941,7 +941,7 @@ public air\async\waiter::serve( $request )
 public air\async\waiter::response( $service_id )
 ```
 ##### parameters
-* **$service_id** 
+* **$service_id**
 
 ##### return
 
@@ -1113,7 +1113,7 @@ public air\async\waiter::__construct( void )
 public air\async\waiter::serve( $request )
 ```
 ##### parameters
-* **$request** 
+* **$request**
 
 ##### return
 
@@ -1126,7 +1126,7 @@ public air\async\waiter::serve( $request )
 public air\async\waiter::response( $service_id )
 ```
 ##### parameters
-* **$service_id** 
+* **$service_id**
 
 ##### return
 
@@ -1134,11 +1134,11 @@ public air\async\waiter::response( $service_id )
 
 
 
-## air\mysql\builder
-#### air\mysql\builder::__construct
+## air\mysql
+#### air\mysql::__construct
 ---
 ```php
-public air\mysql\builder::__construct( $config [, $table = NULL ] )
+public air\mysql::__construct( $config [, $table = NULL ] )
 ```
 ##### parameters
 * none
@@ -1147,10 +1147,10 @@ public air\mysql\builder::__construct( $config [, $table = NULL ] )
 * none
 
 
-#### air\mysql\builder::config
+#### air\mysql::config
 ---
 ```php
-public air\mysql\builder::config( $config )
+public air\mysql::config( $config )
 ```
 ##### parameters
 * none
@@ -1159,10 +1159,10 @@ public air\mysql\builder::config( $config )
 * none
 
 
-#### air\mysql\builder::offsetExists
+#### air\mysql::offsetExists
 ---
 ```php
-public air\mysql\builder::offsetExists( $key )
+public air\mysql::offsetExists( $key )
 ```
 ##### parameters
 * none
@@ -1171,10 +1171,10 @@ public air\mysql\builder::offsetExists( $key )
 * none
 
 
-#### air\mysql\builder::offsetGet
+#### air\mysql::offsetGet
 ---
 ```php
-public air\mysql\builder::offsetGet( $key )
+public air\mysql::offsetGet( $key )
 ```
 ##### parameters
 * none
@@ -1183,10 +1183,10 @@ public air\mysql\builder::offsetGet( $key )
 * none
 
 
-#### air\mysql\builder::offsetSet
+#### air\mysql::offsetSet
 ---
 ```php
-public air\mysql\builder::offsetSet( $key, $value )
+public air\mysql::offsetSet( $key, $value )
 ```
 ##### parameters
 * none
@@ -1195,10 +1195,10 @@ public air\mysql\builder::offsetSet( $key, $value )
 * none
 
 
-#### air\mysql\builder::offsetUnset
+#### air\mysql::offsetUnset
 ---
 ```php
-public air\mysql\builder::offsetUnset( $key )
+public air\mysql::offsetUnset( $key )
 ```
 ##### parameters
 * none
@@ -1207,10 +1207,10 @@ public air\mysql\builder::offsetUnset( $key )
 * none
 
 
-#### air\mysql\builder::count
+#### air\mysql::count
 ---
 ```php
-public air\mysql\builder::count( void )
+public air\mysql::count( void )
 ```
 ##### parameters
 * none
@@ -1219,10 +1219,10 @@ public air\mysql\builder::count( void )
 * none
 
 
-#### air\mysql\builder::rewind
+#### air\mysql::rewind
 ---
 ```php
-public air\mysql\builder::rewind( void )
+public air\mysql::rewind( void )
 ```
 ##### parameters
 * none
@@ -1231,10 +1231,10 @@ public air\mysql\builder::rewind( void )
 * none
 
 
-#### air\mysql\builder::current
+#### air\mysql::current
 ---
 ```php
-public air\mysql\builder::current( void )
+public air\mysql::current( void )
 ```
 ##### parameters
 * none
@@ -1243,10 +1243,10 @@ public air\mysql\builder::current( void )
 * none
 
 
-#### air\mysql\builder::key
+#### air\mysql::key
 ---
 ```php
-public air\mysql\builder::key( void )
+public air\mysql::key( void )
 ```
 ##### parameters
 * none
@@ -1255,10 +1255,10 @@ public air\mysql\builder::key( void )
 * none
 
 
-#### air\mysql\builder::next
+#### air\mysql::next
 ---
 ```php
-public air\mysql\builder::next( void )
+public air\mysql::next( void )
 ```
 ##### parameters
 * none
@@ -1267,10 +1267,10 @@ public air\mysql\builder::next( void )
 * none
 
 
-#### air\mysql\builder::valid
+#### air\mysql::valid
 ---
 ```php
-public air\mysql\builder::valid( void )
+public air\mysql::valid( void )
 ```
 ##### parameters
 * none
@@ -1279,10 +1279,10 @@ public air\mysql\builder::valid( void )
 * none
 
 
-#### air\mysql\builder::serialize
+#### air\mysql::serialize
 ---
 ```php
-public air\mysql\builder::serialize( void )
+public air\mysql::serialize( void )
 ```
 ##### parameters
 * none
@@ -1291,10 +1291,10 @@ public air\mysql\builder::serialize( void )
 * none
 
 
-#### air\mysql\builder::unserialize
+#### air\mysql::unserialize
 ---
 ```php
-public air\mysql\builder::unserialize( $data )
+public air\mysql::unserialize( $data )
 ```
 ##### parameters
 * none
@@ -1303,10 +1303,10 @@ public air\mysql\builder::unserialize( $data )
 * none
 
 
-#### air\mysql\builder::data
+#### air\mysql::data
 ---
 ```php
-public air\mysql\builder::data( void ) : array
+public air\mysql::data( void ) : array
 ```
 ##### parameters
 * none
@@ -1315,10 +1315,10 @@ public air\mysql\builder::data( void ) : array
 * **array**
 
 
-#### air\mysql\builder::affected_rows
+#### air\mysql::affected_rows
 ---
 ```php
-public air\mysql\builder::affected_rows( void ) : int
+public air\mysql::affected_rows( void ) : int
 ```
 ##### parameters
 * none
@@ -1327,10 +1327,10 @@ public air\mysql\builder::affected_rows( void ) : int
 * **int**
 
 
-#### air\mysql\builder::num_rows
+#### air\mysql::num_rows
 ---
 ```php
-public air\mysql\builder::num_rows( void ) : int
+public air\mysql::num_rows( void ) : int
 ```
 ##### parameters
 * none
@@ -1339,10 +1339,10 @@ public air\mysql\builder::num_rows( void ) : int
 * **int**
 
 
-#### air\mysql\builder::insert_id
+#### air\mysql::insert_id
 ---
 ```php
-public air\mysql\builder::insert_id( void ) : int
+public air\mysql::insert_id( void ) : int
 ```
 ##### parameters
 * none
@@ -1351,10 +1351,10 @@ public air\mysql\builder::insert_id( void ) : int
 * **int**
 
 
-#### air\mysql\builder::errno
+#### air\mysql::errno
 ---
 ```php
-public air\mysql\builder::errno( void ) : int
+public air\mysql::errno( void ) : int
 ```
 ##### parameters
 * none
@@ -1363,10 +1363,10 @@ public air\mysql\builder::errno( void ) : int
 * **int**
 
 
-#### air\mysql\builder::error
+#### air\mysql::error
 ---
 ```php
-public air\mysql\builder::error( void ) : string
+public air\mysql::error( void ) : string
 ```
 ##### parameters
 * none
@@ -1375,10 +1375,10 @@ public air\mysql\builder::error( void ) : string
 * **string**
 
 
-#### air\mysql\builder::table
+#### air\mysql::table
 ---
 ```php
-public air\mysql\builder::table( string $table ) : $this
+public air\mysql::table( string $table ) : $this
 ```
 ##### parameters
 * **$table**  `string` the table name
@@ -1387,10 +1387,10 @@ public air\mysql\builder::table( string $table ) : $this
 * **$this**
 
 
-#### air\mysql\builder::mode
+#### air\mysql::mode
 ---
 ```php
-public air\mysql\builder::mode( int $mode ) : $this
+public air\mysql::mode( int $mode ) : $this
 ```
 ##### parameters
 * **$mode**  `int` connect mode, can be \AIR_R or \AIR_W, if not set, it'll be set to \AIR_R for GET and \AIR_W for ADD|SET|DEL automatically
@@ -1399,11 +1399,11 @@ public air\mysql\builder::mode( int $mode ) : $this
 * **$this**
 
 
-#### air\mysql\builder::async
+#### air\mysql::async
 ---
  Set query to the async mode, but it will be force reset to sync mode when update, insert and delete at present
 ```php
-public air\mysql\builder::async( void ) : $this
+public air\mysql::async( void ) : $this
 ```
 ##### parameters
 * none
@@ -1412,10 +1412,10 @@ public air\mysql\builder::async( void ) : $this
 * **$this**
 
 
-#### air\mysql\builder::add
+#### air\mysql::add
 ---
 ```php
-public air\mysql\builder::add( array $data ) : $this
+public air\mysql::add( array $data ) : $this
 ```
 ##### parameters
 * **$data**  `array`
@@ -1424,10 +1424,10 @@ public air\mysql\builder::add( array $data ) : $this
 * **$this**
 
 
-#### air\mysql\builder::set
+#### air\mysql::set
 ---
 ```php
-public air\mysql\builder::set( array $data ) : $this
+public air\mysql::set( array $data ) : $this
 ```
 ##### parameters
 * **$data**  `array`
@@ -1436,10 +1436,10 @@ public air\mysql\builder::set( array $data ) : $this
 * **$this**
 
 
-#### air\mysql\builder::get
+#### air\mysql::get
 ---
 ```php
-public air\mysql\builder::get( string $fields ) : $this
+public air\mysql::get( string $fields ) : $this
 ```
 ##### parameters
 * **$fields**  `string`
@@ -1448,10 +1448,10 @@ public air\mysql\builder::get( string $fields ) : $this
 * **$this**
 
 
-#### air\mysql\builder::del
+#### air\mysql::del
 ---
 ```php
-public air\mysql\builder::del( void ) : $this
+public air\mysql::del( void ) : $this
 ```
 ##### parameters
 * none
@@ -1460,10 +1460,10 @@ public air\mysql\builder::del( void ) : $this
 * **$this**
 
 
-#### air\mysql\builder::where
+#### air\mysql::where
 ---
 ```php
-public air\mysql\builder::where( string $where [, array $params = array () ] ) : $this
+public air\mysql::where( string $where [, array $params = array () ] ) : $this
 ```
 ##### parameters
 * **$where**  `string`
@@ -1473,10 +1473,10 @@ public air\mysql\builder::where( string $where [, array $params = array () ] ) :
 * **$this**
 
 
-#### air\mysql\builder::by_key
+#### air\mysql::by_key
 ---
 ```php
-public air\mysql\builder::by_key( string|int $value [, string $key_name = 'id' ] ) : $this
+public air\mysql::by_key( string|int $value [, string $key_name = 'id' ] ) : $this
 ```
 ##### parameters
 * **$value**  `string|int`
@@ -1486,10 +1486,10 @@ public air\mysql\builder::by_key( string|int $value [, string $key_name = 'id' ]
 * **$this**
 
 
-#### air\mysql\builder::sort
+#### air\mysql::sort
 ---
 ```php
-public air\mysql\builder::sort( array $sort ) : $this
+public air\mysql::sort( array $sort ) : $this
 ```
 ##### parameters
 * **$sort**  `array`
@@ -1498,10 +1498,10 @@ public air\mysql\builder::sort( array $sort ) : $this
 * **$this**
 
 
-#### air\mysql\builder::offset
+#### air\mysql::offset
 ---
 ```php
-public air\mysql\builder::offset( int $offset ) : $this
+public air\mysql::offset( int $offset ) : $this
 ```
 ##### parameters
 * **$offset**  `int`
@@ -1510,10 +1510,10 @@ public air\mysql\builder::offset( int $offset ) : $this
 * **$this**
 
 
-#### air\mysql\builder::size
+#### air\mysql::size
 ---
 ```php
-public air\mysql\builder::size( int $size ) : $this
+public air\mysql::size( int $size ) : $this
 ```
 ##### parameters
 * **$size**  `int`
@@ -1522,10 +1522,10 @@ public air\mysql\builder::size( int $size ) : $this
 * **$this**
 
 
-#### air\mysql\builder::query
+#### air\mysql::query
 ---
 ```php
-public air\mysql\builder::query( string $sql [, array $params = array () ] ) : $this
+public air\mysql::query( string $sql [, array $params = array () ] ) : $this
 ```
 ##### parameters
 * **$sql**  `string`
@@ -1535,10 +1535,10 @@ public air\mysql\builder::query( string $sql [, array $params = array () ] ) : $
 * **$this**
 
 
-#### air\mysql\builder::build
+#### air\mysql::build
 ---
 ```php
-public air\mysql\builder::build( \mysqli $escaper ) : $this
+public air\mysql::build( \mysqli $escaper ) : $this
 ```
 ##### parameters
 * **$escaper**  `\mysqli`
@@ -1547,10 +1547,10 @@ public air\mysql\builder::build( \mysqli $escaper ) : $this
 * **$this**
 
 
-#### air\mysql\builder::trigger
+#### air\mysql::trigger
 ---
 ```php
-public air\mysql\builder::trigger( string $event, array $params ) : array
+public air\mysql::trigger( string $event, array $params ) : array
 ```
 ##### parameters
 * **$event**  `string`
@@ -1560,10 +1560,10 @@ public air\mysql\builder::trigger( string $event, array $params ) : array
 * **array**
 
 
-#### air\mysql\builder::on_success
+#### air\mysql::on_success
 ---
 ```php
-public air\mysql\builder::on_success( $callback )
+public air\mysql::on_success( $callback )
 ```
 ##### parameters
 * none
@@ -1572,10 +1572,10 @@ public air\mysql\builder::on_success( $callback )
 * none
 
 
-#### air\mysql\builder::on_error
+#### air\mysql::on_error
 ---
 ```php
-public air\mysql\builder::on_error( $callback )
+public air\mysql::on_error( $callback )
 ```
 ##### parameters
 * none
@@ -1584,10 +1584,10 @@ public air\mysql\builder::on_error( $callback )
 * none
 
 
-#### air\mysql\builder::on_success_default
+#### air\mysql::on_success_default
 ---
 ```php
-public static air\mysql\builder::on_success_default( $ch, $result )
+public static air\mysql::on_success_default( $ch, $result )
 ```
 ##### parameters
 * none
@@ -1596,10 +1596,10 @@ public static air\mysql\builder::on_success_default( $ch, $result )
 * none
 
 
-#### air\mysql\builder::on_error_default
+#### air\mysql::on_error_default
 ---
 ```php
-public static air\mysql\builder::on_error_default( $ch )
+public static air\mysql::on_error_default( $ch )
 ```
 ##### parameters
 * none
@@ -1608,17 +1608,13 @@ public static air\mysql\builder::on_error_default( $ch )
 * none
 
 
-#### air\mysql\builder::__destruct
+#### air\mysql::__destruct
 ---
 ```php
-public air\mysql\builder::__destruct( void )
+public air\mysql::__destruct( void )
 ```
 ##### parameters
 * none
 
 ##### return
 * none
-
-
-
-

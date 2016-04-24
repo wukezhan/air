@@ -28,8 +28,8 @@
 
 #include "php_air.h"
 
-#include "src/air_curl.h"
 #include "src/air_curl_waiter.h"
+#include "src/air_curl.h"
 
 zend_class_entry *air_curl_ce;
 
@@ -49,6 +49,13 @@ void air_curl_update_result(zval *self, zval *ch, zval *result){
 	zend_update_property_long(air_curl_ce, self, ZEND_STRL("_status"), 1);
 }
 
+void air_curl_init(zval *self){
+	zval ch;
+	air_call_func("curl_init", 0, NULL, &ch);
+	zend_update_property(air_curl_ce, self, ZEND_STRL("_ch"), &ch);
+	zval_ptr_dtor(&ch);
+}
+
 void air_curl_set_opt_array(zval *self){
 	zval *ch = zend_read_property(air_curl_ce, self, ZEND_STRL("_ch"), 1, NULL);
 	zval *opts = zend_read_property(air_curl_ce, self, ZEND_STRL("_opts"), 1, NULL);
@@ -61,8 +68,6 @@ void air_curl_execute(zval *self){
 	if(Z_LVAL_P(status)){
 		return ;
 	}
-	air_curl_set_opt_array(self);
-	zval *ch = zend_read_property(air_curl_ce, self, ZEND_STRL("_ch"), 1, NULL);
 
 	zval *data  = NULL;
 	zval *service = zend_read_property(air_curl_ce, self, ZEND_STRL("_service"), 1, NULL);
@@ -76,9 +81,13 @@ void air_curl_execute(zval *self){
 		if(Z_TYPE(_data) == IS_NULL){
 			ZVAL_BOOL(&_data, 0);
 		}
+		zval *ch = zend_read_property(air_curl_ce, self, ZEND_STRL("_ch"), 1, NULL);
 		air_curl_update_result(self, ch, &_data);
 		zval_ptr_dtor(&_data);
 	}else{
+		air_curl_init(self);
+		air_curl_set_opt_array(self);
+		zval *ch = zend_read_property(air_curl_ce, self, ZEND_STRL("_ch"), 1, NULL);
 		zval params[1] = {*ch};
 		zval result;
 		air_call_func("curl_exec", 1, params, &result);
@@ -147,13 +156,9 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(air_curl, __construct) {
 	AIR_INIT_THIS;
 
-	zval ch;
-	air_call_func("curl_init", 0, NULL, &ch);
-	zend_update_property(air_curl_ce, self, ZEND_STRL("_ch"), &ch);
-	zval_ptr_dtor(&ch);
-
 	zval opts;
 	array_init(&opts);
+	add_assoc_long(&opts, "19913", 1);
 	zend_update_property(air_curl_ce, self, ZEND_STRL("_opts"), &opts);
 	zval_ptr_dtor(&opts);
 
@@ -247,20 +252,14 @@ PHP_METHOD(air_curl, setopt) {
 
 PHP_METHOD(air_curl, async) {
 	AIR_INIT_THIS;
-	zval *waiter = zend_read_static_property(air_curl_ce, ZEND_STRL("_waiter"), 1);
-	if(Z_TYPE_P(waiter) == IS_NULL){
-		zval _waiter;
-		object_init_ex(&_waiter, air_curl_waiter_ce);
-		air_call_object_method(&_waiter, air_curl_waiter_ce, "__construct", NULL, 0, NULL);
-		zend_update_static_property(air_curl_ce, ZEND_STRL("_waiter"), &_waiter);
-		zval_ptr_dtor(&_waiter);
-		waiter = zend_read_static_property(air_curl_ce, ZEND_STRL("_waiter"), 1);
-	}
+	zval waiter;
+	air_call_static_method(air_curl_waiter_ce, "acquire", &waiter, 0, NULL);
 	zval params[1] = { *self };
 	zval service;
-	air_call_object_method(waiter, air_curl_waiter_ce, "serve", &service, 1, params);
+	air_call_object_method(&waiter, air_curl_waiter_ce, "serve", &service, 1, params);
 	zend_update_property(air_curl_ce, self, ZEND_STRL("_service"), &service);
 	zval_ptr_dtor(&service);
+	zval_ptr_dtor(&waiter);
 	AIR_RET_THIS;
 }
 
@@ -320,6 +319,13 @@ PHP_METHOD(air_curl, post) {
 	}
 	AIR_RET_THIS;
 }
+
+PHP_METHOD(air_curl, init) {
+	AIR_INIT_THIS;
+	air_curl_init(self);
+	air_curl_set_opt_array(self);
+}
+
 PHP_METHOD(air_curl, exec) {
 	AIR_INIT_THIS;
 	air_curl_execute(self);
@@ -424,6 +430,7 @@ zend_function_entry air_curl_methods[] = {
 	PHP_ME(air_curl, get, air_curl_url_data_arginfo,  ZEND_ACC_PUBLIC)
 	PHP_ME(air_curl, post, air_curl_url_data_arginfo,  ZEND_ACC_PUBLIC)
 	PHP_ME(air_curl, async, NULL,  ZEND_ACC_PUBLIC)
+	PHP_ME(air_curl, init, NULL,  ZEND_ACC_PUBLIC)
 	PHP_ME(air_curl, exec, NULL,  ZEND_ACC_PUBLIC)
 	PHP_ME(air_curl, data, NULL,  ZEND_ACC_PUBLIC)
 	PHP_ME(air_curl, errno, NULL,  ZEND_ACC_PUBLIC)

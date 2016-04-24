@@ -86,13 +86,20 @@ int air_mysql_keeper_get_mysqli(zval *mysqli, zval *config, int mode){
 	return 0;
 }
 
-int air_mysql_keeper_close_mysqli(zval *mysqli_array){
-	zval *val;
-	ulong idx;
-	zend_string *key;
-	ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(mysqli_array), idx, key, val){
-		air_call_object_method(val, Z_OBJCE_P(val), "close", NULL, 0, NULL);
-	}ZEND_HASH_FOREACH_END();
+int air_mysql_keeper_close_mysqli(zval *pool){
+	if(!pool){
+		return 0;
+	}else if(Z_TYPE_P(pool) == IS_ARRAY){
+		zval *val;
+		ulong idx;
+		zend_string *key;
+		ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(pool), idx, key, val){
+			air_call_object_method(val, Z_OBJCE_P(val), "close", NULL, 0, NULL);
+		}ZEND_HASH_FOREACH_END();
+	}else{
+		air_call_object_method(pool, Z_OBJCE_P(pool), "close", NULL, 0, NULL);
+	}
+	return 1;
 }
 
 void air_mysql_keeper_make_entry(zval *conf_entry){
@@ -102,7 +109,7 @@ void air_mysql_keeper_make_entry(zval *conf_entry){
 	array_init(&busy);
 	add_assoc_zval(conf_entry, "free", &free);
 	add_assoc_zval(conf_entry, "busy", &busy);
-	add_assoc_long(conf_entry, "quota", 5);
+	add_assoc_long(conf_entry, "quota", 10);
 }
 
 zval *air_mysql_keeper_find_entry(zend_string *conf_name, int mode){
@@ -140,22 +147,27 @@ zval *air_mysql_keeper_find_entry(zend_string *conf_name, int mode){
 }
 
 /* {{{ ARG_INFO */
-ZEND_BEGIN_ARG_INFO_EX(air_mysql_keeper_factory_arginfo, 0, 0, 1)
+ZEND_BEGIN_ARG_INFO_EX(air_mysql_keeper_release_arginfo, 0, 0, 2)
+	ZEND_ARG_INFO(0, mysqli)
 	ZEND_ARG_INFO(0, config)
 	ZEND_ARG_INFO(0, mode)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(air_mysql_keeper_acquire_arginfo, 0, 0, 1)
+	ZEND_ARG_INFO(0, config)
+	ZEND_ARG_INFO(0, mode)
+ZEND_END_ARG_INFO()
 /* }}} */
 
 /* {{{ PHP METHODS */
 PHP_METHOD(air_mysql_keeper, __construct) {
 }
 
-PHP_METHOD(air_mysql_keeper, factory) {
+PHP_METHOD(air_mysql_keeper, acquire) {
 	zend_string *conf_name = NULL;
 	int mode = AIR_R;
 	if(zend_parse_parameters(ZEND_NUM_ARGS(), "S|l", &conf_name, &mode) == FAILURE){
-		php_error(E_WARNING, "air\\mysql\\keeper::factory($config, $mode) params error");
+		php_error(E_WARNING, "air\\mysql\\keeper::acquire($config, $mode) params error");
 		return;
 	}
 	zval *conf_entry = air_mysql_keeper_find_entry(conf_name, mode);
@@ -219,12 +231,61 @@ PHP_METHOD(air_mysql_keeper, release) {
 	zval *busy = zend_hash_str_find(Z_ARRVAL_P(conf_entry), ZEND_STRL("busy"));
 
 	ulong mysqli_id = air_mysqli_get_id(mysqli);
+	if(!zend_hash_index_find(Z_ARRVAL_P(busy), mysqli_id)){
+		zval *simplex = zend_hash_str_find(Z_ARRVAL_P(conf_entry), ZEND_STRL("simplex"));
+		if(simplex && air_mysqli_get_id(simplex) == mysqli_id){
+			php_error(E_ERROR, "mysqli not found in busy pool, please check your code");
+		}
+		return ;
+	}
+
 	ZVAL_DEREF(mysqli);
 	zval _mysqli;
 	ZVAL_COPY(&_mysqli, mysqli);
 	zend_hash_index_del(Z_ARRVAL_P(busy), mysqli_id);
 	//array push
 	zend_hash_next_index_insert(Z_ARRVAL_P(free), &_mysqli);
+}
+
+PHP_METHOD(air_mysql_keeper, simplex) {
+	zend_string *conf_name = NULL;
+	int mode = AIR_R;
+	if(zend_parse_parameters(ZEND_NUM_ARGS(), "S|l", &conf_name, &mode) == FAILURE){
+		php_error(E_WARNING, "air\\mysql\\keeper::simplex($config, $mode) params error");
+		return;
+	}
+	zval *conf_entry = air_mysql_keeper_find_entry(conf_name, mode);
+	zval *simplex = zend_hash_str_find(Z_ARRVAL_P(conf_entry), ZEND_STRL("simplex"));
+	zval *mysqli = NULL;
+	int status = 0;
+	if(!simplex){
+		zval *config = air_config_path_get(NULL, conf_name);
+		if(!config){
+			air_throw_exception_ex(1, "mysql config %s not found", conf_name);
+			return ;
+		}
+		zval _mysqli;
+		AIR_OBJ_INIT(&_mysqli, "mysqli");
+		//todo add quota
+		if(Z_ISUNDEF(_mysqli)){
+			php_error(E_ERROR, "air\\mysql\\keeper can not find mysqli");
+		}
+		air_call_object_method(&_mysqli, Z_OBJCE_P(&_mysqli), "init", NULL, 0, NULL);
+		status = air_mysql_keeper_get_mysqli(&_mysqli, config, mode);
+		if(status == SUCCESS){
+			Z_TRY_ADDREF(_mysqli);
+			add_assoc_zval_ex(conf_entry, ZEND_STRL("simplex"), &_mysqli);
+			simplex = zend_hash_str_find(Z_ARRVAL_P(conf_entry), ZEND_STRL("simplex"));
+		}
+		zval_ptr_dtor(&_mysqli);
+	}
+	if(simplex){
+		RETURN_ZVAL(simplex, 1, 0);
+	}else{
+		air_throw_exception_ex(1, "could not connect to %s", ZSTR_VAL(conf_name));
+		return ;
+	}
+	RETURN_LONG(status);
 }
 
 PHP_METHOD(air_mysql_keeper, __destruct) {
@@ -240,9 +301,11 @@ PHP_METHOD(air_mysql_keeper, __destruct) {
 		zval *r = zend_hash_index_find(Z_ARRVAL_P(val), AIR_R);
 		air_mysql_keeper_close_mysqli(zend_hash_str_find(Z_ARRVAL_P(r), ZEND_STRL("free")));
 		air_mysql_keeper_close_mysqli(zend_hash_str_find(Z_ARRVAL_P(r), ZEND_STRL("busy")));
+		air_mysql_keeper_close_mysqli(zend_hash_str_find(Z_ARRVAL_P(r), ZEND_STRL("simplex")));
 		zval *w = zend_hash_index_find(Z_ARRVAL_P(val), AIR_W);
 		air_mysql_keeper_close_mysqli(zend_hash_str_find(Z_ARRVAL_P(w), ZEND_STRL("free")));
 		air_mysql_keeper_close_mysqli(zend_hash_str_find(Z_ARRVAL_P(w), ZEND_STRL("busy")));
+		air_mysql_keeper_close_mysqli(zend_hash_str_find(Z_ARRVAL_P(w), ZEND_STRL("simplex")));
 	}ZEND_HASH_FOREACH_END();
 }
 
@@ -252,8 +315,9 @@ PHP_METHOD(air_mysql_keeper, __destruct) {
 zend_function_entry air_mysql_keeper_methods[] = {
 	PHP_ME(air_mysql_keeper, __construct, NULL,  ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
 	PHP_ME(air_mysql_keeper, __destruct, NULL,  ZEND_ACC_PUBLIC | ZEND_ACC_DTOR)
-	PHP_ME(air_mysql_keeper, release, air_mysql_keeper_factory_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
-	PHP_ME(air_mysql_keeper, factory, air_mysql_keeper_factory_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+	PHP_ME(air_mysql_keeper, release, air_mysql_keeper_release_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+	PHP_ME(air_mysql_keeper, acquire, air_mysql_keeper_acquire_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+	PHP_ME(air_mysql_keeper, simplex, air_mysql_keeper_acquire_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
 	{NULL, NULL, NULL}
 };
 /* }}} */

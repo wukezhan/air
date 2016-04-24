@@ -18,14 +18,11 @@
 
 /* $Id$ */
 
-#ifndef PHP_AIR_MYSQL_BUILDER_H
-#define PHP_AIR_MYSQL_BUILDER_H
+#ifndef PHP_AIR_ASYNC_SCHEDULER_H
+#define PHP_AIR_ASYNC_SCHEDULER_H
 
-AIR_MINIT_FUNCTION(air_mysql_builder);
+AIR_MINIT_FUNCTION(air_async_scheduler);
 
-extern zend_class_entry *air_mysql_builder_ce;
-
-int air_mysql_builder_auto_mode(zval *builder);
+extern zend_class_entry *air_async_scheduler_ce;
 
 #endif
-

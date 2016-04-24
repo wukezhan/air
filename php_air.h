@@ -24,7 +24,7 @@
 extern zend_module_entry air_module_entry;
 #define phpext_air_ptr &air_module_entry
 
-#define PHP_AIR_VERSION "0.1.0" /* Replace with version number for your extension */
+#define PHP_AIR_VERSION "0.5.0"
 
 #ifdef PHP_WIN32
 #	define PHP_AIR_API __declspec(dllexport)

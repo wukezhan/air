@@ -30,6 +30,8 @@
 
 #define AIR_INIT_THIS zval *self = getThis()
 #define AIR_RET_THIS RETURN_ZVAL(self, 1, 0)
+#define AIR_STATIC_CLASS() (EG(current_execute_data)->called_scope->name)
+#define AIR_ZVAL_IS_NULL(pz) (ZVAL_IS_NULL(pz) || ZVAL_IS_NULL(Z_REFVAL_P(pz)))
 
 #define air_app_t   zval
 #define air_router_t    zval
@@ -50,7 +52,7 @@
 extern PHPAPI void php_var_dump(zval *struc, int level);
 extern PHPAPI void php_debug_zval_dump(zval *struc, int level);
 
-#define AIR_DEBUG(msg) php_printf("\nADBG: %s:%d: %s\n\n", __FILE__, __LINE__, msg)
+#define AIR_DEBUG(msg) php_printf("\n@air: %s:%d: %s\n\n", __FILE__, __LINE__, msg)
 
 #define AIR_HASH_FOREACH_KEY_VAL(ht, idx, key, key_len, pzval) do{\
 		zval **___tmp = NULL;\

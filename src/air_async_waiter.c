@@ -27,8 +27,9 @@
 #include "Zend/zend_interfaces.h"
 
 #include "php_air.h"
-
+#include "src/air_async_scheduler.h"
 #include "src/air_async_service.h"
+
 #include "src/air_async_waiter.h"
 
 zend_class_entry *air_async_waiter_ce;
@@ -52,15 +53,21 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(air_async_waiter, __construct) {
 	AIR_INIT_THIS;
 
-	zval arr1;
-	array_init(&arr1);
-	zend_update_property(air_async_waiter_ce, self, ZEND_STRL("_services"), &arr1);
-	zval_ptr_dtor(&arr1);
+	zval services;
+	array_init(&services);
+	zend_update_property(air_async_waiter_ce, self, ZEND_STRL("_services"), &services);
+	zval_ptr_dtor(&services);
 
-	zval arr2;
-	array_init(&arr2);
-	zend_update_property(air_async_waiter_ce, self, ZEND_STRL("_responses"), &arr2);
-	zval_ptr_dtor(&arr2);
+	zval responses;
+	array_init(&responses);
+	zend_update_property(air_async_waiter_ce, self, ZEND_STRL("_responses"), &responses);
+	zval_ptr_dtor(&responses);
+
+	zval context;
+	array_init(&context);
+	add_assoc_long(&context, "step", 0);
+	zend_update_property(air_async_waiter_ce, self, ZEND_STRL("_context"), &context);
+	zval_ptr_dtor(&context);
 }
 
 PHP_METHOD(air_async_waiter, serve) {
@@ -79,9 +86,6 @@ PHP_METHOD(air_async_waiter, serve) {
 	RETURN_ZVAL(&service, 1, 0);
 }
 
-PHP_METHOD(air_async_waiter, _response) {
-	php_printf("air\\async\\waiter::_response() should be implemented\n");
-}
 PHP_METHOD(air_async_waiter, response) {
 	int id = 0;
 	if(zend_parse_parameters(ZEND_NUM_ARGS(), "l", &id) == FAILURE){
@@ -91,25 +95,36 @@ PHP_METHOD(air_async_waiter, response) {
 	zval *responses = zend_read_property(air_async_waiter_ce, self, ZEND_STRL("_responses"), 0, NULL);
 	zval *data = zend_hash_index_find(Z_ARRVAL_P(responses), id);
 	if(!data){
-		zend_call_method_with_0_params(self, Z_OBJCE_P(self), NULL, "_response", NULL);
-		data = zend_hash_index_find(Z_ARRVAL_P(responses), id);
-		if(data){
-			RETURN_ZVAL(data, 1, 0);
+		zval *services = zend_read_property(air_async_waiter_ce, self, ZEND_STRL("_services"), 0, NULL);
+		zval *service = zend_hash_index_find(Z_ARRVAL_P(services), id);
+		if(service){
+			air_call_static_method(air_async_scheduler_ce, "loop", NULL, 0, NULL);
+			data = zend_hash_index_find(Z_ARRVAL_P(responses), id);
+		}else{
+			php_error(E_ERROR, "service not found");
 		}
 	}
-	if(Z_TYPE_P(data) == IS_ARRAY){
+	if(data){
 		RETURN_ZVAL(data, 1, 0);
 	}
 	RETURN_NULL();
 }
+
+PHP_METHOD(air_async_waiter, acquire) {
+	zval class_name;
+	ZVAL_STR(&class_name, AIR_STATIC_CLASS());
+	zval params[1] = {class_name};
+	air_call_static_method(air_async_scheduler_ce, "acquire", return_value, 1, params);
+}
+
 /* }}} */
 
 /* {{{ air_async_waiter_methods */
 zend_function_entry air_async_waiter_methods[] = {
 	PHP_ME(air_async_waiter, __construct, air_async_waiter_construct_arginfo, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
 	PHP_ME(air_async_waiter, serve, air_async_waiter_serve_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(air_async_waiter, _response, NULL, ZEND_ACC_PROTECTED)
 	PHP_ME(air_async_waiter, response, air_async_waiter_resp_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(air_async_waiter, acquire, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
 	{NULL, NULL, NULL}
 };
 /* }}} */
@@ -121,8 +136,10 @@ AIR_MINIT_FUNCTION(air_async_waiter) {
 
 	air_async_waiter_ce = zend_register_internal_class_ex(&ce, NULL);
 
+	zend_declare_property_null(air_async_waiter_ce, ZEND_STRL("_instance"), ZEND_ACC_PROTECTED | ZEND_ACC_STATIC);
 	zend_declare_property_null(air_async_waiter_ce, ZEND_STRL("_services"), ZEND_ACC_PROTECTED);
 	zend_declare_property_null(air_async_waiter_ce, ZEND_STRL("_responses"), ZEND_ACC_PROTECTED);
+	zend_declare_property_null(air_async_waiter_ce, ZEND_STRL("_context"), ZEND_ACC_PROTECTED);
 	return SUCCESS;
 }
 /* }}} */

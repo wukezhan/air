@@ -62,6 +62,7 @@ if test "$PHP_AIR" != "no"; then
   PHP_NEW_EXTENSION(air,
     air.c \
     src/air_app.c \
+    src/air_async_scheduler.c \
     src/air_async_service.c \
     src/air_async_waiter.c \
     src/air_config.c \
@@ -71,7 +72,7 @@ if test "$PHP_AIR" != "no"; then
     src/air_exception.c \
     src/air_handler.c \
     src/air_loader.c \
-    src/air_mysql_builder.c \
+    src/air_mysql.c \
     src/air_mysql_keeper.c \
     src/air_mysql_table.c \
     src/air_mysql_waiter.c \
