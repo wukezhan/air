@@ -50,7 +50,7 @@
 extern PHPAPI void php_var_dump(zval **struc, int level TSRMLS_DC);
 extern PHPAPI void php_debug_zval_dump(zval **struc, int level TSRMLS_DC);
 
-#define AIR_DEBUG(msg) php_printf("\nADBG: %s:%d: %s\n\n", __FILE__, __LINE__, msg)
+#define AIR_DEBUG(msg) php_printf("\n@air: %s:%d: %s\n\n", __FILE__, __LINE__, msg)
 /** }}} common wrapper **/
 
 /** {{{ version wrapper **/

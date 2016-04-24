@@ -55,7 +55,7 @@ PHP_METHOD(air_async_service, __construct) {
 		air_throw_exception(1, "param waiter must be a instance of air\\waiter");
 	}
 	zend_update_property(air_async_service_ce, self, ZEND_STRL("_waiter"), waiter TSRMLS_CC);
-	zend_update_property(air_async_service_ce, self, ZEND_STRL("request"), request TSRMLS_CC);
+	zend_update_property(air_async_service_ce, self, ZEND_STRL("_request"), request TSRMLS_CC);
 	zval *__id = zend_read_static_property(air_async_service_ce, ZEND_STRL("__id"), 0 TSRMLS_CC);
 	(*__id).value.lval++;
 	zend_update_property_long(air_async_service_ce, self, ZEND_STRL("_id"), Z_LVAL_P(__id) TSRMLS_CC);
@@ -96,7 +96,7 @@ AIR_MINIT_FUNCTION(air_async_service) {
 	zend_declare_property_long(air_async_service_ce, ZEND_STRL("__id"), 0, ZEND_ACC_PROTECTED | ZEND_ACC_STATIC TSRMLS_CC);
 	zend_declare_property_null(air_async_service_ce, ZEND_STRL("_id"), ZEND_ACC_PROTECTED TSRMLS_CC);
 	zend_declare_property_null(air_async_service_ce, ZEND_STRL("_waiter"), ZEND_ACC_PROTECTED TSRMLS_CC);
-	zend_declare_property_null(air_async_service_ce, ZEND_STRL("request"), ZEND_ACC_PUBLIC TSRMLS_CC);
+	zend_declare_property_null(air_async_service_ce, ZEND_STRL("_request"), ZEND_ACC_PUBLIC TSRMLS_CC);
 	return SUCCESS;
 }
 /* }}} */

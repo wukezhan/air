@@ -113,25 +113,23 @@ zval *air_mysql_keeper_make_entry(){
 }
 
 /* {{{ ARG_INFO */
-ZEND_BEGIN_ARG_INFO_EX(air_mysql_keeper_factory_arginfo, 0, 0, 1)
+ZEND_BEGIN_ARG_INFO_EX(air_mysql_keeper_release_arginfo, 0, 0, 2)
+	ZEND_ARG_INFO(0, mysqli)
 	ZEND_ARG_INFO(0, config)
 	ZEND_ARG_INFO(0, mode)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(air_mysql_keeper_acquire_arginfo, 0, 0, 1)
+	ZEND_ARG_INFO(0, config)
+	ZEND_ARG_INFO(0, mode)
+ZEND_END_ARG_INFO()
 /* }}} */
 
 /* {{{ PHP METHODS */
 PHP_METHOD(air_mysql_keeper, __construct) {
 }
 
-PHP_METHOD(air_mysql_keeper, factory) {
-	char *conf_name = NULL;
-	int len = 0;
-	int mode = AIR_R;
-	if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|l", &conf_name, &len, &mode) == FAILURE){
-		php_error(E_WARNING, "air\\mysql\\keeper::factory($config, $mode) params error");
-		return;
-	}
+zval *air_mysql_keeper_find_entry(char *conf_name, int conf_len, int mode){
 	zval *instance = zend_read_static_property(air_mysql_keeper_ce, ZEND_STRL("_instance"), 0 TSRMLS_CC);
 	if(Z_TYPE_P(instance) == IS_NULL){
 		object_init_ex(instance, air_mysql_keeper_ce);
@@ -146,9 +144,9 @@ PHP_METHOD(air_mysql_keeper, factory) {
 		keeper_pool = zend_read_property(air_mysql_keeper_ce, instance, ZEND_STRL("_pool"), 0 TSRMLS_CC);
 		zval_ptr_dtor(&arr);
 	}
-	zval *conf_pool = air_arr_find(keeper_pool, conf_name, len+1);
+	zval *conf_pool = air_arr_find(keeper_pool, conf_name, conf_len+1);
 	zval *conf_entry;
-	zval *free, *busy;
+
 	if(!conf_pool){
 		MAKE_STD_ZVAL(conf_pool);
 		array_init(conf_pool);
@@ -157,12 +155,23 @@ PHP_METHOD(air_mysql_keeper, factory) {
 		zval *conf_entry2 = air_mysql_keeper_make_entry();
 		add_index_zval(conf_pool, AIR_R, conf_entry);
 		add_index_zval(conf_pool, AIR_W, conf_entry2);
-		add_assoc_zval_ex(keeper_pool, conf_name, len+1, conf_pool);
+		add_assoc_zval_ex(keeper_pool, conf_name, conf_len+1, conf_pool);
 	}
-	conf_pool = air_arr_find(keeper_pool, conf_name, len+1);
-	conf_entry = air_arr_idx_find(conf_pool, mode);
-	free = air_arr_find(conf_entry, ZEND_STRS("free"));
-	busy = air_arr_find(conf_entry, ZEND_STRS("busy"));
+	conf_pool = air_arr_find(keeper_pool, conf_name, conf_len+1);
+	return air_arr_idx_find(conf_pool, mode);
+}
+
+PHP_METHOD(air_mysql_keeper, acquire) {
+	char *conf_name = NULL;
+	int len = 0;
+	int mode = AIR_R;
+	if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|l", &conf_name, &len, &mode) == FAILURE){
+		php_error(E_WARNING, "air\\mysql\\keeper::acquire($config, $mode) params error");
+		return;
+	}
+	zval *conf_entry = air_mysql_keeper_find_entry(conf_name, len, mode);;
+	zval *free = air_arr_find(conf_entry, ZEND_STRS("free"));
+	zval *busy = air_arr_find(conf_entry, ZEND_STRS("busy"));
 	zval *mysqli = NULL;
 	int status = 0;
 	if(!zend_hash_num_elements(Z_ARRVAL_P(free))){
@@ -196,43 +205,61 @@ PHP_METHOD(air_mysql_keeper, factory) {
 	RETURN_LONG(status);
 }
 
+PHP_METHOD(air_mysql_keeper, simplex) {
+	char *conf_name = NULL;
+	int len = 0;
+	int mode = AIR_R;
+	if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|l", &conf_name, &len, &mode) == FAILURE){
+		php_error(E_WARNING, "air\\mysql\\keeper::acquire($config, $mode) params error");
+		return;
+	}
+	zval *conf_entry = air_mysql_keeper_find_entry(conf_name, len, mode);
+	zval *simplex = air_arr_find(conf_entry, ZEND_STRS("simplex"));
+	zval *mysqli = NULL;
+	int status = 0;
+	if(!simplex){
+		zval *config;
+		int found_conf_path = air_config_path_get(NULL, conf_name, len, &config TSRMLS_CC);
+		if(found_conf_path == FAILURE){
+			air_throw_exception_ex(1, "mysql config %s not found", conf_name);
+			return ;
+		}
+		//todo add quota
+		status = air_mysql_keeper_get_mysqli(&mysqli, config, mode);
+		if(status == SUCCESS){
+			add_assoc_zval_ex(conf_entry, ZEND_STRS("simplex"), mysqli);
+			simplex = air_arr_find(conf_entry, ZEND_STRS("simplex"));
+		}
+	}
+	if(status == SUCCESS){
+		RETURN_ZVAL(simplex, 1, 0);
+	}else{
+		air_throw_exception_ex(1, "could not connect to %s", conf_name);
+		return ;
+	}
+	RETURN_LONG(status);
+}
+
 PHP_METHOD(air_mysql_keeper, release) {
 	char *conf_name;
 	int len;
 	zval *mysqli;
 	ulong mode = AIR_R;
 	if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "zs|l", &mysqli, &conf_name, &len, &mode) == FAILURE){
+		return ;
 	}
-	zval *instance = zend_read_static_property(air_mysql_keeper_ce, ZEND_STRL("_instance"), 0 TSRMLS_CC);
-	zval *keeper_pool = zend_read_property(air_mysql_keeper_ce, instance, ZEND_STRL("_pool"), 0 TSRMLS_CC);
-	if(Z_TYPE_P(keeper_pool) == IS_NULL){
-		zval *arr;
-		MAKE_STD_ZVAL(arr);
-		array_init(arr);
-		zend_update_property(air_mysql_keeper_ce, instance, ZEND_STRL("_pool"), arr);
-		keeper_pool = zend_read_property(air_mysql_keeper_ce, instance, ZEND_STRL("_pool"), 0 TSRMLS_CC);
-		zval_ptr_dtor(&arr);
-	}
-	zval *conf_pool = air_arr_find(keeper_pool, conf_name, len+1);
-	zval *conf_entry;
-	zval *free, *busy;
-
-	if(!conf_pool){
-		MAKE_STD_ZVAL(conf_pool);
-		array_init(conf_pool);
-
-		conf_entry = air_mysql_keeper_make_entry();
-		zval *conf_entry2 = air_mysql_keeper_make_entry();
-		add_index_zval(conf_pool, AIR_R, conf_entry);
-		add_index_zval(conf_pool, AIR_W, conf_entry2);
-		add_assoc_zval_ex(keeper_pool, conf_name, len+1, conf_pool);
-	}
-	conf_pool = air_arr_find(keeper_pool, conf_name, len+1);
-	conf_entry = air_arr_idx_find(conf_pool, mode);
-	free = air_arr_find(conf_entry, ZEND_STRS("free"));
-	busy = air_arr_find(conf_entry, ZEND_STRS("busy"));
+	zval *conf_entry = air_mysql_keeper_find_entry(conf_name, len, mode);
+	zval *free = air_arr_find(conf_entry, ZEND_STRS("free"));
+	zval *busy = air_arr_find(conf_entry, ZEND_STRS("busy"));
 
 	ulong mysqli_id = air_mysqli_get_id(mysqli);
+	if(!air_arr_idx_find(busy, mysqli_id)){
+		zval *simplex = air_arr_find(conf_entry, ZEND_STRS("simplex"));
+		if(simplex && air_mysqli_get_id(simplex) == mysqli_id){
+			php_error(E_ERROR, "mysqli not found in busy pool, please check your code");
+		}
+		return ;
+	}
 	Z_ADDREF_P(mysqli);
 	zend_hash_index_del(Z_ARRVAL_P(busy), mysqli_id);
 	//array push
@@ -262,8 +289,9 @@ PHP_METHOD(air_mysql_keeper, __destruct) {
 zend_function_entry air_mysql_keeper_methods[] = {
 	PHP_ME(air_mysql_keeper, __construct, NULL,  ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
 	PHP_ME(air_mysql_keeper, __destruct, NULL,  ZEND_ACC_PUBLIC | ZEND_ACC_DTOR)
-	PHP_ME(air_mysql_keeper, release, air_mysql_keeper_factory_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
-	PHP_ME(air_mysql_keeper, factory, air_mysql_keeper_factory_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+	PHP_ME(air_mysql_keeper, release, air_mysql_keeper_acquire_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+	PHP_ME(air_mysql_keeper, acquire, air_mysql_keeper_acquire_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+	PHP_ME(air_mysql_keeper, simplex, air_mysql_keeper_acquire_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
 	{NULL, NULL, NULL}
 };
 /* }}} */

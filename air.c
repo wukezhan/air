@@ -27,6 +27,7 @@
 #include "ext/standard/info.h"
 #include "php_air.h"
 
+#include "src/air_async_scheduler.h"
 #include "src/air_async_service.h"
 #include "src/air_async_waiter.h"
 #include "src/air_config.h"
@@ -35,7 +36,7 @@
 #include "src/air_exception.h"
 #include "src/air_handler.h"
 #include "src/air_loader.h"
-#include "src/air_mysql_builder.h"
+#include "src/air_mysql.h"
 #include "src/air_mysql_keeper.h"
 #include "src/air_mysql_table.h"
 #include "src/air_mysql_waiter.h"
@@ -112,6 +113,7 @@ PHP_MINIT_FUNCTION(air)
 	REGISTER_INI_ENTRIES();
 	*/
 	AIR_MODULE_STARTUP(air_app);
+	AIR_MODULE_STARTUP(air_async_scheduler);
 	AIR_MODULE_STARTUP(air_async_service);
 	AIR_MODULE_STARTUP(air_async_waiter);
 	AIR_MODULE_STARTUP(air_config);
@@ -121,7 +123,7 @@ PHP_MINIT_FUNCTION(air)
 	AIR_MODULE_STARTUP(air_exception);
 	AIR_MODULE_STARTUP(air_handler);
 	AIR_MODULE_STARTUP(air_loader);
-	AIR_MODULE_STARTUP(air_mysql_builder);
+	AIR_MODULE_STARTUP(air_mysql);
 	AIR_MODULE_STARTUP(air_mysql_keeper);
 	AIR_MODULE_STARTUP(air_mysql_table);
 	AIR_MODULE_STARTUP(air_mysql_waiter);

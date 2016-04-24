@@ -29,12 +29,12 @@
 #include "php_air.h"
 
 #include "src/air_exception.h"
-#include "src/air_mysql_builder.h"
+#include "src/air_mysql.h"
 #include "src/air_mysql_table.h"
 
 zend_class_entry *air_mysql_table_ce;
 
-zval *air_mysql_table_get_builder(zval *self){
+zval *air_mysql_table_get_mysql(zval *self){
 	zval *config = zend_read_property(air_mysql_table_ce, self, ZEND_STRL("_config"), 1 TSRMLS_CC);
 	zval *db = zend_read_property(air_mysql_table_ce, self, ZEND_STRL("_db"), 1 TSRMLS_CC);
 	zval *table = zend_read_property(air_mysql_table_ce, self, ZEND_STRL("_table"), 1 TSRMLS_CC);
@@ -47,11 +47,11 @@ zval *air_mysql_table_get_builder(zval *self){
 	MAKE_STD_ZVAL(db_table);
 	ZVAL_STRINGL(db_table, str, len, 1);
 	zval **params[2] = {&config, &db_table};
-	zval *builder = air_new_object(ZEND_STRL("air\\mysql\\builder"));
-	air_call_method(&builder, air_mysql_builder_ce, NULL, ZEND_STRL("__construct"), NULL, 2, params);
+	zval *mysql = air_new_object(ZEND_STRL("air\\mysql"));
+	air_call_method(&mysql, air_mysql_ce, NULL, ZEND_STRL("__construct"), NULL, 2, params);
 	zval_ptr_dtor(&db_table);
 	efree(str);
-	return builder;
+	return mysql;
 }
 
 /* {{{ ARG_INFO */
@@ -72,9 +72,9 @@ PHP_METHOD(air_mysql_table, __construct) {
 
 PHP_METHOD(air_mysql_table, async) {
 	AIR_INIT_THIS;
-	zval *builder = air_mysql_table_get_builder(self);
-	air_call_method(&builder, air_mysql_builder_ce, NULL, ZEND_STRL("async"), NULL, 0, NULL);
-	RETURN_ZVAL(builder, 1, 1);
+	zval *mysql = air_mysql_table_get_mysql(self);
+	air_call_method(&mysql, air_mysql_ce, NULL, ZEND_STRL("async"), NULL, 0, NULL);
+	RETURN_ZVAL(mysql, 1, 1);
 }
 
 PHP_METHOD(air_mysql_table, add) {
@@ -84,9 +84,9 @@ PHP_METHOD(air_mysql_table, add) {
 		return ;
 	}
 	zval **params[1] = {&data};
-	zval *builder = air_mysql_table_get_builder(self);
-	air_call_method(&builder, air_mysql_builder_ce, NULL, ZEND_STRL("add"), NULL, 1, params);
-	RETURN_ZVAL(builder, 1, 1);
+	zval *mysql = air_mysql_table_get_mysql(self);
+	air_call_method(&mysql, air_mysql_ce, NULL, ZEND_STRL("add"), NULL, 1, params);
+	RETURN_ZVAL(mysql, 1, 1);
 }
 
 PHP_METHOD(air_mysql_table, get) {
@@ -96,9 +96,9 @@ PHP_METHOD(air_mysql_table, get) {
 		return ;
 	}
 	zval **params[1] = {&fields};
-	zval *builder = air_mysql_table_get_builder(self);
-	air_call_method(&builder, air_mysql_builder_ce, NULL, ZEND_STRL("get"), NULL, 1, params);
-	RETURN_ZVAL(builder, 1, 1);
+	zval *mysql = air_mysql_table_get_mysql(self);
+	air_call_method(&mysql, air_mysql_ce, NULL, ZEND_STRL("get"), NULL, 1, params);
+	RETURN_ZVAL(mysql, 1, 1);
 }
 
 PHP_METHOD(air_mysql_table, set) {
@@ -108,16 +108,16 @@ PHP_METHOD(air_mysql_table, set) {
 		return ;
 	}
 	zval **params[1] = {&data};
-	zval *builder = air_mysql_table_get_builder(self);
-	air_call_method(&builder, air_mysql_builder_ce, NULL, ZEND_STRL("set"), NULL, 1, params);
-	RETURN_ZVAL(builder, 1, 1);
+	zval *mysql = air_mysql_table_get_mysql(self);
+	air_call_method(&mysql, air_mysql_ce, NULL, ZEND_STRL("set"), NULL, 1, params);
+	RETURN_ZVAL(mysql, 1, 1);
 }
 
 PHP_METHOD(air_mysql_table, del) {
 	AIR_INIT_THIS;
-	zval *builder = air_mysql_table_get_builder(self);
-	air_call_method(&builder, air_mysql_builder_ce, NULL, ZEND_STRL("del"), NULL, 0, NULL);
-	RETURN_ZVAL(builder, 1, 1);
+	zval *mysql = air_mysql_table_get_mysql(self);
+	air_call_method(&mysql, air_mysql_ce, NULL, ZEND_STRL("del"), NULL, 0, NULL);
+	RETURN_ZVAL(mysql, 1, 1);
 }
 
 PHP_METHOD(air_mysql_table, __destruct) {
