@@ -20,47 +20,49 @@
   - 设计良好的 MVC 机制，轻松处理前端请求与后端任务
   - 基于正则的路由机制，高效满足各种刁钻路由需求
   - 基于命名空间的自动加载，最大化提升类库加载效率
-  - 天然无限制扩展特性，air framework 始终以轻量高效为基本原则，拒绝冗长庞杂和面面俱到，只提供最基本、最核心底层机制，不会预置任何诸如表单验证之类的具体业务功能实现，而是强烈建议、鼓励开发者基于自身特点选用最适合自己的解决方案
+  - 天然无限制扩展特性，air framework 始终以轻量高效为基本原则，拒绝冗长庞杂和面面俱到，只提供最基本、最核心的底层机制，不会预置任何诸如表单验证之类的具体业务功能实现，而是强烈建议、鼓励开发者基于自身特点选用最适合自己的解决方案
 
 ### 全局的异步并发模式
 
-在以下的场景中，每个数据库请求和curl请求都将需要1秒的等待时间，如果完全使用传统同步阻塞方案，完成全部将总共需要6秒的时间。
+在以下的场景中，每个数据库请求和curl请求都将需要1秒的等待时间，如果完全使用传统的同步阻塞方案，完成全请求部将总共需要6秒的时间。
 
-使用普通的PHP原生异步解决方案时，MySQL和curl将各需要1秒等待时间，此时完成全部请求将总共需要2秒时间，可3倍的提升响应速度。
+使用普通的PHP异步解决方案时，MySQL和curl将各需要1秒等待时间，此时完成全部请求将总共需要2秒时间，可3倍的提升响应速度。
 
 但使用 air framework 的全局异步并发模式，完成全部的6个请求将总共只需要1秒等待时间，轻而易举即可取得6倍的响应性能提升。
 
 ```php
 <?php
 /**
- * air\config::path_get('mysql.config.air');
  * @see https://github.com/wukezhan/air/blob/master/tests/003.curl.phpt
  * @see https://github.com/wukezhan/air/blob/master/tests/mysql.inc.php
  * @see https://github.com/wukezhan/air/blob/master/tests/004.mysql.phpt
  */
-define('URL', 'http://localhost/test/sleep');
+use air\mysql;
+use air\curl;
+include 'config.php';
 $time = microtime(1);
 $t = 1;
+
 // each request below will use 1 second
 $m1 = new mysql(DB_CONF);
 $m1->async()->query("select sleep({$t}) as a");
 $m2 = new mysql(DB_CONF);
 $m2->async()->query("select sleep({$t}) as b");
 $m3 = new mysql(DB_CONF);
-$m3->async()->query("select sleep({$t}) as b");
+$m3->async()->query("select sleep({$t}) as c");
 $c1 = new curl();
-$c1->async()->get(URL , ['sleep' => $t]);
+$c1->async()->get(ECHO_URL, ['sleep' => $t]);
 $c2 = new curl();
-$c2->async()->get(URL , ['sleep' => $t]);
+$c2->async()->get(ECHO_URL, ['sleep' => $t]);
 $c3 = new curl();
-$c3->async()->get(URL , ['sleep' => $t]);
-
+$c3->async()->get(ECHO_URL, ['sleep' => $t]);
 var_dump($c3->data());
 var_dump($c1->data());
 var_dump($c2->data());
 var_dump($m1->data());
 var_dump($m2->data());
 var_dump($m3->data());
+
 echo "time used: ", microtime(1)-$time,"s\n";
 // this will totally use 1 second but not 6 seconds
 ```
