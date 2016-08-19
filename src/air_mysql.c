@@ -55,7 +55,7 @@ void air_mysql_build_data_add(zval *data, smart_str *sql, zval **origin_param){
 	int key_len;
 	AIR_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(data), idx, key, key_len, val) {
 		if(_idx++){
-			smart_str_appends(&sql, ", ");
+			smart_str_appends(sql, ", ");
 			smart_str_appends(&values, ", ");
 		}
 		smart_str skey = {0};
@@ -86,7 +86,7 @@ void air_mysql_build_data_set(zval *data, smart_str *sql, zval **origin_param){
 	int key_len;
 	AIR_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(data), idx, key, key_len, val) {
 		if(_idx++){
-			smart_str_appends(&sql, ", ");
+			smart_str_appends(sql, ", ");
 		}
 		smart_str skey = {0};
 		//should be specially renamed
