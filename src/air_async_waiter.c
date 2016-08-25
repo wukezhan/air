@@ -102,7 +102,7 @@ PHP_METHOD(air_async_waiter, acquire) {
 }
 
 PHP_METHOD(air_async_waiter, response) {
-	int id = 0;
+	long id = 0;
 	if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &id) == FAILURE){
 		AIR_NEW_EXCEPTION(1, "invalid response param");
 	}

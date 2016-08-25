@@ -793,7 +793,7 @@ PHP_METHOD(air_mysql, async) {
 
 PHP_METHOD(air_mysql, mode) {
 	AIR_INIT_THIS;
-	int mode = AIR_R;
+	long mode = AIR_R;
 	if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &mode) == FAILURE){
 		AIR_NEW_EXCEPTION(1, "error mode");
 	}
@@ -956,7 +956,7 @@ PHP_METHOD(air_mysql, offset) {
 
 PHP_METHOD(air_mysql, size) {
 	AIR_INIT_THIS;
-	ulong size = 10;
+	long size = 10;
 	if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &size) == FAILURE){
 		return ;
 	}

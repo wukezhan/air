@@ -257,7 +257,7 @@ PHP_METHOD(air_curl, offsetUnset) {
 
 PHP_METHOD(air_curl, setopt) {
 	AIR_INIT_THIS;
-	ulong ok;
+	long ok;
 	zval *ov;
 	if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "lz", &ok, &ov) == FAILURE){
 	}

@@ -163,8 +163,8 @@ PHP_METHOD(air_controller, render_view) {
 	MAKE_STD_ZVAL(ret_res);
 	char *tpl_str;
 	int tpl_len = 0;
-	int _ret = 0;
-	if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|sl", &tpl_str, &tpl_len, &_ret) == FAILURE)
+	zend_bool _ret = 0;
+	if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|sb", &tpl_str, &tpl_len, &_ret) == FAILURE)
 	{
 		RETURN_FALSE;
 	}
