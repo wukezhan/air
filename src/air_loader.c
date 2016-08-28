@@ -155,14 +155,14 @@ int air_loader_autoload_class(char *classname, int len TSRMLS_DC) {
 	}
 	smart_str_free(&ss_app_ns);
 	zval root_dir, lib_dir;
-	if(zend_get_constant(ZEND_STRL("ROOT_PATH"), &root_dir TSRMLS_CC) == FAILURE){
+	if(!zend_get_constant(ZEND_STRL("ROOT_PATH"), &root_dir TSRMLS_CC)){
 		php_error(E_ERROR, "ROOT_PATH is not defined");
 	}
 	int status = FAILURE;
 	if(is_app_class){
 		status = air_loader_load_class_from_dir(classname, len, &root_dir TSRMLS_CC);
 	}else{
-		if(zend_get_constant(ZEND_STRL("LIB_PATH"), &lib_dir TSRMLS_CC) == FAILURE){
+		if(!zend_get_constant(ZEND_STRL("LIB_PATH"), &lib_dir TSRMLS_CC)){
 			php_error(E_ERROR, "LIB_PATH is not defined");
 		}
 		status = air_loader_load_class_from_dir(classname, len, &lib_dir TSRMLS_CC);

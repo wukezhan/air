@@ -11,6 +11,10 @@ define('TABLE_NAME', 'test');
 define('DB_CONF', 'mysql.config.'.DB_NAME);
 define('R', AIR_R);
 define('W', AIR_W);
+define('MYSQL_HOST', 'localhost');
+define('MYSQL_PORT', '3306');
+define('MYSQL_USER', 'root');
+define('MYSQL_PASS', '');
 
 air\config::set([
     'mysql' => [
@@ -18,22 +22,22 @@ air\config::set([
             'air' => [
                 'auth' => [
                     R => [
-                        'username' => 'root',
-                        'password' => '',
+                        'username' => MYSQL_USER,
+                        'password' => MYSQL_PASS,
                     ],
                     W => [
-                        'username' => 'root',
-                        'password' => '',
+                        'username' => MYSQL_USER,
+                        'password' => MYSQL_PASS,
                     ],
                 ],
                 'pool' => [
                     R => [[
-                        'host' => 'localhost',
-                        'port' => 3306,
+                        'host' => MYSQL_HOST,
+                        'port' => MYSQL_PORT,
                     ]],
                     W => [[
-                        'host' => 'localhost',
-                        'port' => 3306,
+                        'host' => MYSQL_HOST,
+                        'port' => MYSQL_PORT,
                     ]],
                 ],
             ]

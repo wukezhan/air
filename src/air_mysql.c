@@ -506,12 +506,12 @@ PHP_METHOD(air_mysql, __construct) {
 	}
 	zend_update_property(air_mysql_ce, self, ZEND_STRL("_config"), config);
 
-	zval *arr;
+	zval *debug_info;
 
-	MAKE_STD_ZVAL(arr);
-	array_init(arr);
-	zend_update_property(air_mysql_ce, self, ZEND_STRL("_debug"), arr);
-	zval_ptr_dtor(&arr);
+	MAKE_STD_ZVAL(debug_info);
+	array_init(debug_info);
+	zend_update_property(air_mysql_ce, self, ZEND_STRL("_debug"), debug_info);
+	zval_ptr_dtor(&debug_info);
 
 	zval *orig;
 	MAKE_STD_ZVAL(orig);
@@ -523,6 +523,7 @@ PHP_METHOD(air_mysql, __construct) {
 	zend_update_property(air_mysql_ce, self, ZEND_STRL("_original"), orig);
 	zval_ptr_dtor(&orig);
 
+	zval *arr;
 	MAKE_STD_ZVAL(arr);
 	array_init(arr);
 	zend_update_property(air_mysql_ce, self, ZEND_STRL("_compiled"), arr);
@@ -547,7 +548,7 @@ PHP_METHOD(air_mysql, __construct) {
 	zval_ptr_dtor(&cb_arr);
 	int is_debug = 0;
 	zval _debug;
-	if(zend_get_constant(ZEND_STRL("DEBUG"), &_debug TSRMLS_CC) == SUCCESS){
+	if(zend_get_constant(ZEND_STRL("DEBUG"), &_debug TSRMLS_CC)){
 		is_debug = Z_LVAL(_debug);
 		zval_dtor(&_debug);
 	}
