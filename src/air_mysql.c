@@ -354,7 +354,9 @@ int air_mysql_auto_mode(zval *self){
 				async_enabled = 1;
 			}
 		}else{
-			php_error(E_ERROR, "query cannot be empty");
+			// $mysql2->async()->query('id>:id', ['id' => $mysql1->data()[0]['id']]);
+			// may cause this E_ERROR
+			php_error(E_ERROR, "query cannot be empty, you should not use a async data before it been returned");
 		}
 	}else if(Z_LVAL_P(action) == AIR_GET){
 		async_enabled = 1;

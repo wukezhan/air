@@ -275,24 +275,6 @@ PHP_METHOD(air_curl, async) {
 	zend_update_property(air_curl_ce, self, ZEND_STRL("_service"), service);
 	zval_ptr_dtor(&service);
 	zval_ptr_dtor(&waiter);
-	/*
-	zval *waiter = zend_read_static_property(air_curl_ce, ZEND_STRL("_waiter"), 1 TSRMLS_CC);
-	zval *_waiter = NULL;
-	if(Z_TYPE_P(waiter) == IS_NULL){
-		waiter = air_new_object(ZEND_STRL("air\\curl\\waiter"));
-		air_call_method(&waiter, air_curl_waiter_ce, NULL, ZEND_STRL("__construct"), NULL, 0, NULL);
-		zend_update_static_property(air_curl_ce, ZEND_STRL("_waiter"), waiter);
-		_waiter = waiter;
-	}
-	zval **params[1] = {&self};
-	zval *service;
-	air_call_method(&waiter, air_curl_waiter_ce, NULL, ZEND_STRL("serve"), &service, 1, params);
-	zend_update_property(air_curl_ce, self, ZEND_STRL("_service"), service);
-	zval_ptr_dtor(&service);
-	if(_waiter){
-		zval_ptr_dtor(&_waiter);
-	}
-	*/
 	AIR_RET_THIS;
 }
 
@@ -301,6 +283,7 @@ PHP_METHOD(air_curl, get) {
 	zval *url;
 	zval *params = NULL;
 	if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z|a", &url, &params) == FAILURE){
+		AIR_NEW_EXCEPTION(1, "invalid air\\curl::get params");
 	}
 	zval *qs;
 	if(params){
