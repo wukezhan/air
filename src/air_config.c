@@ -71,20 +71,26 @@ zval *air_config_get_data(){
 	return data;
 }
 
-zval *air_config_get(zval *data, zend_string *key) {
-	zval *_data = data;
-	if(data == NULL){
-		_data = air_config_get_data();
-	}
-	return zend_hash_find(Z_ARRVAL_P(_data), key);
-}
-
 zval *air_config_str_get(zval *data, char *key, int key_len) {
 	zval *_data = data;
 	if(data == NULL){
 		_data = air_config_get_data();
 	}
-	return zend_hash_str_find(Z_ARRVAL_P(_data), key, key_len);
+	zval *ret = zend_hash_str_find(Z_ARRVAL_P(_data), key, key_len);
+	if(!ret){
+		long lval;
+		double dval;
+		int type = is_numeric_string(key, key_len, &lval, &dval, 0);
+		if(type){
+			int idx = type == IS_LONG?lval: dval;
+			ret = zend_hash_index_find(Z_ARRVAL_P(_data), idx);
+		}
+	}
+	return ret;
+}
+
+zval *air_config_get(zval *data, zend_string *key) {
+	return air_config_str_get(data, ZSTR_VAL(key), ZSTR_LEN(key));
 }
 
 zval *air_config_path_get(zval *data, zend_string *path) {
@@ -96,13 +102,13 @@ zval *air_config_path_get(zval *data, zend_string *path) {
 	char *seg = NULL, *sptr = NULL;
 	char *skey = estrndup(ZSTR_VAL(path), ZSTR_LEN(path));
 	seg = php_strtok_r(skey, ".", &sptr);
-	int status = SUCCESS;
+	int len, status = SUCCESS;
 	while(seg){
 		if(Z_TYPE_P(_data) != IS_ARRAY) {
 			_data = NULL;
 			break;
 		}
-		_data = zend_hash_str_find(Z_ARRVAL_P(_data), seg, strlen(seg));
+		_data = air_config_str_get(_data, seg, strlen(seg));
 		if(!_data){
 			php_error(E_NOTICE, "config path '%s' not found\n", ZSTR_VAL(path));
 			break;
@@ -160,7 +166,7 @@ PHP_METHOD(air_config, get) {
 	if(!key){
 		RETURN_ZVAL(data, 1, 0);
 	}
-	val = zend_hash_find(Z_ARRVAL_P(data), key);
+	val = air_config_get(data, key);
 	if(!val) {
 		if(def_val){
 			RETURN_ZVAL(def_val, 1, 0);
