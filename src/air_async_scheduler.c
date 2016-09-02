@@ -45,15 +45,7 @@ int air_async_scheduler_loop(zval *self){
 		zval *utime = zend_read_static_property(air_async_scheduler_ce, ZEND_STRL("utime"), 0);
 		unsigned int ut = Z_LVAL_P(utime)>0?Z_LVAL_P(utime): 0;
 		zend_update_property(air_async_scheduler_ce, self, ZEND_STRL("_working_waiters"), waiting_waiters);
-		smart_str func_name[6];
-		int i = 0;
-		for(; i<6; i++){
-			smart_str s = {0};
-			smart_str_appends(&s, "step_");
-			smart_str_append_long(&s, i);
-			smart_str_0(&s);
-			func_name[i] = s;
-		}
+		char* func[6] = {"step_0", "step_1", "step_2", "step_3", "step_4", "step_5"};
 		while(zend_hash_num_elements(Z_ARRVAL_P(waiting_waiters))){
 			uint idx;
 			zend_string *key;
@@ -63,7 +55,7 @@ int air_async_scheduler_loop(zval *self){
 				zval *step = zend_hash_str_find(Z_ARRVAL_P(context), ZEND_STRL("step"));
 				int is = step?Z_LVAL_P(step):-1;
 				if(is >= 0){
-					air_call_method(waiter, Z_OBJCE_P(waiter), NULL, ZSTR_VAL(func_name[is].s), ZSTR_LEN(func_name[is].s), NULL, 0, NULL);
+					air_call_method(waiter, Z_OBJCE_P(waiter), NULL, func[is], 6, NULL, 0, NULL);
 				}else{
 					zend_hash_del(Z_ARRVAL_P(waiting_waiters), key);
 				}
@@ -71,10 +63,6 @@ int air_async_scheduler_loop(zval *self){
 			usleep(ut);
 		}
 		zend_update_property_null(air_async_scheduler_ce, self, ZEND_STRL("_working_waiters"));
-		i = 0;
-		for(; i<6; i++){
-			smart_str_free(&func_name[i]);
-		}
 	}else{
 		php_error(E_ERROR, "air\\async\\scheduler::loop() is not reentrancy");
 	}
@@ -145,11 +133,18 @@ PHP_METHOD(air_async_scheduler, loop) {
 	zval *worker = zend_read_static_property(air_async_scheduler_ce, ZEND_STRL("_worker"), 0);
 	air_async_scheduler_loop(worker);
 }
+
+PHP_METHOD(air_async_scheduler, __destruct) {
+	AIR_INIT_THIS;
+	zval *worker = zend_read_static_property(air_async_scheduler_ce, ZEND_STRL("_worker"), 0);
+	air_async_scheduler_loop(worker);
+}
 /* }}} */
 
 /* {{{ air_async_scheduler_methods */
 zend_function_entry air_async_scheduler_methods[] = {
 	PHP_ME(air_async_scheduler, __construct, air_async_scheduler_construct_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
+	PHP_ME(air_async_scheduler, __destruct, NULL,  ZEND_ACC_PUBLIC | ZEND_ACC_DTOR)
 	PHP_ME(air_async_scheduler, acquire, air_async_scheduler_acquire_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
 	PHP_ME(air_async_scheduler, loop, air_async_scheduler_none_arginfo,  ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
 	{NULL, NULL, NULL}
