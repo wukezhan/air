@@ -169,7 +169,7 @@ PHP_METHOD(air_mysql_keeper, acquire) {
 		php_error(E_WARNING, "air\\mysql\\keeper::acquire($config, $mode) params error");
 		return;
 	}
-	zval *conf_entry = air_mysql_keeper_find_entry(conf_name, len, mode);;
+	zval *conf_entry = air_mysql_keeper_find_entry(conf_name, len, mode);
 	zval *free = air_arr_find(conf_entry, ZEND_STRS("free"));
 	zval *busy = air_arr_find(conf_entry, ZEND_STRS("busy"));
 	zval *mysqli = NULL;

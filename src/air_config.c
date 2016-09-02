@@ -86,7 +86,19 @@ int air_config_get(zval *data, const char *key, int key_len, zval **val TSRMLS_D
 	int status = zend_hash_find(Z_ARRVAL_P(_data), key, key_len, (void **)&ppzval);
 	if(status == SUCCESS) {
 		*val = *ppzval;
+	}else{
+		long lval;
+		double dval;
+		int type = is_numeric_string(key, key_len, &lval, &dval, 0);
+		if(type){
+			int idx = type == IS_LONG?lval: dval;
+			status = zend_hash_index_find(Z_ARRVAL_P(_data), idx, (void **)&ppzval);
+			if(status == SUCCESS) {
+				*val = *ppzval;
+			}
+		}
 	}
+
 	return status;
 }
 
@@ -99,18 +111,31 @@ int air_config_path_get(zval *data, const char *path, int path_len, zval **val T
 	char *seg = NULL, *sptr = NULL;
 	char *skey = estrndup(path, path_len);
 	seg = php_strtok_r(skey, ".", &sptr);
-	int status = SUCCESS;
+	int len, status = SUCCESS;
 	while(seg){
 		if(Z_TYPE_P(_data) != IS_ARRAY) {
 			status = FAILURE;
 			break;
 		}
-		if(zend_hash_find(Z_ARRVAL_P(_data), seg, strlen(seg)+1, (void **)&tmp) == SUCCESS) {
+		len = strlen(seg)+1;
+		status = zend_hash_find(Z_ARRVAL_P(_data), seg, len, (void **)&tmp);
+		if(status == SUCCESS) {
 			_data = *tmp;
 		}else{
-			php_error(E_NOTICE, "config path '%s' not found\n", path);
-			status = FAILURE;
-			break;
+			long lval;
+			double dval;
+			int type = is_numeric_string(seg, len-1, &lval, &dval, 0);
+			if(type){
+				int idx = type == IS_LONG?lval: dval;
+				status = zend_hash_index_find(Z_ARRVAL_P(_data), idx, (void **)&tmp);
+				if(status == SUCCESS) {
+					_data = *tmp;
+				}
+			}
+			if(status == FAILURE){
+				php_error(E_NOTICE, "config path '%s' not found\n", path);
+				break;
+			}
 		}
 		seg = php_strtok_r(NULL, ".", &sptr);
 	}
