@@ -348,14 +348,14 @@ PHP_METHOD(air_curl, reset) {
 	AIR_RET_THIS;
 }
 
-PHP_METHOD(air_curl, errno) {
+PHP_METHOD(air_curl, get_errno) {
 	AIR_INIT_THIS;
 	zval *ch = zend_read_property(air_curl_ce, self, ZEND_STRL("_ch"), 1, NULL);
 	zval params[1] = { *ch };
 	air_call_func("curl_error", 1, params, return_value);
 }
 
-PHP_METHOD(air_curl, error) {
+PHP_METHOD(air_curl, get_error) {
 	AIR_INIT_THIS;
 	zval *ch = zend_read_property(air_curl_ce, self, ZEND_STRL("_ch"), 1, NULL);
 	zval params[1] = { *ch };
@@ -433,8 +433,8 @@ zend_function_entry air_curl_methods[] = {
 	PHP_ME(air_curl, init, NULL,  ZEND_ACC_PUBLIC)
 	PHP_ME(air_curl, exec, NULL,  ZEND_ACC_PUBLIC)
 	PHP_ME(air_curl, data, NULL,  ZEND_ACC_PUBLIC)
-	PHP_ME(air_curl, errno, NULL,  ZEND_ACC_PUBLIC)
-	PHP_ME(air_curl, error, NULL,  ZEND_ACC_PUBLIC)
+	PHP_ME(air_curl, get_errno, NULL,  ZEND_ACC_PUBLIC)
+	PHP_ME(air_curl, get_error, NULL,  ZEND_ACC_PUBLIC)
 	PHP_ME(air_curl, trigger, air_curl_trigger_arginfo, ZEND_ACC_PUBLIC)
 	PHP_ME(air_curl, on_success, air_curl_on_arginfo, ZEND_ACC_PUBLIC)
 	PHP_ME(air_curl, on_error, air_curl_on_arginfo, ZEND_ACC_PUBLIC)
