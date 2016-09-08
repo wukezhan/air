@@ -449,11 +449,11 @@ public air\curl::reset( void ) : $this
 * **$this**
 
 
-#### air\curl::errno
+#### air\curl::get_errno
 ---
  Return the last error number for the current session
 ```php
-public air\curl::errno( void ) : int
+public air\curl::get_errno( void ) : int
 ```
 ##### parameters
 * none
@@ -462,11 +462,11 @@ public air\curl::errno( void ) : int
 * **int**
 
 
-#### air\curl::error
+#### air\curl::get_error
 ---
  Return a string containing the last error for the current session
 ```php
-public air\curl::error( void ) : string
+public air\curl::get_error( void ) : string
 ```
 ##### parameters
 * none
@@ -1351,10 +1351,10 @@ public air\mysql::insert_id( void ) : int
 * **int**
 
 
-#### air\mysql::errno
+#### air\mysql::get_errno
 ---
 ```php
-public air\mysql::errno( void ) : int
+public air\mysql::get_errno( void ) : int
 ```
 ##### parameters
 * none
@@ -1362,11 +1362,10 @@ public air\mysql::errno( void ) : int
 ##### return
 * **int**
 
-
-#### air\mysql::error
+#### air\mysql::get_error
 ---
 ```php
-public air\mysql::error( void ) : string
+public air\mysql::get_error( void ) : string
 ```
 ##### parameters
 * none
