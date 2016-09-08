@@ -420,7 +420,7 @@ namespace air {
          * Return the last error number for the current session
          * @return int
          */
-        public function errno()
+        public function get_errno()
         {
             return 0;
         }
@@ -429,7 +429,7 @@ namespace air {
          * Return a string containing the last error for the current session
          * @return string Returns the error message or '' (the empty string) if no error occurred
          */
-        public function error()
+        public function get_error()
         {
             return '';
         }
@@ -788,7 +788,7 @@ namespace air\mysql
         /**
          * @return int
          */
-        public function errno()
+        public function get_errno()
         {
             return 0;
         }
@@ -796,7 +796,7 @@ namespace air\mysql
         /**
          * @return string
          */
-        public function error()
+        public function get_error()
         {
             return '';
         }
