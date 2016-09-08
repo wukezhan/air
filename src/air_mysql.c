@@ -757,14 +757,14 @@ PHP_METHOD(air_mysql, insert_id) {
 	RETURN_ZVAL(insert_id, 1, 0);
 }
 
-PHP_METHOD(air_mysql, errno) {
+PHP_METHOD(air_mysql, get_errno) {
 	AIR_INIT_THIS;
 	air_mysql_execute(self);
 	zval *prop = zend_read_property(air_mysql_ce, self, ZEND_STRL("_errno"), 1 TSRMLS_CC);
 	RETURN_ZVAL(prop, 1, 0);
 }
 
-PHP_METHOD(air_mysql, error) {
+PHP_METHOD(air_mysql, get_error) {
 	AIR_INIT_THIS;
 	air_mysql_execute(self);
 	zval *prop = zend_read_property(air_mysql_ce, self, ZEND_STRL("_error"), 1 TSRMLS_CC);
@@ -1140,8 +1140,8 @@ zend_function_entry air_mysql_methods[] = {
 	PHP_ME(air_mysql, affected_rows, air_mysql_void_arginfo, ZEND_ACC_PUBLIC)
 	PHP_ME(air_mysql, num_rows, air_mysql_void_arginfo, ZEND_ACC_PUBLIC)
 	PHP_ME(air_mysql, insert_id, air_mysql_void_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(air_mysql, error, air_mysql_void_arginfo, ZEND_ACC_PUBLIC)
-	PHP_ME(air_mysql, errno, air_mysql_void_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(air_mysql, get_error, air_mysql_void_arginfo, ZEND_ACC_PUBLIC)
+	PHP_ME(air_mysql, get_errno, air_mysql_void_arginfo, ZEND_ACC_PUBLIC)
 	//methods
 	PHP_ME(air_mysql, table, air_mysql_table_arginfo, ZEND_ACC_PUBLIC)
 	PHP_ME(air_mysql, mode, air_mysql_mode_arginfo, ZEND_ACC_PUBLIC)
