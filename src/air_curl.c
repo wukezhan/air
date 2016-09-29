@@ -25,6 +25,7 @@
 #include "php.h"
 #include "php_ini.h"
 #include "Zend/zend_interfaces.h"
+#include "Zend/zend_smart_str.h"
 
 #include "php_air.h"
 
@@ -283,10 +284,13 @@ PHP_METHOD(air_curl, get) {
 				}
 				i++;
 			}
-			char *tmp_str;
-			char tmp_len = spprintf(&tmp_str, 0, "%s%c%s", Z_STRVAL_P(url), (i<url_len?'&': '?'), Z_STRVAL(qs));
-			ZVAL_STRINGL(url, tmp_str, tmp_len);
-			efree(tmp_str);
+			smart_str s = {0};
+			smart_str_appends(&s, Z_STRVAL_P(url));
+			smart_str_appendc(&s, (i<url_len?'&': '?'));
+			smart_str_appends(&s, Z_STRVAL_P(&qs));
+			smart_str_0(&s);
+			ZVAL_STRINGL(url, ZSTR_VAL(s.s), ZSTR_LEN(s.s));
+			smart_str_free(&s);
 			zval_ptr_dtor(&qs);
 		}
 	}
@@ -350,6 +354,7 @@ PHP_METHOD(air_curl, reset) {
 
 PHP_METHOD(air_curl, get_errno) {
 	AIR_INIT_THIS;
+	air_curl_execute(self);
 	zval *ch = zend_read_property(air_curl_ce, self, ZEND_STRL("_ch"), 1, NULL);
 	zval params[1] = { *ch };
 	air_call_func("curl_error", 1, params, return_value);
@@ -357,6 +362,7 @@ PHP_METHOD(air_curl, get_errno) {
 
 PHP_METHOD(air_curl, get_error) {
 	AIR_INIT_THIS;
+	air_curl_execute(self);
 	zval *ch = zend_read_property(air_curl_ce, self, ZEND_STRL("_ch"), 1, NULL);
 	zval params[1] = { *ch };
 	air_call_func("curl_error", 1, params, return_value);
