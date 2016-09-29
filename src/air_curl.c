@@ -27,6 +27,7 @@
 #include "Zend/zend_interfaces.h"
 
 #include "php_air.h"
+#include "ext/standard/php_smart_str.h"
 
 #include "src/air_curl.h"
 #include "src/air_curl_waiter.h"
