@@ -25,6 +25,8 @@
 #include "php.h"
 #include "php_ini.h"
 
+#include "Zend/zend_interfaces.h"
+
 #include "php_air.h"
 
 #include "src/air_config.h"

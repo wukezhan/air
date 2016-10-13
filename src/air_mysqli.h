@@ -34,20 +34,10 @@
 #define AIR_SET 3
 #define AIR_GET 4
 
-
-#if PHP_MAJOR_VERSION > 5
-#define _AIR_INIT_MYSQL(mysql, mysql_link) \
-	zval *return_value;\
-	MYSQLI_FETCH_RESOURCE_CONN(mysql, mysql_link, MYSQLI_STATUS_VALID)
-#elif PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION > 4
-#define _AIR_INIT_MYSQL(mysql, mysql_link) \
-	zval *return_value;\
-	MYSQLI_FETCH_RESOURCE_CONN(mysql, &mysql_link, MYSQLI_STATUS_VALID)
-#else
-#define _AIR_INIT_MYSQL(mysql, mysql_link) \
-	zval *return_value;\
-	MYSQLI_FETCH_RESOURCE_CONN(mysql, &mysql_link, MYSQLI_STATUS_VALID)
-#endif
+static inline void _AIR_INIT_MYSQL(MY_MYSQL *mysql, zval *mysql_link){
+	zval *return_value;
+	MYSQLI_FETCH_RESOURCE_CONN(mysql, mysql_link, MYSQLI_STATUS_VALID);
+}
 
 static inline ulong air_mysqli_get_id(zval *mysql_link){
 	MY_MYSQL *mysql;

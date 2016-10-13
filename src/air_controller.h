@@ -25,5 +25,10 @@ AIR_MINIT_FUNCTION(air_controller);
 
 extern zend_class_entry *air_controller_ce;
 
+#include "Zend/zend_smart_str.h"
+
+int air_controller_set_route(air_controller_t *self, zval *route);
+int air_controller_set_meta(air_controller_t *self, smart_str controller, smart_str action);
+
 #endif
 

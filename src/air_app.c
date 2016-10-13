@@ -30,6 +30,7 @@
 #include "php_air.h"
 
 #include "src/air_config.h"
+#include "src/air_controller.h"
 #include "src/air_exception.h"
 #include "src/air_loader.h"
 #include "src/air_router.h"

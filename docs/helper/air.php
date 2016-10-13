@@ -558,116 +558,12 @@ namespace air {
             //
         }
     }
-}
-
-namespace air\async
-{
-    /**
-     * Class service
-     * @package air\async
-     */
-    class service
-    {
-        protected static $__id = 0;
-        protected $_id;
-        protected $_waiter;
-        protected $_request;
-
-        /**
-         * @param waiter $waiter
-         * @param $request
-         */
-        public function __construct(waiter $waiter, $request)
-        {
-            //
-        }
-
-        /**
-         * Retrieves the service data
-         * @return array
-         */
-        public function call()
-        {
-        }
-    }
 
     /**
-     * Class waiter
-     * @package air\async
+     * Class mysql
+     * @package air
      */
-    class waiter
-    {
-        protected $_services = [];
-        protected $_responses = [];
-
-        /**
-         * The __construct method
-         * all the services of the same waiter will wait for the same polling procedure
-         */
-        public function __construct()
-        {
-            //
-        }
-
-        /**
-         * Serve a async request, and return an async service
-         * @param $request
-         * @return service
-         */
-        public function serve($request)
-        {
-        }
-
-        /**
-         * The real response function which is not visible to the service
-         */
-        protected function _response()
-        {
-            //
-        }
-
-        /**
-         * Retrieves the request data of an async service by a service id
-         * @param $service_id
-         * @return mixed
-         */
-        public function response($service_id)
-        {
-            //
-        }
-    }
-}
-
-namespace air\curl
-{
-    /**
-     * Class waiter
-     * @package air\curl
-     */
-    class waiter extends \air\async\waiter
-    {
-        /**
-         * The real response function which is not visible to the service
-         */
-        protected function _response()
-        {
-            //
-        }
-
-        public function __destruct()
-        {
-            //
-        }
-    }
-}
-
-namespace air\mysql
-{
-    /**
-     * Class builder
-     * @package air\mysql
-     */
-    class builder implements \ArrayAccess, \Iterator, \Serializable
+    class mysql implements \ArrayAccess, \Iterator, \Serializable
     {
         protected static $_waiter;
         protected $_service;
@@ -965,7 +861,111 @@ namespace air\mysql
             //
         }
     }
+}
 
+namespace air\async
+{
+    /**
+     * Class service
+     * @package air\async
+     */
+    class service
+    {
+        protected static $__id = 0;
+        protected $_id;
+        protected $_waiter;
+        protected $_request;
+
+        /**
+         * @param waiter $waiter
+         * @param $request
+         */
+        public function __construct(waiter $waiter, $request)
+        {
+            //
+        }
+
+        /**
+         * Retrieves the service data
+         * @return array
+         */
+        public function call()
+        {
+        }
+    }
+
+    /**
+     * Class waiter
+     * @package air\async
+     */
+    class waiter
+    {
+        protected $_services = [];
+        protected $_responses = [];
+
+        /**
+         * The __construct method
+         * all the services of the same waiter will wait for the same polling procedure
+         */
+        public function __construct()
+        {
+            //
+        }
+
+        /**
+         * Serve a async request, and return an async service
+         * @param $request
+         * @return service
+         */
+        public function serve($request)
+        {
+        }
+
+        /**
+         * The real response function which is not visible to the service
+         */
+        protected function _response()
+        {
+            //
+        }
+
+        /**
+         * Retrieves the request data of an async service by a service id
+         * @param $service_id
+         * @return mixed
+         */
+        public function response($service_id)
+        {
+            //
+        }
+    }
+}
+
+namespace air\curl
+{
+    /**
+     * Class waiter
+     * @package air\curl
+     */
+    class waiter extends \air\async\waiter
+    {
+        /**
+         * The real response function which is not visible to the service
+         */
+        protected function _response()
+        {
+            //
+        }
+
+        public function __destruct()
+        {
+            //
+        }
+    }
+}
+
+namespace air\mysql
+{
     /**
      * Class keeper
      * @package air\mysql

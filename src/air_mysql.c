@@ -729,14 +729,6 @@ PHP_METHOD(air_mysql, get_error) {
 	RETURN_ZVAL(prop, 1, 0);
 }
 
-PHP_METHOD(air_mysql, jsonSerialize) {
-	AIR_INIT_THIS;
-	zval *t;
-	MAKE_STD_ZVAL(t);
-	array_init(t);
-	RETURN_ZVAL(t, 1, 0);
-}
-
 PHP_METHOD(air_mysql, async) {
 	AIR_INIT_THIS;
 	zval waiter;

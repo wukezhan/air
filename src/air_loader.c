@@ -24,6 +24,7 @@
 
 #include "php.h"
 #include "php_ini.h"
+#include "Zend/zend_exceptions.h"
 #include "Zend/zend_smart_str.h"
 
 #include "php_air.h"
