@@ -29,6 +29,7 @@
 #include "Zend/zend_smart_str.h"
 
 #include "ext/pcre/php_pcre.h"
+#include "ext/standard/php_array.h"
 #include "ext/standard/php_smart_string.h"
 
 #include "php_air.h"
