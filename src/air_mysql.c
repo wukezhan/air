@@ -747,7 +747,7 @@ PHP_METHOD(air_mysql, async) {
 
 PHP_METHOD(air_mysql, mode) {
 	AIR_INIT_THIS;
-	int mode = AIR_R;
+	zend_long mode = AIR_R;
 	if(zend_parse_parameters(ZEND_NUM_ARGS(), "l", &mode) == FAILURE){
 		AIR_NEW_EXCEPTION(1, "error mode");
 	}
@@ -886,7 +886,7 @@ PHP_METHOD(air_mysql, sort) {
 
 PHP_METHOD(air_mysql, offset) {
 	AIR_INIT_THIS;
-	ulong offset = 0;
+	zend_long offset = 0;
 	if(zend_parse_parameters(ZEND_NUM_ARGS(), "l", &offset) == FAILURE){
 		return ;
 	}
@@ -897,7 +897,7 @@ PHP_METHOD(air_mysql, offset) {
 
 PHP_METHOD(air_mysql, size) {
 	AIR_INIT_THIS;
-	ulong size = 10;
+	zend_long size = 10;
 	if(zend_parse_parameters(ZEND_NUM_ARGS(), "l", &size) == FAILURE){
 		return ;
 	}

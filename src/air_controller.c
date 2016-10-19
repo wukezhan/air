@@ -151,7 +151,7 @@ PHP_METHOD(air_controller, render_view) {
 	zend_call_method_with_0_params(self, air_controller_ce, NULL, "init_view", NULL);
 
 	zend_string *tpl_str = NULL;
-	int _ret = 0;
+	zend_long _ret = 0;
 	if(zend_parse_parameters(ZEND_NUM_ARGS(), "|Sl", &tpl_str, &_ret) == FAILURE)
 	{
 		RETURN_FALSE;

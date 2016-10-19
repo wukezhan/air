@@ -242,7 +242,7 @@ PHP_METHOD(air_curl, offsetUnset) {
 
 PHP_METHOD(air_curl, setopt) {
 	AIR_INIT_THIS;
-	ulong ok;
+	zend_long ok;
 	zval *ov;
 	if(zend_parse_parameters(ZEND_NUM_ARGS(), "lz", &ok, &ov) == FAILURE){
 		php_error(E_WARNING, "invalid air\\curl::setopt($ok, $ov) params");

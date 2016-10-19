@@ -87,7 +87,7 @@ PHP_METHOD(air_async_waiter, serve) {
 }
 
 PHP_METHOD(air_async_waiter, response) {
-	int id = 0;
+	zend_long id = 0;
 	if(zend_parse_parameters(ZEND_NUM_ARGS(), "l", &id) == FAILURE){
 		AIR_NEW_EXCEPTION(1, "invalid response param");
 	}

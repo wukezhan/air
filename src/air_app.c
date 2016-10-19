@@ -173,7 +173,7 @@ ZEND_END_ARG_INFO()
 /* {{{ PHP METHODS */
 PHP_METHOD(air_app, __construct) {
 	AIR_INIT_THIS;
-	zend_ulong type = AIR_SITE;
+	zend_long type = AIR_SITE;
 	if(zend_parse_parameters(ZEND_NUM_ARGS(), "|l", &type) == FAILURE){
 		//use default
 		return ;

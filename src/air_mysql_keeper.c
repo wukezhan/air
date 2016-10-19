@@ -165,7 +165,7 @@ PHP_METHOD(air_mysql_keeper, __construct) {
 
 PHP_METHOD(air_mysql_keeper, acquire) {
 	zend_string *conf_name = NULL;
-	int mode = AIR_R;
+	zend_long mode = AIR_R;
 	if(zend_parse_parameters(ZEND_NUM_ARGS(), "S|l", &conf_name, &mode) == FAILURE){
 		php_error(E_WARNING, "air\\mysql\\keeper::acquire($config, $mode) params error");
 		return;
@@ -222,7 +222,7 @@ PHP_METHOD(air_mysql_keeper, acquire) {
 PHP_METHOD(air_mysql_keeper, release) {
 	zend_string *conf_name = NULL;
 	zval *mysqli;
-	ulong mode = AIR_R;
+	zend_long mode = AIR_R;
 	if(zend_parse_parameters(ZEND_NUM_ARGS(), "zS|l", &mysqli, &conf_name, &mode) == FAILURE){
 		return ;
 	}
@@ -249,7 +249,7 @@ PHP_METHOD(air_mysql_keeper, release) {
 
 PHP_METHOD(air_mysql_keeper, simplex) {
 	zend_string *conf_name = NULL;
-	int mode = AIR_R;
+	zend_long mode = AIR_R;
 	if(zend_parse_parameters(ZEND_NUM_ARGS(), "S|l", &conf_name, &mode) == FAILURE){
 		php_error(E_WARNING, "air\\mysql\\keeper::simplex($config, $mode) params error");
 		return;
