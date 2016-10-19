@@ -129,7 +129,7 @@ ZEND_END_ARG_INFO()
 PHP_METHOD(air_mysql_keeper, __construct) {
 }
 
-zval *air_mysql_keeper_find_entry(char *conf_name, int conf_len, int mode){
+zval *air_mysql_keeper_find_entry(char *conf_name, int conf_len, int mode TSRMLS_DC){
 	zval *instance = zend_read_static_property(air_mysql_keeper_ce, ZEND_STRL("_instance"), 0 TSRMLS_CC);
 	if(Z_TYPE_P(instance) == IS_NULL){
 		object_init_ex(instance, air_mysql_keeper_ce);
@@ -140,7 +140,7 @@ zval *air_mysql_keeper_find_entry(char *conf_name, int conf_len, int mode){
 		zval *arr;
 		MAKE_STD_ZVAL(arr);
 		array_init(arr);
-		zend_update_property(air_mysql_keeper_ce, instance, ZEND_STRL("_pool"), arr);
+		zend_update_property(air_mysql_keeper_ce, instance, ZEND_STRL("_pool"), arr TSRMLS_CC);
 		keeper_pool = zend_read_property(air_mysql_keeper_ce, instance, ZEND_STRL("_pool"), 0 TSRMLS_CC);
 		zval_ptr_dtor(&arr);
 	}
@@ -169,7 +169,7 @@ PHP_METHOD(air_mysql_keeper, acquire) {
 		php_error(E_WARNING, "air\\mysql\\keeper::acquire($config, $mode) params error");
 		return;
 	}
-	zval *conf_entry = air_mysql_keeper_find_entry(conf_name, len, mode);
+	zval *conf_entry = air_mysql_keeper_find_entry(conf_name, len, mode TSRMLS_CC);
 	zval *free = air_arr_find(conf_entry, ZEND_STRS("free"));
 	zval *busy = air_arr_find(conf_entry, ZEND_STRS("busy"));
 	zval *mysqli = NULL;
@@ -213,7 +213,7 @@ PHP_METHOD(air_mysql_keeper, simplex) {
 		php_error(E_WARNING, "air\\mysql\\keeper::acquire($config, $mode) params error");
 		return;
 	}
-	zval *conf_entry = air_mysql_keeper_find_entry(conf_name, len, mode);
+	zval *conf_entry = air_mysql_keeper_find_entry(conf_name, len, mode TSRMLS_CC);
 	zval *simplex = air_arr_find(conf_entry, ZEND_STRS("simplex"));
 	zval *mysqli = NULL;
 	int status = 0;

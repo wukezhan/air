@@ -179,7 +179,7 @@ PHP_METHOD(air_mysql_waiter, step_2) {
 		Z_ADDREF_P(mysqli);
 		add_next_index_zval(event_params, mysqli);
 		zval *mysqli_result = NULL;
-		if(air_mysqli_get_errno(mysqli)){
+		if(air_mysqli_get_errno(mysqli TSRMLS_CC)){
 			ZVAL_STRING(event, "error", 1);
 		}else{
 			ZVAL_STRING(event, "success", 1);

@@ -349,7 +349,7 @@ PHP_METHOD(air_curl, init) {
 
 PHP_METHOD(air_curl, exec) {
 	AIR_INIT_THIS;
-	air_curl_execute(self);
+	air_curl_execute(self TSRMLS_CC);
 	zval *data = zend_read_property(air_curl_ce, self, ZEND_STRL("_data"), 1 TSRMLS_CC);
 	zval *ret = air_arr_find(data, ZEND_STRS("data"));
 	if(ret){

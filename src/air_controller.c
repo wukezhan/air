@@ -109,7 +109,7 @@ PHP_METHOD(air_controller, set_view) {
 		AIR_NEW_EXCEPTION(1, "invalid set_view param");
 	}
 
-	zend_update_property_stringl(air_controller_ce, self, ZEND_STRL("_view_path"), view_path, len);
+	zend_update_property_stringl(air_controller_ce, self, ZEND_STRL("_view_path"), view_path, len TSRMLS_CC);
 
 	AIR_RET_THIS;
 }
@@ -123,7 +123,7 @@ PHP_METHOD(air_controller, init_view) {
 	if(air_config_path_get(NULL, ZEND_STRL("app.view"), &view_conf TSRMLS_CC) == FAILURE){
 		AIR_NEW_EXCEPTION(1, "error config: app.view");
 	}
-	if(air_config_get(view_conf, ZEND_STRS("engine"), &ve_conf) == FAILURE){
+	if(air_config_get(view_conf, ZEND_STRS("engine"), &ve_conf TSRMLS_CC) == FAILURE){
 		if(ve_conf == NULL){
 			MAKE_STD_ZVAL(ve_conf);
 		}
@@ -172,10 +172,10 @@ PHP_METHOD(air_controller, render_view) {
 		zval *_conf = NULL;
 		zval *_view_path = NULL;
 		zval *_view_type = NULL;
-		if(air_config_path_get(NULL, ZEND_STRS("app.view"), &_conf) == FAILURE){
+		if(air_config_path_get(NULL, ZEND_STRS("app.view"), &_conf TSRMLS_CC) == FAILURE){
 			AIR_NEW_EXCEPTION(1, "view config app.view not found");
 		}
-		if(air_config_get(_conf, ZEND_STRS("type"), &_view_type) == FAILURE){
+		if(air_config_get(_conf, ZEND_STRS("type"), &_view_type TSRMLS_CC) == FAILURE){
 			AIR_NEW_EXCEPTION(1, "view config app.view.type not found");
 		}
 		zval *route = zend_read_property(air_controller_ce, self, ZEND_STRL("_route"), 0 TSRMLS_CC);

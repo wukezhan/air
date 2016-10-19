@@ -366,7 +366,7 @@ int air_mysql_auto_mode(zval *self TSRMLS_DC){
 	zval *mode = zend_read_property(air_mysql_ce, self, ZEND_STRL("_mode"), 1 TSRMLS_CC);
 	if(Z_TYPE_P(mode) == IS_NULL){
 		_mode = async_enabled?AIR_R: AIR_W;
-		zend_update_property_long(air_mysql_ce, self, ZEND_STRL("_mode"), _mode);
+		zend_update_property_long(air_mysql_ce, self, ZEND_STRL("_mode"), _mode TSRMLS_CC);
 	}else{
 		_mode = Z_LVAL_P(mode);
 		if(!async_enabled && _mode == AIR_R){
@@ -412,7 +412,7 @@ void air_mysql_execute(zval *self TSRMLS_DC){
 				if(Z_TYPE_P(data) == IS_NULL){
 					array_init(data);
 				}
-				air_mysql_update_result(self, data);
+				air_mysql_update_result(self, data TSRMLS_CC);
 				zval_ptr_dtor(&sql);
 			}
 			zval **release_params[3] = {&mysqli, &config, &mode};
@@ -506,13 +506,13 @@ PHP_METHOD(air_mysql, __construct) {
 	if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z|z", &config, &table) == FAILURE){
 		return ;
 	}
-	zend_update_property(air_mysql_ce, self, ZEND_STRL("_config"), config);
+	zend_update_property(air_mysql_ce, self, ZEND_STRL("_config"), config TSRMLS_CC);
 
 	zval *debug_info;
 
 	MAKE_STD_ZVAL(debug_info);
 	array_init(debug_info);
-	zend_update_property(air_mysql_ce, self, ZEND_STRL("_debug"), debug_info);
+	zend_update_property(air_mysql_ce, self, ZEND_STRL("_debug"), debug_info TSRMLS_CC);
 	zval_ptr_dtor(&debug_info);
 
 	zval *orig;
@@ -522,13 +522,13 @@ PHP_METHOD(air_mysql, __construct) {
 		Z_ADDREF_P(table);
 		add_assoc_zval(orig, "table", table);
 	}
-	zend_update_property(air_mysql_ce, self, ZEND_STRL("_original"), orig);
+	zend_update_property(air_mysql_ce, self, ZEND_STRL("_original"), orig TSRMLS_CC);
 	zval_ptr_dtor(&orig);
 
 	zval *arr;
 	MAKE_STD_ZVAL(arr);
 	array_init(arr);
-	zend_update_property(air_mysql_ce, self, ZEND_STRL("_compiled"), arr);
+	zend_update_property(air_mysql_ce, self, ZEND_STRL("_compiled"), arr TSRMLS_CC);
 	zval_ptr_dtor(&arr);
 
 	zval *cb_arr;
@@ -546,7 +546,7 @@ PHP_METHOD(air_mysql, __construct) {
 	add_next_index_string(cb_err, "on_error_default", 1);
 	add_assoc_zval(cb_arr, "success", cb_succ);
 	add_assoc_zval(cb_arr, "error", cb_err);
-	zend_update_property(air_mysql_ce, self, ZEND_STRL("_callback"), cb_arr);
+	zend_update_property(air_mysql_ce, self, ZEND_STRL("_callback"), cb_arr TSRMLS_CC);
 	zval_ptr_dtor(&cb_arr);
 	int is_debug = 0;
 	zval _debug;
@@ -773,10 +773,6 @@ PHP_METHOD(air_mysql, get_error) {
 
 PHP_METHOD(air_mysql, jsonSerialize) {
 	AIR_INIT_THIS;
-	zval *t;
-	MAKE_STD_ZVAL(t);
-	array_init(t);
-	RETURN_ZVAL(t, 1, 0);
 }
 
 PHP_METHOD(air_mysql, async) {
@@ -785,8 +781,8 @@ PHP_METHOD(air_mysql, async) {
 	air_call_static_method(air_mysql_waiter_ce, "acquire", &waiter, 0, NULL);
 	zval **params[1] = {&self};
 	zval *service;
-	air_call_method(&waiter, air_mysql_waiter_ce, NULL, ZEND_STRL("serve"), &service, 1, params);
-	zend_update_property(air_mysql_ce, self, ZEND_STRL("_service"), service);
+	air_call_method(&waiter, air_mysql_waiter_ce, NULL, ZEND_STRL("serve"), &service, 1, params TSRMLS_CC);
+	zend_update_property(air_mysql_ce, self, ZEND_STRL("_service"), service TSRMLS_CC);
 	zval_ptr_dtor(&service);
 	zval_ptr_dtor(&waiter);
 	zval *debug = zend_read_property(air_mysql_ce, self, ZEND_STRL("_debug"), 1 TSRMLS_CC);
@@ -1019,7 +1015,7 @@ PHP_METHOD(air_mysql, build) {
 		air_mysql_build(self TSRMLS_CC);
 		compiled = zend_read_property(air_mysql_ce, self, ZEND_STRL("_compiled"), 1 TSRMLS_CC);
 	}
-	zval *sql = air_mysqli_escape(compiled);
+	zval *sql = air_mysqli_escape(compiled TSRMLS_CC);
 	if(sql){
 		RETURN_ZVAL(sql, 1, 0);
 	}else{
