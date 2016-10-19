@@ -118,7 +118,7 @@ PHP_METHOD(air_async_scheduler, acquire) {
 		zval *_worker;
 		MAKE_STD_ZVAL(_worker);
 		object_init_ex(_worker, air_async_scheduler_ce);
-		air_call_object_method(&_worker, air_async_scheduler_ce, "__construct", NULL, 0, NULL TSRMLS_CC);
+		air_call_object_method(&_worker, air_async_scheduler_ce, "__construct", NULL, 0, NULL);
 		zend_update_static_property(air_async_scheduler_ce, ZEND_STRL("_worker"), _worker TSRMLS_CC);
 		zval_ptr_dtor(&_worker);
 		worker = zend_read_static_property(air_async_scheduler_ce, ZEND_STRL("_worker"), 1 TSRMLS_CC);
@@ -153,7 +153,7 @@ PHP_METHOD(air_async_scheduler, loop) {
 PHP_METHOD(air_async_scheduler, __destruct) {
 	AIR_INIT_THIS;
 	zval *worker = zend_read_static_property(air_async_scheduler_ce, ZEND_STRL("_worker"), 0 TSRMLS_CC);
-	air_async_scheduler_loop(worker);
+	air_async_scheduler_loop(worker TSRMLS_CC);
 }
 /* }}} */
 
