@@ -56,7 +56,7 @@ ZEND_RESULT_CODE air_router_route_apply_subpats(zval *r, zval *subpats, char *ke
 			if(tmp_val){
 				add_assoc_stringl_ex(subpats, key, key_len, Z_STRVAL_P(tmp_val), Z_STRLEN_P(tmp_val), 1);
 			}else{
-				php_error(E_NOTICE, "ref name '%s' not found in route rule '%s', and 'index' will be set instead,", tmp,  ro TSRMLS_CC);
+				php_error(E_NOTICE, "ref name '%s' not found in route rule '%s', and 'index' will be set instead,", tmp,  ro);
 				add_assoc_stringl_ex(subpats, key, key_len, ZEND_STRL("index"), 1);
 			}
 		}else{
