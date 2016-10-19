@@ -13,7 +13,7 @@ env:
   - REPORT_EXIT_STATUS=1 NO_INTERACTION=1
 
 before_script:
-    - ./test/travis/compile.sh
+    - ./tests/travis/compile.sh
 
 script:
-    - ./test/travis/run-tests.sh
+    - ./tests/travis/run-tests.sh
