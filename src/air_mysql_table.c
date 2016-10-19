@@ -48,7 +48,7 @@ zval *air_mysql_table_get_mysql(zval *self TSRMLS_DC){
 	ZVAL_STRINGL(db_table, str, len, 1);
 	zval **params[2] = {&config, &db_table};
 	zval *mysql = air_new_object(ZEND_STRL("air\\mysql") TSRMLS_CC);
-	air_call_method(&mysql, air_mysql_ce, NULL, ZEND_STRL("__construct"), NULL, 2, params);
+	air_call_method(&mysql, air_mysql_ce, NULL, ZEND_STRL("__construct"), NULL, 2, params TSRMLS_CC);
 	zval_ptr_dtor(&db_table);
 	efree(str);
 	return mysql;
