@@ -34,7 +34,7 @@
 
 zend_class_entry *air_curl_ce;
 
-void air_curl_set_opt(zval *self, zval **opts, ulong ok, zval *ov){
+void air_curl_set_opt(zval *self, zval **opts, ulong ok, zval *ov TSRMLS_DC){
 	zval *_opts;
 	if(!opts){
 		_opts = zend_read_property(air_curl_ce, self, ZEND_STRL("_opts"), 1 TSRMLS_CC);
@@ -45,18 +45,18 @@ void air_curl_set_opt(zval *self, zval **opts, ulong ok, zval *ov){
 	add_index_zval(_opts, ok, ov);
 }
 
-void air_curl_update_result(zval *self, zval *ch, zval *result){
+void air_curl_update_result(zval *self, zval *ch, zval *result TSRMLS_DC){
 	zend_update_property(air_curl_ce, self, ZEND_STRL("_data"), result TSRMLS_CC);
 	zend_update_property_long(air_curl_ce, self, ZEND_STRL("_status"), 1 TSRMLS_CC);
 }
 
-void air_curl_init(zval *self){
+void air_curl_init(zval *self TSRMLS_DC){
 	zval *ch = air_call_func("curl_init", 0, NULL);
-	zend_update_property(air_curl_ce, self, ZEND_STRL("_ch"), ch);
+	zend_update_property(air_curl_ce, self, ZEND_STRL("_ch"), ch TSRMLS_CC);
 	zval_ptr_dtor(&ch);
 }
 
-void air_curl_set_opt_array(zval *self){
+void air_curl_set_opt_array(zval *self TSRMLS_DC){
 	zval *ch = zend_read_property(air_curl_ce, self, ZEND_STRL("_ch"), 1 TSRMLS_CC);
 	zval *opts = zend_read_property(air_curl_ce, self, ZEND_STRL("_opts"), 1 TSRMLS_CC);
 	zval *params[2] = {ch, opts};
@@ -64,7 +64,7 @@ void air_curl_set_opt_array(zval *self){
 	zval_ptr_dtor(&tmp);
 }
 
-void air_curl_execute(zval *self){
+void air_curl_execute(zval *self TSRMLS_DC){
 	zval *status = zend_read_property(air_curl_ce, self, ZEND_STRL("_status"), 1 TSRMLS_CC);
 	if(Z_LVAL_P(status)){
 		return ;
@@ -82,11 +82,11 @@ void air_curl_execute(zval *self){
 			ZVAL_BOOL(data, 0);
 		}
 		zval *ch = zend_read_property(air_curl_ce, self, ZEND_STRL("_ch"), 1 TSRMLS_CC);
-		air_curl_update_result(self, ch, data);
+		air_curl_update_result(self, ch, data TSRMLS_CC);
 		zval_ptr_dtor(&data);
 	}else{
-		air_curl_init(self);
-		air_curl_set_opt_array(self);
+		air_curl_init(self TSRMLS_CC);
+		air_curl_set_opt_array(self TSRMLS_CC);
 		zval *ch = zend_read_property(air_curl_ce, self, ZEND_STRL("_ch"), 1 TSRMLS_CC);
 		zval *params[1] = {ch};
 		zval *result = air_call_func("curl_exec", 1, params);
@@ -110,7 +110,7 @@ void air_curl_execute(zval *self){
 		trigger_params[0] = &event;
 		trigger_params[1] = &event_params;
 		air_call_method(&self, air_curl_ce, NULL, ZEND_STRL("trigger"), &data, 2, trigger_params TSRMLS_CC);
-		air_curl_update_result(self, ch, data);
+		air_curl_update_result(self, ch, data TSRMLS_CC);
 		zval_ptr_dtor(&data);
 		zval_ptr_dtor(&event);
 		zval_ptr_dtor(&event_params);
@@ -188,7 +188,7 @@ PHP_METHOD(air_curl, offsetExists) {
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &key, &len) == FAILURE) {
 		return;
 	} else {
-		air_curl_execute(self);
+		air_curl_execute(self TSRMLS_CC);
 		zval *data = zend_read_property(air_curl_ce, self, ZEND_STRL("_data"), 1 TSRMLS_CC);
 		RETURN_BOOL(Z_TYPE_P(data) == IS_ARRAY && zend_hash_exists(Z_ARRVAL_P(data), key, len + 1));
 	}
@@ -205,7 +205,7 @@ PHP_METHOD(air_curl, offsetGet) {
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &key, &len) == FAILURE) {
 		return ;
 	}
-	air_curl_execute(self);
+	air_curl_execute(self TSRMLS_CC);
 	zval *data = zend_read_property(air_curl_ce, self, ZEND_STRL("_data"), 1 TSRMLS_CC);
 	zval **tmp;
 	long lval;
@@ -243,7 +243,7 @@ PHP_METHOD(air_curl, offsetUnset) {
 		RETURN_FALSE;
 	}
 
-	air_curl_execute(self);
+	air_curl_execute(self TSRMLS_CC);
 	data = zend_read_property(air_curl_ce, self, ZEND_STRL("_data"), 1 TSRMLS_CC);
 	if(Z_TYPE_P(data) != IS_ARRAY){
 		php_error(E_WARNING, "can not unset a key '%s' from a non-array data", Z_STRVAL_P(key));
@@ -261,8 +261,9 @@ PHP_METHOD(air_curl, setopt) {
 	long ok;
 	zval *ov;
 	if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "lz", &ok, &ov) == FAILURE){
+		return ;
 	}
-	air_curl_set_opt(self, NULL, ok, ov);
+	air_curl_set_opt(self, NULL, ok, ov TSRMLS_CC);
 	AIR_RET_THIS;
 }
 
@@ -311,7 +312,7 @@ PHP_METHOD(air_curl, get) {
 		}
 	}
 	zval *opts = zend_read_property(air_curl_ce, self, ZEND_STRL("_opts"), 1 TSRMLS_CC);
-	air_curl_set_opt(self, &opts, CURLOPT_URL, url);
+	air_curl_set_opt(self, &opts, CURLOPT_URL, url TSRMLS_CC);
 	AIR_RET_THIS;
 }
 
@@ -332,18 +333,18 @@ PHP_METHOD(air_curl, post) {
 	if(Z_TYPE_P(data) == IS_ARRAY){
 		zval *build_params[1] = {data};
 		zval *built_data = air_call_func("http_build_query", 1, build_params);
-		air_curl_set_opt(self, &opts, CURLOPT_POSTFIELDS, built_data);
+		air_curl_set_opt(self, &opts, CURLOPT_POSTFIELDS, built_data TSRMLS_CC);
 		zval_ptr_dtor(&built_data);
 	}else{
-		air_curl_set_opt(self, &opts, CURLOPT_POSTFIELDS, data);
+		air_curl_set_opt(self, &opts, CURLOPT_POSTFIELDS, data TSRMLS_CC);
 	}
 	AIR_RET_THIS;
 }
 
 PHP_METHOD(air_curl, init) {
 	AIR_INIT_THIS;
-	air_curl_init(self);
-	air_curl_set_opt_array(self);
+	air_curl_init(self TSRMLS_CC);
+	air_curl_set_opt_array(self TSRMLS_CC);
 }
 
 PHP_METHOD(air_curl, exec) {
@@ -374,7 +375,7 @@ PHP_METHOD(air_curl, reset) {
 
 PHP_METHOD(air_curl, get_errno) {
 	AIR_INIT_THIS;
-	air_curl_execute(self);
+	air_curl_execute(self TSRMLS_CC);
 	zval *ch = zend_read_property(air_curl_ce, self, ZEND_STRL("_ch"), 1 TSRMLS_CC);
 	zval *params[1] = {ch};
 	zval *ret = air_call_func("curl_errno", 1, params);
@@ -383,7 +384,7 @@ PHP_METHOD(air_curl, get_errno) {
 
 PHP_METHOD(air_curl, get_error) {
 	AIR_INIT_THIS;
-	air_curl_execute(self);
+	air_curl_execute(self TSRMLS_CC);
 	zval *ch = zend_read_property(air_curl_ce, self, ZEND_STRL("_ch"), 1 TSRMLS_CC);
 	zval *params[1] = {ch};
 	zval *ret = air_call_func("curl_error", 1, params);
@@ -444,7 +445,7 @@ PHP_METHOD(air_curl, on_error_default) {
 
 PHP_METHOD(air_curl, __destruct) {
 	AIR_INIT_THIS;
-	air_curl_execute(self);
+	air_curl_execute(self TSRMLS_CC);
 }
 /* }}} */
 

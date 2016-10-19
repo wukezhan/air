@@ -35,7 +35,7 @@
 
 zend_class_entry *air_async_scheduler_ce;
 
-int air_async_scheduler_loop(zval *self){
+int air_async_scheduler_loop(zval *self TSRMLS_DC){
 	if(ZVAL_IS_NULL(self)){
 		php_error(E_NOTICE, "no active scheduler found in air\\async\\scheduler::loop()");
 		return 0;
@@ -43,7 +43,7 @@ int air_async_scheduler_loop(zval *self){
 	zval *waiting_waiters = zend_read_property(air_async_scheduler_ce, self, ZEND_STRL("_working_waiters"), 0 TSRMLS_CC);
 	if(ZVAL_IS_NULL(waiting_waiters)){
 		waiting_waiters = zend_read_property(air_async_scheduler_ce, self, ZEND_STRL("_waiters"), 0 TSRMLS_CC);
-		zval *utime = zend_read_static_property(air_async_scheduler_ce, ZEND_STRL("utime"), 0);
+		zval *utime = zend_read_static_property(air_async_scheduler_ce, ZEND_STRL("utime"), 0 TSRMLS_CC);
 		unsigned int ut = Z_LVAL_P(utime)>0?Z_LVAL_P(utime): 0;
 		zend_update_property(air_async_scheduler_ce, self, ZEND_STRL("_working_waiters"), waiting_waiters TSRMLS_CC);
 		smart_str func_name[6];
@@ -65,14 +65,14 @@ int air_async_scheduler_loop(zval *self){
 				zval *step = air_arr_find(context, ZEND_STRS("step"));
 				int is = step?Z_LVAL_P(step):-1;
 				if(is >= 0){
-					air_call_method(&waiter, Z_OBJCE_P(waiter), NULL, func_name[is].c, func_name[is].len, NULL, 0, NULL);
+					air_call_method(&waiter, Z_OBJCE_P(waiter), NULL, func_name[is].c, func_name[is].len, NULL, 0, NULL TSRMLS_CC);
 				}else{
 					zend_hash_del(Z_ARRVAL_P(waiting_waiters), key, key_len);
 				}
 			}AIR_HASH_FOREACH_END();
 			usleep(ut);
 		}
-		zend_update_property_null(air_async_scheduler_ce, self, ZEND_STRL("_working_waiters"));
+		zend_update_property_null(air_async_scheduler_ce, self, ZEND_STRL("_working_waiters") TSRMLS_CC);
 		i = 0;
 		for(; i<6; i++){
 			smart_str_free(&func_name[i]);
@@ -113,15 +113,15 @@ PHP_METHOD(air_async_scheduler, acquire) {
 		return ;
 	}
 
-	zval *worker = zend_read_static_property(air_async_scheduler_ce, ZEND_STRL("_worker"), 1);
+	zval *worker = zend_read_static_property(air_async_scheduler_ce, ZEND_STRL("_worker"), 1 TSRMLS_CC);
 	if(ZVAL_IS_NULL(worker)){
 		zval *_worker;
 		MAKE_STD_ZVAL(_worker);
 		object_init_ex(_worker, air_async_scheduler_ce);
-		air_call_object_method(&_worker, air_async_scheduler_ce, "__construct", NULL, 0, NULL);
-		zend_update_static_property(air_async_scheduler_ce, ZEND_STRL("_worker"), _worker);
+		air_call_object_method(&_worker, air_async_scheduler_ce, "__construct", NULL, 0, NULL TSRMLS_CC);
+		zend_update_static_property(air_async_scheduler_ce, ZEND_STRL("_worker"), _worker TSRMLS_CC);
 		zval_ptr_dtor(&_worker);
-		worker = zend_read_static_property(air_async_scheduler_ce, ZEND_STRL("_worker"), 1);
+		worker = zend_read_static_property(air_async_scheduler_ce, ZEND_STRL("_worker"), 1 TSRMLS_CC);
 	}
 	zval *waiters = zend_read_property(air_async_scheduler_ce, worker, ZEND_STRL("_waiters"), 0 TSRMLS_CC);
 	zval *obj = air_arr_find(waiters, Z_STRVAL_P(class_name), Z_STRLEN_P(class_name));
@@ -131,7 +131,7 @@ PHP_METHOD(air_async_scheduler, acquire) {
 			php_error(E_ERROR, "class `%s` not found", Z_STRVAL_P(class_name));
 			return ;
 		}
-		if(!instanceof_function(ce, air_async_waiter_ce)){
+		if(!instanceof_function(ce, air_async_waiter_ce TSRMLS_CC)){
 			php_error(E_ERROR, "class `%s` is not a subclass of air\\async\\waiter", Z_STRVAL_P(class_name));
 		}
 		zval *_obj;
@@ -147,7 +147,7 @@ PHP_METHOD(air_async_scheduler, acquire) {
 PHP_METHOD(air_async_scheduler, loop) {
 	AIR_INIT_THIS;
 	zval *worker = zend_read_static_property(air_async_scheduler_ce, ZEND_STRL("_worker"), 0 TSRMLS_CC);
-	air_async_scheduler_loop(worker);
+	air_async_scheduler_loop(worker TSRMLS_CC);
 }
 
 PHP_METHOD(air_async_scheduler, __destruct) {
@@ -174,10 +174,10 @@ AIR_MINIT_FUNCTION(air_async_scheduler) {
 
 	air_async_scheduler_ce = zend_register_internal_class_ex(&ce, NULL, NULL TSRMLS_CC);
 
-	zend_declare_property_null(air_async_scheduler_ce, ZEND_STRL("_worker"), ZEND_ACC_PROTECTED | ZEND_ACC_STATIC);
-	zend_declare_property_long(air_async_scheduler_ce, ZEND_STRL("utime"), 200, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC);
-	zend_declare_property_null(air_async_scheduler_ce, ZEND_STRL("_waiters"), ZEND_ACC_PROTECTED);
-	zend_declare_property_null(air_async_scheduler_ce, ZEND_STRL("_working_waiters"), ZEND_ACC_PROTECTED);
+	zend_declare_property_null(air_async_scheduler_ce, ZEND_STRL("_worker"), ZEND_ACC_PROTECTED | ZEND_ACC_STATIC TSRMLS_CC);
+	zend_declare_property_long(air_async_scheduler_ce, ZEND_STRL("utime"), 200, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC TSRMLS_CC);
+	zend_declare_property_null(air_async_scheduler_ce, ZEND_STRL("_waiters"), ZEND_ACC_PROTECTED TSRMLS_CC);
+	zend_declare_property_null(air_async_scheduler_ce, ZEND_STRL("_working_waiters"), ZEND_ACC_PROTECTED TSRMLS_CC);
 	return SUCCESS;
 }
 /* }}} */

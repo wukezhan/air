@@ -25,7 +25,7 @@ AIR_MINIT_FUNCTION(air_mysql);
 
 extern zend_class_entry *air_mysql_ce;
 
-int air_mysql_auto_mode(zval *mysql);
+int air_mysql_auto_mode(zval *mysql TSRMLS_DC);
 
 #endif
 

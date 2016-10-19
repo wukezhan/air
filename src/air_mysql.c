@@ -103,7 +103,7 @@ void air_mysql_build_data_set(zval *data, smart_str *sql, zval **origin_param){
 	} AIR_HASH_FOREACH_END();
 }
 
-void air_mysql_build(zval *self){
+void air_mysql_build(zval *self TSRMLS_DC){
 	smart_str sql = {0};
 	zval *original = zend_read_property(air_mysql_ce, self, ZEND_STRL("_original"), 1 TSRMLS_CC);
 	zval *action = air_arr_find(original, ZEND_STRS("action"));
@@ -217,7 +217,7 @@ void air_mysql_build(zval *self){
 	smart_str_free(&sql);
 }
 
-zval* air_mysqli_escape(zval *compiled){
+zval* air_mysqli_escape(zval *compiled TSRMLS_DC){
 	zval *sql = air_arr_find(compiled, ZEND_STRS("sql"));
 	if(sql){
 		return sql;
@@ -281,7 +281,7 @@ zval* air_mysqli_escape(zval *compiled){
 	return tpl;
 }
 
-zval *air_mysql_trigger_event(zval *self, zval *mysqli, zval *mysqli_result){
+zval *air_mysql_trigger_event(zval *self, zval *mysqli, zval *mysqli_result TSRMLS_DC){
 	zval **trigger_params[2];
 	zval *event;
 	MAKE_STD_ZVAL(event);
@@ -307,7 +307,7 @@ zval *air_mysql_trigger_event(zval *self, zval *mysqli, zval *mysqli_result){
 	return results;
 }
 
-void air_mysql_update_result(zval *self, zval *result){
+void air_mysql_update_result(zval *self, zval *result TSRMLS_DC){
 	if(Z_TYPE_P(result) != IS_ARRAY){
 		php_error(E_ERROR, "type error: air\\mysql event handler must return an array");
 	}
@@ -337,7 +337,7 @@ void air_mysql_update_result(zval *self, zval *result){
 	zval_ptr_dtor(&result);
 }
 
-int air_mysql_auto_mode(zval *self){
+int air_mysql_auto_mode(zval *self TSRMLS_DC){
 	int async_enabled = 0;
 	//check if it is a select query
 	zval *original = zend_read_property(air_mysql_ce, self, ZEND_STRL("_original"), 1 TSRMLS_CC);
@@ -377,7 +377,7 @@ int air_mysql_auto_mode(zval *self){
 	return async_enabled;
 }
 
-void air_mysql_execute(zval *self){
+void air_mysql_execute(zval *self TSRMLS_DC){
 	zval *data = NULL;
 	zval *status = zend_read_property(air_mysql_ce, self, ZEND_STRL("_status"), 1 TSRMLS_CC);
 	if(!Z_LVAL_P(status)){
@@ -390,7 +390,7 @@ void air_mysql_execute(zval *self){
 			if(Z_TYPE_P(data) == IS_NULL){
 				array_init(data);
 			}
-			air_mysql_update_result(self, data);
+			air_mysql_update_result(self, data TSRMLS_CC);
 		}else{
 			//synchronous query
 			zend_class_entry *mysql_keeper_ce = air_get_ce(ZEND_STRL("air\\mysql\\keeper") TSRMLS_CC);
@@ -403,12 +403,12 @@ void air_mysql_execute(zval *self){
 			}
 			zval **build_params[1] = {&mysqli};
 			zval *sql = NULL;
-			air_call_method(&self, air_mysql_ce, NULL, ZEND_STRL("build"), &sql, 1, build_params);
+			air_call_method(&self, air_mysql_ce, NULL, ZEND_STRL("build"), &sql, 1, build_params TSRMLS_CC);
 			if(sql){
 				zval **query_params[1] = {&sql};
 				zval *mysqli_result = NULL;
-				air_call_method(&mysqli, Z_OBJCE_P(mysqli), NULL, ZEND_STRL("query"), &mysqli_result, 1, query_params);
-				data = air_mysql_trigger_event(self, mysqli, mysqli_result);
+				air_call_method(&mysqli, Z_OBJCE_P(mysqli), NULL, ZEND_STRL("query"), &mysqli_result, 1, query_params TSRMLS_CC);
+				data = air_mysql_trigger_event(self, mysqli, mysqli_result TSRMLS_CC);
 				if(Z_TYPE_P(data) == IS_NULL){
 					array_init(data);
 				}
@@ -612,7 +612,7 @@ PHP_METHOD(air_mysql, offsetGet) {
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &key, &len) == FAILURE) {
 		return ;
 	}
-	air_mysql_execute(self);
+	air_mysql_execute(self TSRMLS_CC);
 	zval *data = zend_read_property(air_mysql_ce, self, ZEND_STRL("_data"), 1 TSRMLS_CC);
 	zval **tmp;
 	long lval;
@@ -642,7 +642,7 @@ PHP_METHOD(air_mysql, offsetUnset) {
 		RETURN_FALSE;
 	}
 
-	air_mysql_execute(self);
+	air_mysql_execute(self TSRMLS_CC);
 	data = zend_read_property(air_mysql_ce, self, ZEND_STRL("_data"), 1 TSRMLS_CC);
 	if (zend_hash_del(Z_ARRVAL_P(data), Z_STRVAL_P(key), Z_STRLEN_P(key) + 1) == SUCCESS) {
 		RETURN_TRUE;
@@ -653,14 +653,14 @@ PHP_METHOD(air_mysql, offsetUnset) {
 
 PHP_METHOD(air_mysql, count) {
 	AIR_INIT_THIS;
-	air_mysql_execute(self);
+	air_mysql_execute(self TSRMLS_CC);
 	zval *data = zend_read_property(air_mysql_ce, self, ZEND_STRL("_data"), 1 TSRMLS_CC);
 	RETURN_LONG(zend_hash_num_elements(Z_ARRVAL_P(data)));
 }
 
 PHP_METHOD(air_mysql, rewind) {
 	AIR_INIT_THIS;
-	air_mysql_execute(self);
+	air_mysql_execute(self TSRMLS_CC);
 	zval *data = zend_read_property(air_mysql_ce, self, ZEND_STRL("_data"), 1 TSRMLS_CC);
 	zend_hash_internal_pointer_reset(Z_ARRVAL_P(data));
 }
@@ -669,7 +669,7 @@ PHP_METHOD(air_mysql, current) {
 	AIR_INIT_THIS;
 	zval *data, **ppzval, *ret;
 
-	air_mysql_execute(self);
+	air_mysql_execute(self TSRMLS_CC);
 	data = zend_read_property(air_mysql_ce, self, ZEND_STRL("_data"), 1 TSRMLS_CC);
 	if (zend_hash_get_current_data(Z_ARRVAL_P(data), (void **)&ppzval) == FAILURE) {
 		RETURN_FALSE;
@@ -683,7 +683,7 @@ PHP_METHOD(air_mysql, key) {
 	char *key;
 	ulong index;
 
-	air_mysql_execute(self);
+	air_mysql_execute(self TSRMLS_CC);
 	zval *data = zend_read_property(air_mysql_ce, self, ZEND_STRL("_data"), 1 TSRMLS_CC);
 	zend_hash_get_current_key(Z_ARRVAL_P(data), &key, &index, 0);
 	switch(zend_hash_get_current_key_type(Z_ARRVAL_P(data))) {
@@ -700,7 +700,7 @@ PHP_METHOD(air_mysql, key) {
 
 PHP_METHOD(air_mysql, next) {
 	AIR_INIT_THIS;
-	air_mysql_execute(self);
+	air_mysql_execute(self TSRMLS_CC);
 	zval *data = zend_read_property(air_mysql_ce, self, ZEND_STRL("_data"), 1 TSRMLS_CC);
 	zend_hash_move_forward(Z_ARRVAL_P(data));
 	RETURN_TRUE;
@@ -708,14 +708,14 @@ PHP_METHOD(air_mysql, next) {
 
 PHP_METHOD(air_mysql, valid) {
 	AIR_INIT_THIS;
-	air_mysql_execute(self);
+	air_mysql_execute(self TSRMLS_CC);
 	zval *data = zend_read_property(air_mysql_ce, self, ZEND_STRL("_data"), 1 TSRMLS_CC);
 	RETURN_BOOL(zend_hash_has_more_elements(Z_ARRVAL_P(data)) == SUCCESS);
 }
 
 PHP_METHOD(air_mysql, serialize) {
 	AIR_INIT_THIS;
-	air_mysql_execute(self);
+	air_mysql_execute(self TSRMLS_CC);
 	zval *data = zend_read_property(air_mysql_ce, self, ZEND_STRL("_data"), 1 TSRMLS_CC);
 	zval *serialize;
 	MAKE_STD_ZVAL(serialize);
@@ -731,42 +731,42 @@ PHP_METHOD(air_mysql, unserialize) {
 
 PHP_METHOD(air_mysql, data) {
 	AIR_INIT_THIS;
-	air_mysql_execute(self);
+	air_mysql_execute(self TSRMLS_CC);
 	zval *data = zend_read_property(air_mysql_ce, self, ZEND_STRL("_data"), 1 TSRMLS_CC);
 	RETURN_ZVAL(data, 1, 0);
 }
 
 PHP_METHOD(air_mysql, affected_rows) {
 	AIR_INIT_THIS;
-	air_mysql_execute(self);
+	air_mysql_execute(self TSRMLS_CC);
 	zval *rows = zend_read_property(air_mysql_ce, self, ZEND_STRL("_affected_rows"), 1 TSRMLS_CC);
 	RETURN_ZVAL(rows, 1, 0);
 }
 
 PHP_METHOD(air_mysql, num_rows) {
 	AIR_INIT_THIS;
-	air_mysql_execute(self);
+	air_mysql_execute(self TSRMLS_CC);
 	zval *rows = zend_read_property(air_mysql_ce, self, ZEND_STRL("_num_rows"), 1 TSRMLS_CC);
 	RETURN_ZVAL(rows, 1, 0);
 }
 
 PHP_METHOD(air_mysql, insert_id) {
 	AIR_INIT_THIS;
-	air_mysql_execute(self);
+	air_mysql_execute(self TSRMLS_CC);
 	zval *insert_id = zend_read_property(air_mysql_ce, self, ZEND_STRL("_insert_id"), 1 TSRMLS_CC);
 	RETURN_ZVAL(insert_id, 1, 0);
 }
 
 PHP_METHOD(air_mysql, get_errno) {
 	AIR_INIT_THIS;
-	air_mysql_execute(self);
+	air_mysql_execute(self TSRMLS_CC);
 	zval *prop = zend_read_property(air_mysql_ce, self, ZEND_STRL("_errno"), 1 TSRMLS_CC);
 	RETURN_ZVAL(prop, 1, 0);
 }
 
 PHP_METHOD(air_mysql, get_error) {
 	AIR_INIT_THIS;
-	air_mysql_execute(self);
+	air_mysql_execute(self TSRMLS_CC);
 	zval *prop = zend_read_property(air_mysql_ce, self, ZEND_STRL("_error"), 1 TSRMLS_CC);
 	RETURN_ZVAL(prop, 1, 0);
 }
@@ -1016,7 +1016,7 @@ PHP_METHOD(air_mysql, build) {
 	add_assoc_zval(compiled, "escaper", escaper);
 	zval *tpl = air_arr_find(compiled, ZEND_STRS("tpl"));
 	if(!tpl){
-		air_mysql_build(self);
+		air_mysql_build(self TSRMLS_CC);
 		compiled = zend_read_property(air_mysql_ce, self, ZEND_STRL("_compiled"), 1 TSRMLS_CC);
 	}
 	zval *sql = air_mysqli_escape(compiled);
@@ -1077,10 +1077,10 @@ PHP_METHOD(air_mysql, on_success_default) {
 	zval *ret;
 	MAKE_STD_ZVAL(ret);
 	array_init(ret);
-	zval *rows = air_mysqli_get_total_rows(mysqli);
+	zval *rows = air_mysqli_get_total_rows(mysqli TSRMLS_CC);
 	if(Z_TYPE_P(mysqli_result) == IS_BOOL){
 		add_assoc_zval(ret, "affected_rows", rows);
-		zval *insert_id = air_mysqli_get_insert_id(mysqli);
+		zval *insert_id = air_mysqli_get_insert_id(mysqli TSRMLS_CC);
 		if(Z_LVAL_P(insert_id)>0){
 			add_assoc_zval(ret, "insert_id", insert_id);
 		}else{
@@ -1101,8 +1101,8 @@ PHP_METHOD(air_mysql, on_error_default) {
 	if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &mysqli) == FAILURE){
 		return ;
 	}
-	ulong mysqli_errno = air_mysqli_get_errno(mysqli);
-	char *mysqli_error = air_mysqli_get_error(mysqli);
+	ulong mysqli_errno = air_mysqli_get_errno(mysqli TSRMLS_CC);
+	char *mysqli_error = air_mysqli_get_error(mysqli TSRMLS_CC);
 	zval *ret;
 	MAKE_STD_ZVAL(ret);
 	array_init(ret);
@@ -1116,7 +1116,7 @@ PHP_METHOD(air_mysql, __destruct) {
 	zval *status = zend_read_property(air_mysql_ce, self, ZEND_STRL("_status"), 1 TSRMLS_CC);
 	if(!Z_LVAL_P(status)){
 		//todo remove
-		air_mysql_execute(self);
+		air_mysql_execute(self TSRMLS_CC);
 	}
 }
 

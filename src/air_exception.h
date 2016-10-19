@@ -25,10 +25,10 @@ AIR_MINIT_FUNCTION(air_exception);
 
 extern zend_class_entry *air_exception_ce;
 
-zval *air_throw_exception(long code, const char* message);
-zval *air_throw_exception_ex(long code, const char *format, ...);
+zval *air_throw_exception(long code TSRMLS_DC, const char* message);
+zval *air_throw_exception_ex(long code TSRMLS_DC, const char *format, ...);
 
-#define AIR_NEW_EXCEPTION(code, message) air_throw_exception(code, message);return
+#define AIR_NEW_EXCEPTION(code, message) air_throw_exception(code TSRMLS_CC, message);return
 
 #endif
 

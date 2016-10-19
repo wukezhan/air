@@ -71,7 +71,7 @@ void air_config_init_default(TSRMLS_D){
 zval *air_config_get_data(TSRMLS_D){
 	zval *data = zend_read_static_property(air_config_ce, ZEND_STRL("_data"), 1 TSRMLS_CC);
 	if(Z_TYPE_P(data) == IS_NULL){
-		air_config_init_default(TSRMLS_CC);
+		air_config_init_default(TSRMLS_C);
 		data = zend_read_static_property(air_config_ce, ZEND_STRL("_data"), 1 TSRMLS_CC);
 	}
 	return data;
@@ -80,7 +80,7 @@ zval *air_config_get_data(TSRMLS_D){
 int air_config_get(zval *data, const char *key, int key_len, zval **val TSRMLS_DC) {
 	zval *_data = data;
 	if(data == NULL){
-		_data = air_config_get_data(TSRMLS_CC);
+		_data = air_config_get_data(TSRMLS_C);
 	}
 	zval **ppzval;
 	int status = zend_hash_find(Z_ARRVAL_P(_data), key, key_len, (void **)&ppzval);
@@ -105,7 +105,7 @@ int air_config_get(zval *data, const char *key, int key_len, zval **val TSRMLS_D
 int air_config_path_get(zval *data, const char *path, int path_len, zval **val TSRMLS_DC) {
 	zval *_data = data;
 	if(data == NULL){
-		_data = air_config_get_data(TSRMLS_CC);
+		_data = air_config_get_data(TSRMLS_C);
 	}
 	zval **tmp = NULL;
 	char *seg = NULL, *sptr = NULL;
@@ -167,10 +167,10 @@ PHP_METHOD(air_config, get) {
 		return ;
 	}
 	if(!key_len){
-		val = air_config_get_data();
+		val = air_config_get_data(TSRMLS_C);
 		RETURN_ZVAL(val, 1, 0);
 	}
-	if(air_config_get(NULL, key, key_len, &val) == FAILURE) {
+	if(air_config_get(NULL, key, key_len, &val TSRMLS_CC) == FAILURE) {
 		if(def_val){
 			RETURN_ZVAL(def_val, 1, 0);
 		}else{
@@ -191,7 +191,7 @@ PHP_METHOD(air_config, path_get) {
 		AIR_NEW_EXCEPTION(1, "invalid path_get params");
 	}
 	if(!key_len){
-		val = air_config_get_data();
+		val = air_config_get_data(TSRMLS_C);
 		RETURN_ZVAL(val, 1, 0);
 	}
 	if(air_config_path_get(NULL, key, key_len, &val TSRMLS_CC) == FAILURE) {
@@ -208,7 +208,7 @@ PHP_METHOD(air_config, set) {
 	if( zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "a", &data) == FAILURE ){
 		return ;
 	}
-	zval *origin_data = air_config_get_data(TSRMLS_CC);
+	zval *origin_data = air_config_get_data(TSRMLS_C);
 	php_array_replace_recursive(Z_ARRVAL_P(origin_data), Z_ARRVAL_P(data) TSRMLS_CC);
 }
 /* }}} */

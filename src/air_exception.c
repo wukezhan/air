@@ -33,7 +33,7 @@
 
 zend_class_entry *air_exception_ce;
 
-zval *air_throw_exception_ex(long code, const char *format, ...){
+zval *air_throw_exception_ex(long code TSRMLS_DC, const char *format, ...){
 	va_list arg;
 	char *message;
 	zval *ae;
@@ -47,7 +47,7 @@ zval *air_throw_exception_ex(long code, const char *format, ...){
 	efree(message);
 	return ae;
 }
-zval *air_throw_exception(long code, const char* message){
+zval *air_throw_exception(long code TSRMLS_DC, const char* message){
 	return zend_throw_exception(air_exception_ce, message, code TSRMLS_CC);
 }
 

@@ -88,7 +88,7 @@ int air_mysql_keeper_get_mysqli(zval **pp_mysqli, zval *config, int mode TSRMLS_
 	return 0;
 }
 
-int air_mysql_keeper_close_mysqli(zval *mysqli_array){
+int air_mysql_keeper_close_mysqli(zval *mysqli_array TSRMLS_DC){
 	zval *val;
 	ulong idx;
 	char *key;
@@ -178,7 +178,7 @@ PHP_METHOD(air_mysql_keeper, acquire) {
 		zval *config;
 		int found_conf_path = air_config_path_get(NULL, conf_name, len, &config TSRMLS_CC);
 		if(found_conf_path == FAILURE){
-			air_throw_exception_ex(1, "mysql config %s not found", conf_name);
+			air_throw_exception_ex(1 TSRMLS_CC, "mysql config %s not found", conf_name);
 			return ;
 		}
 		//todo add quota
@@ -195,11 +195,11 @@ PHP_METHOD(air_mysql_keeper, acquire) {
 		zend_hash_index_del(Z_ARRVAL_P(free), index);
 	}
 	if(status == 0){
-		ulong mysqli_id = air_mysqli_get_id(mysqli);
+		ulong mysqli_id = air_mysqli_get_id(mysqli TSRMLS_CC);
 		add_index_zval(busy, mysqli_id, mysqli);
 		RETURN_ZVAL(mysqli, 1, 0);
 	}else{
-		air_throw_exception_ex(1, "could not connect to %s", conf_name);
+		air_throw_exception_ex(1 TSRMLS_CC, "could not connect to %s", conf_name);
 		return ;
 	}
 	RETURN_LONG(status);
@@ -221,7 +221,7 @@ PHP_METHOD(air_mysql_keeper, simplex) {
 		zval *config;
 		int found_conf_path = air_config_path_get(NULL, conf_name, len, &config TSRMLS_CC);
 		if(found_conf_path == FAILURE){
-			air_throw_exception_ex(1, "mysql config %s not found", conf_name);
+			air_throw_exception_ex(1 TSRMLS_CC, "mysql config %s not found", conf_name);
 			return ;
 		}
 		//todo add quota
@@ -234,7 +234,7 @@ PHP_METHOD(air_mysql_keeper, simplex) {
 	if(status == SUCCESS){
 		RETURN_ZVAL(simplex, 1, 0);
 	}else{
-		air_throw_exception_ex(1, "could not connect to %s", conf_name);
+		air_throw_exception_ex(1 TSRMLS_CC, "could not connect to %s", conf_name);
 		return ;
 	}
 	RETURN_LONG(status);
@@ -252,10 +252,10 @@ PHP_METHOD(air_mysql_keeper, release) {
 	zval *free = air_arr_find(conf_entry, ZEND_STRS("free"));
 	zval *busy = air_arr_find(conf_entry, ZEND_STRS("busy"));
 
-	ulong mysqli_id = air_mysqli_get_id(mysqli);
+	ulong mysqli_id = air_mysqli_get_id(mysqli TSRMLS_CC);
 	if(!air_arr_idx_find(busy, mysqli_id)){
 		zval *simplex = air_arr_find(conf_entry, ZEND_STRS("simplex"));
-		if(simplex && air_mysqli_get_id(simplex) == mysqli_id){
+		if(simplex && air_mysqli_get_id(simplex TSRMLS_CC) == mysqli_id){
 			php_error(E_ERROR, "mysqli not found in busy pool, please check your code");
 		}
 		return ;
@@ -275,11 +275,11 @@ PHP_METHOD(air_mysql_keeper, __destruct) {
 	int key_len;
 	AIR_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(pool), idx, key, key_len, val){
 		zval *r = air_arr_idx_find(val, AIR_R);
-		air_mysql_keeper_close_mysqli(air_arr_find(r, ZEND_STRS("free")));
-		air_mysql_keeper_close_mysqli(air_arr_find(r, ZEND_STRS("busy")));
+		air_mysql_keeper_close_mysqli(air_arr_find(r, ZEND_STRS("free")) TSRMLS_CC);
+		air_mysql_keeper_close_mysqli(air_arr_find(r, ZEND_STRS("busy")) TSRMLS_CC);
 		zval *w = air_arr_idx_find(val, AIR_W);
-		air_mysql_keeper_close_mysqli(air_arr_find(w, ZEND_STRS("free")));
-		air_mysql_keeper_close_mysqli(air_arr_find(w, ZEND_STRS("busy")));
+		air_mysql_keeper_close_mysqli(air_arr_find(w, ZEND_STRS("free")) TSRMLS_CC);
+		air_mysql_keeper_close_mysqli(air_arr_find(w, ZEND_STRS("busy")) TSRMLS_CC);
 	}AIR_HASH_FOREACH_END();
 }
 

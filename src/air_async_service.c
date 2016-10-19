@@ -52,7 +52,7 @@ PHP_METHOD(air_async_service, __construct) {
 	}
 	//check if waiter is instance of air\waiter
 	if(Z_TYPE_P(waiter) != IS_OBJECT || !instanceof_function(Z_OBJCE_P(waiter), air_async_waiter_ce TSRMLS_CC)) {
-		air_throw_exception(1, "param waiter must be a instance of air\\waiter");
+		air_throw_exception(1 TSRMLS_CC, "param waiter must be a instance of air\\waiter");
 	}
 	zend_update_property(air_async_service_ce, self, ZEND_STRL("_waiter"), waiter TSRMLS_CC);
 	zend_update_property(air_async_service_ce, self, ZEND_STRL("_request"), request TSRMLS_CC);

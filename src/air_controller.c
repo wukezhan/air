@@ -129,7 +129,7 @@ PHP_METHOD(air_controller, init_view) {
 		}
 		ZVAL_STRINGL(ve_conf, "air\\view", 8, 1);
 	}
-	view_ce = air_loader_lookup_class(Z_STRVAL_P(ve_conf), Z_STRLEN_P(ve_conf));
+	view_ce = air_loader_lookup_class(Z_STRVAL_P(ve_conf), Z_STRLEN_P(ve_conf) TSRMLS_CC);
 	if (!view_ce) {
 		php_error(E_ERROR, "view engine %s not found", Z_STRVAL_P(ve_conf));
 		return ;

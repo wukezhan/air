@@ -72,7 +72,7 @@ PHP_METHOD(air_mysql_table, __construct) {
 
 PHP_METHOD(air_mysql_table, async) {
 	AIR_INIT_THIS;
-	zval *mysql = air_mysql_table_get_mysql(self);
+	zval *mysql = air_mysql_table_get_mysql(self TSRMLS_CC);
 	air_call_method(&mysql, air_mysql_ce, NULL, ZEND_STRL("async"), NULL, 0, NULL);
 	RETURN_ZVAL(mysql, 1, 1);
 }
@@ -84,7 +84,7 @@ PHP_METHOD(air_mysql_table, add) {
 		return ;
 	}
 	zval **params[1] = {&data};
-	zval *mysql = air_mysql_table_get_mysql(self);
+	zval *mysql = air_mysql_table_get_mysql(self TSRMLS_CC);
 	air_call_method(&mysql, air_mysql_ce, NULL, ZEND_STRL("add"), NULL, 1, params);
 	RETURN_ZVAL(mysql, 1, 1);
 }
@@ -96,7 +96,7 @@ PHP_METHOD(air_mysql_table, get) {
 		return ;
 	}
 	zval **params[1] = {&fields};
-	zval *mysql = air_mysql_table_get_mysql(self);
+	zval *mysql = air_mysql_table_get_mysql(self TSRMLS_CC);
 	air_call_method(&mysql, air_mysql_ce, NULL, ZEND_STRL("get"), NULL, 1, params);
 	RETURN_ZVAL(mysql, 1, 1);
 }
@@ -108,14 +108,14 @@ PHP_METHOD(air_mysql_table, set) {
 		return ;
 	}
 	zval **params[1] = {&data};
-	zval *mysql = air_mysql_table_get_mysql(self);
+	zval *mysql = air_mysql_table_get_mysql(self TSRMLS_CC);
 	air_call_method(&mysql, air_mysql_ce, NULL, ZEND_STRL("set"), NULL, 1, params);
 	RETURN_ZVAL(mysql, 1, 1);
 }
 
 PHP_METHOD(air_mysql_table, del) {
 	AIR_INIT_THIS;
-	zval *mysql = air_mysql_table_get_mysql(self);
+	zval *mysql = air_mysql_table_get_mysql(self TSRMLS_CC);
 	air_call_method(&mysql, air_mysql_ce, NULL, ZEND_STRL("del"), NULL, 0, NULL);
 	RETURN_ZVAL(mysql, 1, 1);
 }

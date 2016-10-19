@@ -36,7 +36,7 @@
 
 zend_class_entry *air_router_ce;
 
-char* air_router_compile(char *key, uint key_len, int *result_len) {
+char* air_router_compile(char *key, uint key_len, int *result_len TSRMLS_DC) {
 	char *ret;
 	zval *replace;
 	MAKE_STD_ZVAL(replace);
@@ -93,7 +93,7 @@ zval* air_arr_del_index_el(zval *arr) {
 	return tmp;
 }
 
-zval *air_router_route(air_router_t *self) {
+zval *air_router_route(air_router_t *self TSRMLS_DC) {
 	zval *return_value;
 	MAKE_STD_ZVAL(return_value);
 	ZVAL_NULL(return_value);
@@ -129,7 +129,7 @@ zval *air_router_route(air_router_t *self) {
 		if (r == NULL){
 			MAKE_STD_ZVAL(r);
 			array_init(r);
-			regex = air_router_compile(key, key_len, &regex_len);
+			regex = air_router_compile(key, key_len, &regex_len TSRMLS_CC);
 			char *ca = Z_STRVAL_PP(entry);
 			int size = 0;
 			while(size<Z_STRLEN_PP(entry)) {
@@ -263,7 +263,7 @@ PHP_METHOD(air_router, reset) {
 
 PHP_METHOD(air_router, route) {
 	AIR_INIT_THIS;
-	zval *ret = air_router_route(self);
+	zval *ret = air_router_route(self TSRMLS_CC);
 	RETURN_ZVAL(ret, 1, 1);
 }
 /* }}} */

@@ -125,11 +125,11 @@ PHP_METHOD(air_view, render){
 				AIR_NEW_EXCEPTION(1, "@error config: app");
 			}
 			zval *app_path = NULL;
-			if(air_config_get(app_conf, ZEND_STRS("path"), &app_path) == FAILURE){
+			if(air_config_get(app_conf, ZEND_STRS("path"), &app_path TSRMLS_CC) == FAILURE){
 				AIR_NEW_EXCEPTION(1, "@error config: app.path");
 			}
 			zval *view_path = NULL;
-			if(air_config_path_get(app_conf, ZEND_STRS("view.path"), &view_path) == FAILURE){
+			if(air_config_path_get(app_conf, ZEND_STRS("view.path"), &view_path TSRMLS_CC) == FAILURE){
 				AIR_NEW_EXCEPTION(1, "@view config not found");
 			}
 			smart_str_appendl(&ss_path, Z_STRVAL_P(app_path), Z_STRLEN_P(app_path));
@@ -167,7 +167,7 @@ PHP_METHOD(air_view, render){
 	//将当前的模板变量放到符号表去
 	ZEND_SET_SYMBOL_WITH_LENGTH(EG(active_symbol_table), "var", 4, data, Z_REFCOUNT_P(data) + 1, PZVAL_IS_REF(data));
 	if(air_loader_include_file(ss_path.c TSRMLS_CC) == FAILURE){
-		air_throw_exception_ex(1, "tpl %s render failed!\n", ss_path.c);
+		air_throw_exception_ex(1 TSRMLS_CC, "tpl %s render failed!\n", ss_path.c);
 		return ;
 	}
 

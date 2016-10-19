@@ -49,25 +49,25 @@
 	MYSQLI_FETCH_RESOURCE_CONN(mysql, &mysql_link, MYSQLI_STATUS_VALID)
 #endif
 
-static inline ulong air_mysqli_get_id(zval *mysql_link){
+static inline ulong air_mysqli_get_id(zval *mysql_link TSRMLS_DC){
 	MY_MYSQL *mysql;
 	_AIR_INIT_MYSQL(mysql, mysql_link);
 	return (ulong)mysql_thread_id(mysql->mysql);
 }
 
-static inline ulong air_mysqli_get_errno(zval *mysql_link){
+static inline ulong air_mysqli_get_errno(zval *mysql_link TSRMLS_DC){
 	MY_MYSQL *mysql;
 	_AIR_INIT_MYSQL(mysql, mysql_link);
 	return (ulong)mysql_errno(mysql->mysql);
 }
 
-static inline char *air_mysqli_get_error(zval *mysql_link){
+static inline char *air_mysqli_get_error(zval *mysql_link TSRMLS_DC){
 	MY_MYSQL *mysql;
 	_AIR_INIT_MYSQL(mysql, mysql_link);
 	return (char *)mysql_error(mysql->mysql);
 }
 
-static inline zval *air_mysqli_get_insert_id(zval *mysql_link){
+static inline zval *air_mysqli_get_insert_id(zval *mysql_link TSRMLS_DC){
 	MY_MYSQL *mysql;
 	_AIR_INIT_MYSQL(mysql, mysql_link);
 	my_longlong id = mysql_insert_id(mysql->mysql);
@@ -87,7 +87,7 @@ static inline zval *air_mysqli_get_insert_id(zval *mysql_link){
 	return ret;
 }
 
-static inline zval *air_mysqli_get_total_rows(zval *mysql_link){
+static inline zval *air_mysqli_get_total_rows(zval *mysql_link TSRMLS_DC){
 	MY_MYSQL *mysql;
 	_AIR_INIT_MYSQL(mysql, mysql_link);
 	//refer to ext/mysqli/mysqli_api.c: 157

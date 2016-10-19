@@ -64,7 +64,7 @@ PHP_METHOD(air_handler, on_error) {
 	if(error_type){
 		params[1] = error_type;
 	}
-	zval *ret = air_call_function(ZEND_STRL("set_error_handler"), ZEND_NUM_ARGS(), params);
+	zval *ret = air_call_function(ZEND_STRL("set_error_handler"), ZEND_NUM_ARGS(), params TSRMLS_CC);
 	if(ret){
 		RETURN_ZVAL(ret, 1, 1);
 	}
@@ -77,7 +77,7 @@ PHP_METHOD(air_handler, on_exception) {
 		return ;
 	}
 	params[0] = callback;
-	zval *ret = air_call_function(ZEND_STRL("set_exception_handler"), ZEND_NUM_ARGS(), params);
+	zval *ret = air_call_function(ZEND_STRL("set_exception_handler"), ZEND_NUM_ARGS(), params TSRMLS_CC);
 	if(ret){
 		RETURN_ZVAL(ret, 1, 1);
 	}
@@ -90,7 +90,7 @@ PHP_METHOD(air_handler, on_shutdown) {
 		return ;
 	}
 	params[0] = callback;
-	zval *ret = air_call_function(ZEND_STRL("register_shutdown_function"), ZEND_NUM_ARGS(), params);
+	zval *ret = air_call_function(ZEND_STRL("register_shutdown_function"), ZEND_NUM_ARGS(), params TSRMLS_CC);
 	if(ret){
 		RETURN_ZVAL(ret, 1, 1);
 	}

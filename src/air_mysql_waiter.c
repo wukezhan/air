@@ -85,7 +85,7 @@ PHP_METHOD(air_mysql_waiter, step_0) {
 		zval *mysql_config = zend_read_property(air_mysql_ce, mysql, ZEND_STRL("_config"), 1 TSRMLS_CC);
 		zval *mode = zend_read_property(air_mysql_ce, mysql, ZEND_STRL("_mode"), 1 TSRMLS_CC);
 		if(Z_TYPE_P(mode) == IS_NULL){
-			air_mysql_auto_mode(mysql);
+			air_mysql_auto_mode(mysql TSRMLS_CC);
 			mode = zend_read_property(air_mysql_ce, mysql, ZEND_STRL("_mode"), 1 TSRMLS_CC);
 		}
 		zval **acquire_params[2] = {&mysql_config, &mode};
@@ -94,10 +94,10 @@ PHP_METHOD(air_mysql_waiter, step_0) {
 		if(Z_TYPE_P(mysqli) != IS_NULL){
 			zval **build_params[1] = {&mysqli};
 			zval *sql = NULL;
-			air_call_method(&mysql, air_mysql_ce, NULL, ZEND_STRL("build"), &sql, 1, build_params);
+			air_call_method(&mysql, air_mysql_ce, NULL, ZEND_STRL("build"), &sql, 1, build_params TSRMLS_CC);
 			if(sql){
 				zval **query_params[2] = {&sql, &async};
-				air_call_method(&mysqli, mysqli_ce, NULL, ZEND_STRL("query"), NULL, 2, query_params);
+				air_call_method(&mysqli, mysqli_ce, NULL, ZEND_STRL("query"), NULL, 2, query_params TSRMLS_CC);
 				add_next_index_zval(wait_pool, mysqli);
 				Z_ADDREF_P(service_id);
 				add_index_zval(m2s, air_mysqli_get_id(mysqli), service_id);

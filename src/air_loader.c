@@ -168,7 +168,7 @@ int air_loader_autoload_class(char *classname, int len TSRMLS_DC) {
 		status = air_loader_load_class_from_dir(classname, len, &lib_dir TSRMLS_CC);
 		zval_dtor(&lib_dir);
 		if(status == FAILURE){
-			status = air_loader_load_class_from_dir(classname, len, &root_dir);
+			status = air_loader_load_class_from_dir(classname, len, &root_dir TSRMLS_CC);
 		}
 	}
 	zval_dtor(&root_dir);
