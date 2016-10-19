@@ -1,0 +1,19 @@
+language: php 
+
+os:
+  - linux
+
+php:
+  - 7.0
+
+notifications:
+  email: wukezhan@gmail.com
+   
+env:
+  - REPORT_EXIT_STATUS=1 NO_INTERACTION=1
+
+before_script:
+    - ./test/travis/compile.sh
+
+script:
+    - ./test/travis/run-tests.sh
