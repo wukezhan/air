@@ -248,7 +248,7 @@ PHP_METHOD(air_mysql_keeper, release) {
 	if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "zs|l", &mysqli, &conf_name, &len, &mode) == FAILURE){
 		return ;
 	}
-	zval *conf_entry = air_mysql_keeper_find_entry(conf_name, len, mode);
+	zval *conf_entry = air_mysql_keeper_find_entry(conf_name, len, mode TSRMLS_CC);
 	zval *free = air_arr_find(conf_entry, ZEND_STRS("free"));
 	zval *busy = air_arr_find(conf_entry, ZEND_STRS("busy"));
 
