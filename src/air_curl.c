@@ -159,7 +159,7 @@ PHP_METHOD(air_curl, __construct) {
 	MAKE_STD_ZVAL(opts);
 	array_init(opts);
 	add_assoc_long(opts, "19913", 1);
-	zend_update_property(air_curl_ce, self, ZEND_STRL("_opts"), opts);
+	zend_update_property(air_curl_ce, self, ZEND_STRL("_opts"), opts TSRMLS_CC);
 	zval_ptr_dtor(&opts);
 
 	zval *cb_arr;
@@ -177,7 +177,7 @@ PHP_METHOD(air_curl, __construct) {
 	add_next_index_string(cb_err, "on_error_default", 1);
 	add_assoc_zval(cb_arr, "success", cb_succ);
 	add_assoc_zval(cb_arr, "error", cb_err);
-	zend_update_property(air_curl_ce, self, ZEND_STRL("_callback"), cb_arr);
+	zend_update_property(air_curl_ce, self, ZEND_STRL("_callback"), cb_arr TSRMLS_CC);
 	zval_ptr_dtor(&cb_arr);
 }
 
