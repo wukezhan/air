@@ -34,57 +34,76 @@
 #define AIR_SET 3
 #define AIR_GET 4
 
-static inline void _AIR_INIT_MYSQL(MY_MYSQL *mysql, zval *mysql_link){
-	zval *return_value;
-	MYSQLI_FETCH_RESOURCE_CONN(mysql, mysql_link, MYSQLI_STATUS_VALID);
-}
+#define _MYSQLI_FETCH_RESOURCE_CONN(__ptr, __id, __check) do{ \
+	MY_MYSQL *mysql; \
+	MYSQLI_RESOURCE *my_res; \
+	mysqli_object *intern = Z_MYSQLI_P(__id); \
+	if (!(my_res = (MYSQLI_RESOURCE *)intern->ptr)) {\
+  		php_error_docref(NULL, E_WARNING, "Couldn't fetch %s", ZSTR_VAL(intern->zo.ce->name));\
+  	}else{\
+		__ptr = (MY_MYSQL *)my_res->ptr; \
+		if (__check && my_res->status < __check) { \
+			php_error_docref(NULL, E_WARNING, "invalid object or resource %s\n", ZSTR_VAL(intern->zo.ce->name)); \
+		}else{\
+			if (!(__ptr)->mysql) { \
+				mysqli_object *intern = Z_MYSQLI_P(__id); \
+				php_error_docref(NULL, E_WARNING, "invalid object or resource %s\n", ZSTR_VAL(intern->zo.ce->name)); \
+			}else{
+
+#define AIR_MYSQL_BEGIN(mysql_link) _MYSQLI_FETCH_RESOURCE_CONN(mysql, mysql_link, MYSQLI_STATUS_VALID)
+
+#define AIR_MYSQL_END() \
+			} \
+		} \
+	} \
+}while(0);
 
 static inline ulong air_mysqli_get_id(zval *mysql_link){
-	MY_MYSQL *mysql;
-	_AIR_INIT_MYSQL(mysql, mysql_link);
-	return (ulong)mysql_thread_id(mysql->mysql);
+	AIR_MYSQL_BEGIN(mysql_link){
+		return (ulong)mysql_thread_id(mysql->mysql);
+	}AIR_MYSQL_END();
 }
 
 static inline ulong air_mysqli_get_errno(zval *mysql_link){
-	MY_MYSQL *mysql;
-	_AIR_INIT_MYSQL(mysql, mysql_link);
-	return (ulong)mysql_errno(mysql->mysql);
+	AIR_MYSQL_BEGIN(mysql_link){
+		return (ulong)mysql_errno(mysql->mysql);
+	}AIR_MYSQL_END();
 }
 
 static inline char *air_mysqli_get_error(zval *mysql_link){
-	MY_MYSQL *mysql;
-	_AIR_INIT_MYSQL(mysql, mysql_link);
-	return (char *)mysql_error(mysql->mysql);
+	AIR_MYSQL_BEGIN(mysql_link){
+		return (char *)mysql_error(mysql->mysql);
+	}AIR_MYSQL_END();
 }
 
 static inline void air_mysqli_get_insert_id(zval *mysql_link, zval *retval){
-	MY_MYSQL *mysql;
-	_AIR_INIT_MYSQL(mysql, mysql_link);
-	my_longlong id = mysql_insert_id(mysql->mysql);
-	if (id < ZEND_LONG_MAX) {
-		ZVAL_LONG(retval, (zend_long) id);
-	} else {
-		zend_string *num_str = strpprintf(0, MYSQLI_LLU_SPEC, id);
-		ZVAL_STR(retval, num_str);
-		zend_string_release(num_str);
-	}
+	AIR_MYSQL_BEGIN(mysql_link){
+		my_longlong id = mysql_insert_id(mysql->mysql);
+		if (id < ZEND_LONG_MAX) {
+			ZVAL_LONG(retval, (zend_long) id);
+		} else {
+			zend_string *num_str = strpprintf(0, MYSQLI_LLU_SPEC, id);
+			ZVAL_STR(retval, num_str);
+			zend_string_release(num_str);
+		}
+	}AIR_MYSQL_END();
 }
 
 static inline void air_mysqli_get_total_rows(zval *mysql_link, zval *retval){
-	MY_MYSQL *mysql;
-	_AIR_INIT_MYSQL(mysql, mysql_link);
 	//refer to ext/mysqli/mysqli_api.c: 157
-	my_longlong ar = mysql_affected_rows(mysql->mysql);
-	if (ar == (my_longlong) -1) {
-		ZVAL_LONG(retval, -1);
-	}
-	if (ar < ZEND_LONG_MAX) {
-		ZVAL_LONG(retval, (zend_long) ar);
-	} else {
-		zend_string *num_str = strpprintf(0, MYSQLI_LLU_SPEC, ar);
-		ZVAL_STR(retval, num_str);
-		zend_string_release(num_str);
-	}
+	AIR_MYSQL_BEGIN(mysql_link){
+		my_longlong ar = mysql_affected_rows(mysql->mysql);
+		if (ar == (my_longlong) -1) {
+			ZVAL_LONG(retval, -1);
+		}
+		if (ar < ZEND_LONG_MAX) {
+			ZVAL_LONG(retval, (zend_long) ar);
+		} else {
+			zend_string *num_str = strpprintf(0, MYSQLI_LLU_SPEC, ar);
+			ZVAL_STR(retval, num_str);
+			zend_string_release(num_str);
+		}
+	}AIR_MYSQL_END();
 }
 
 #endif
