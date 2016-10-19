@@ -290,7 +290,7 @@ zval *air_mysql_trigger_event(zval *self, zval *mysqli, zval *mysqli_result TSRM
 	array_init(event_params);
 	Z_ADDREF_P(mysqli);
 	add_next_index_zval(event_params, mysqli);
-	if(air_mysqli_get_errno(mysqli)){
+	if(air_mysqli_get_errno(mysqli TSRMLS_CC)){
 		ZVAL_STRING(event, "error", 1);
 	}else{
 		ZVAL_STRING(event, "success", 1);
@@ -313,25 +313,25 @@ void air_mysql_update_result(zval *self, zval *result TSRMLS_DC){
 	}
 	zval *data = air_arr_find(result, ZEND_STRS("data"));
 	if(data){
-		zend_update_property(air_mysql_ce, self, ZEND_STRL("_data"), data);
-		zend_update_property(air_mysql_ce, self, ZEND_STRL("_num_rows"), air_arr_find(result, ZEND_STRS("num_rows")));
-		zend_update_property_long(air_mysql_ce, self, ZEND_STRL("_status"), 1);
+		zend_update_property(air_mysql_ce, self, ZEND_STRL("_data"), data TSRMLS_CC);
+		zend_update_property(air_mysql_ce, self, ZEND_STRL("_num_rows"), air_arr_find(result, ZEND_STRS("num_rows")) TSRMLS_CC);
+		zend_update_property_long(air_mysql_ce, self, ZEND_STRL("_status"), 1 TSRMLS_CC);
 	}else{
 		zval *ar = air_arr_find(result, ZEND_STRS("affected_rows"));
 		if(ar){
-			zend_update_property(air_mysql_ce, self, ZEND_STRL("_affected_rows"), ar);
+			zend_update_property(air_mysql_ce, self, ZEND_STRL("_affected_rows"), ar TSRMLS_CC);
 			zval *insert_id = air_arr_find(result, ZEND_STRS("insert_id"));
 			if(insert_id){
-				zend_update_property(air_mysql_ce, self, ZEND_STRL("_insert_id"), insert_id);
+				zend_update_property(air_mysql_ce, self, ZEND_STRL("_insert_id"), insert_id TSRMLS_CC);
 			}
-			zend_update_property_long(air_mysql_ce, self, ZEND_STRL("_status"), 1);
+			zend_update_property_long(air_mysql_ce, self, ZEND_STRL("_status"), 1 TSRMLS_CC);
 		}else{
 			zval *mysql_errno = air_arr_find(result, ZEND_STRS("errno"));
 			if(mysql_errno){
-				zend_update_property(air_mysql_ce, self, ZEND_STRL("_errno"), mysql_errno);
-				zend_update_property(air_mysql_ce, self, ZEND_STRL("_error"), air_arr_find(result, ZEND_STRS("error")));
+				zend_update_property(air_mysql_ce, self, ZEND_STRL("_errno"), mysql_errno TSRMLS_CC);
+				zend_update_property(air_mysql_ce, self, ZEND_STRL("_error"), air_arr_find(result, ZEND_STRS("error")) TSRMLS_CC);
 			}
-			zend_update_property_long(air_mysql_ce, self, ZEND_STRL("_status"), -1);
+			zend_update_property_long(air_mysql_ce, self, ZEND_STRL("_status"), -1 TSRMLS_CC);
 		}
 	}
 	zval_ptr_dtor(&result);
@@ -382,11 +382,11 @@ void air_mysql_execute(zval *self TSRMLS_DC){
 	zval *status = zend_read_property(air_mysql_ce, self, ZEND_STRL("_status"), 1 TSRMLS_CC);
 	if(!Z_LVAL_P(status)){
 		zval *service = zend_read_property(air_mysql_ce, self, ZEND_STRL("_service"), 1 TSRMLS_CC);
-		int async_enabled = air_mysql_auto_mode(self);
+		int async_enabled = air_mysql_auto_mode(self TSRMLS_CC);
 		zval *mode = zend_read_property(air_mysql_ce, self, ZEND_STRL("_mode"), 1 TSRMLS_CC);
 		if(Z_TYPE_P(service) != IS_NULL && async_enabled){
 			//asynchronous query
-			air_call_method(&service, Z_OBJCE_P(service), NULL, ZEND_STRL("call"), &data, 0, NULL);
+			air_call_method(&service, Z_OBJCE_P(service), NULL, ZEND_STRL("call"), &data, 0, NULL TSRMLS_CC);
 			if(Z_TYPE_P(data) == IS_NULL){
 				array_init(data);
 			}
@@ -595,7 +595,7 @@ PHP_METHOD(air_mysql, offsetExists) {
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &key, &len) == FAILURE) {
 		return;
 	} else {
-		air_mysql_execute(self);
+		air_mysql_execute(self TSRMLS_CC);
 		zval *data = zend_read_property(air_mysql_ce, self, ZEND_STRL("_data"), 1 TSRMLS_CC);
 		RETURN_BOOL(zend_hash_exists(Z_ARRVAL_P(data), key, len + 1));
 	}
