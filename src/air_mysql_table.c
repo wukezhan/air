@@ -34,7 +34,7 @@
 
 zend_class_entry *air_mysql_table_ce;
 
-zval *air_mysql_table_get_mysql(zval *self){
+zval *air_mysql_table_get_mysql(zval *self TSRMLS_DC){
 	zval *config = zend_read_property(air_mysql_table_ce, self, ZEND_STRL("_config"), 1 TSRMLS_CC);
 	zval *db = zend_read_property(air_mysql_table_ce, self, ZEND_STRL("_db"), 1 TSRMLS_CC);
 	zval *table = zend_read_property(air_mysql_table_ce, self, ZEND_STRL("_table"), 1 TSRMLS_CC);
@@ -47,7 +47,7 @@ zval *air_mysql_table_get_mysql(zval *self){
 	MAKE_STD_ZVAL(db_table);
 	ZVAL_STRINGL(db_table, str, len, 1);
 	zval **params[2] = {&config, &db_table};
-	zval *mysql = air_new_object(ZEND_STRL("air\\mysql"));
+	zval *mysql = air_new_object(ZEND_STRL("air\\mysql") TSRMLS_CC);
 	air_call_method(&mysql, air_mysql_ce, NULL, ZEND_STRL("__construct"), NULL, 2, params);
 	zval_ptr_dtor(&db_table);
 	efree(str);

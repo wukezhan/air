@@ -97,7 +97,7 @@ static inline zval *air_arr_idx_find(zval *data, int idx) {
 	}
 }
 
-static inline zend_class_entry *air_get_ce(char *classname, int len){
+static inline zend_class_entry *air_get_ce(char *classname, int len TSRMLS_DC){
 	zend_class_entry **ce = NULL;
 	if(zend_hash_find(EG(class_table), classname, len + 1, (void **)&ce) == FAILURE) {
 		return NULL;
@@ -105,8 +105,8 @@ static inline zend_class_entry *air_get_ce(char *classname, int len){
 	return *ce;
 }
 
-static inline zval *air_new_object(char *classname, int len){
-	zend_class_entry *ce = air_get_ce(classname, len);
+static inline zval *air_new_object(char *classname, int len TSRMLS_DC){
+	zend_class_entry *ce = air_get_ce(classname, len TSRMLS_CC);
 	if(!ce){
 		php_error(E_NOTICE, "class %s not found", classname);
 		return NULL;

@@ -393,7 +393,7 @@ void air_mysql_execute(zval *self){
 			air_mysql_update_result(self, data);
 		}else{
 			//synchronous query
-			zend_class_entry *mysql_keeper_ce = air_get_ce(ZEND_STRL("air\\mysql\\keeper"));
+			zend_class_entry *mysql_keeper_ce = air_get_ce(ZEND_STRL("air\\mysql\\keeper") TSRMLS_CC);
 			zval *mysqli = NULL;
 			zval *config = zend_read_property(air_mysql_ce, self, ZEND_STRL("_config"), 0 TSRMLS_CC);
 			zval **acquire_params[2] = {&config, &mode};

@@ -34,8 +34,8 @@
 
 zend_class_entry *air_mysql_keeper_ce;
 
-int air_mysql_keeper_get_mysqli(zval **pp_mysqli, zval *config, int mode){
-	zval *mysqli = air_new_object(ZEND_STRL("mysqli"));
+int air_mysql_keeper_get_mysqli(zval **pp_mysqli, zval *config, int mode TSRMLS_DC){
+	zval *mysqli = air_new_object(ZEND_STRL("mysqli") TSRMLS_CC);
 	air_call_method(&mysqli, Z_OBJCE_P(mysqli), NULL, ZEND_STRL("init"), NULL, 0, NULL TSRMLS_CC);
 	zval **params[7];
 	zval *host, *user, *pass, *db, *port, *sock, *flag, *nil;
@@ -182,7 +182,7 @@ PHP_METHOD(air_mysql_keeper, acquire) {
 			return ;
 		}
 		//todo add quota
-		status = air_mysql_keeper_get_mysqli(&mysqli, config, mode);
+		status = air_mysql_keeper_get_mysqli(&mysqli, config, mode TSRMLS_CC);
 	}else{
 		//pop
 		char *key;
@@ -225,7 +225,7 @@ PHP_METHOD(air_mysql_keeper, simplex) {
 			return ;
 		}
 		//todo add quota
-		status = air_mysql_keeper_get_mysqli(&mysqli, config, mode);
+		status = air_mysql_keeper_get_mysqli(&mysqli, config, mode TSRMLS_CC);
 		if(status == SUCCESS){
 			add_assoc_zval_ex(conf_entry, ZEND_STRS("simplex"), mysqli);
 			simplex = air_arr_find(conf_entry, ZEND_STRS("simplex"));

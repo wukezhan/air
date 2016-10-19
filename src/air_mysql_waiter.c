@@ -43,7 +43,7 @@ PHP_METHOD(air_mysql_waiter, step_0) {
 	zval *services = zend_read_property(Z_OBJCE_P(self), self, ZEND_STRL("_services"), 0 TSRMLS_CC);
 	zval *responses = zend_read_property(Z_OBJCE_P(self), self, ZEND_STRL("_responses"), 0 TSRMLS_CC);
 	zval *context = zend_read_property(Z_OBJCE_P(self), self, ZEND_STRL("_context"), 0 TSRMLS_CC);
-	zend_class_entry *mysqli_ce = air_get_ce(ZEND_STRL("mysqli"));
+	zend_class_entry *mysqli_ce = air_get_ce(ZEND_STRL("mysqli") TSRMLS_CC);
 	zval *async;
 	MAKE_STD_ZVAL(async);
 	ZVAL_LONG(async, MYSQLI_ASYNC);
@@ -128,7 +128,7 @@ PHP_METHOD(air_mysql_waiter, step_1) {
 	zval *timeout;
 	MAKE_STD_ZVAL(timeout);
 	ZVAL_LONG(timeout, 0);
-	zend_class_entry *mysqli_ce = air_get_ce(ZEND_STRL("mysqli"));
+	zend_class_entry *mysqli_ce = air_get_ce(ZEND_STRL("mysqli") TSRMLS_CC);
 	zval *mysqli;
 	zval *errors, *reads, *rejects;
 	MAKE_STD_ZVAL(errors);
@@ -160,7 +160,7 @@ PHP_METHOD(air_mysql_waiter, step_2) {
 	zval *waited = air_arr_find(context, ZEND_STRS("waited"));
 	zval *processed = air_arr_find(context, ZEND_STRS("processed"));
 	zval *step = air_arr_find(context, ZEND_STRS("step"));
-	zend_class_entry *mysqli_ce = air_get_ce(ZEND_STRL("mysqli"));
+	zend_class_entry *mysqli_ce = air_get_ce(ZEND_STRL("mysqli") TSRMLS_CC);
 
 	ulong idx;
 	char *key;
