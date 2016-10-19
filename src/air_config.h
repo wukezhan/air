@@ -26,7 +26,7 @@ AIR_MINIT_FUNCTION(air_config);
 extern zend_class_entry *air_config_ce;
 
 
-zval *air_config_get_data(TSRMLS_DC);
+zval *air_config_get_data(TSRMLS_D);
 int air_config_get(zval *data, const char *key, int key_len, zval **val TSRMLS_DC);
 int air_config_path_get(zval *data, const char *path, int path_len, zval **val TSRMLS_DC);
 

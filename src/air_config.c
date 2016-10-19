@@ -32,7 +32,7 @@
 
 zend_class_entry *air_config_ce;
 
-void air_config_init_default(TSRMLS_DC){
+void air_config_init_default(TSRMLS_D){
 	zval *_data = NULL;
 	MAKE_STD_ZVAL(_data);
 	array_init(_data);
@@ -68,7 +68,7 @@ void air_config_init_default(TSRMLS_DC){
 	zval_ptr_dtor(&_data);
 }
 
-zval *air_config_get_data(TSRMLS_DC){
+zval *air_config_get_data(TSRMLS_D){
 	zval *data = zend_read_static_property(air_config_ce, ZEND_STRL("_data"), 1 TSRMLS_CC);
 	if(Z_TYPE_P(data) == IS_NULL){
 		air_config_init_default(TSRMLS_CC);
