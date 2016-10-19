@@ -273,8 +273,8 @@ PHP_METHOD(air_curl, async) {
 	air_call_static_method(air_curl_waiter_ce, "acquire", &waiter, 0, NULL);
 	zval **params[1] = {&self};
 	zval *service;
-	air_call_method(&waiter, air_curl_waiter_ce, NULL, ZEND_STRL("serve"), &service, 1, params);
-	zend_update_property(air_curl_ce, self, ZEND_STRL("_service"), service);
+	air_call_method(&waiter, air_curl_waiter_ce, NULL, ZEND_STRL("serve"), &service, 1, params TSRMLS_CC);
+	zend_update_property(air_curl_ce, self, ZEND_STRL("_service"), service TSRMLS_CC);
 	zval_ptr_dtor(&service);
 	zval_ptr_dtor(&waiter);
 	AIR_RET_THIS;
@@ -324,11 +324,11 @@ PHP_METHOD(air_curl, post) {
 		AIR_NEW_EXCEPTION(1, "invalid air\\curl::post params");
 	}
 	zval *opts = zend_read_property(air_curl_ce, self, ZEND_STRL("_opts"), 1 TSRMLS_CC);
-	air_curl_set_opt(self, &opts, CURLOPT_URL, url);
+	air_curl_set_opt(self, &opts, CURLOPT_URL, url TSRMLS_CC);
 	zval *n1;
 	MAKE_STD_ZVAL(n1);
 	ZVAL_LONG(n1, 1);
-	air_curl_set_opt(self, &opts, CURLOPT_POST, n1);
+	air_curl_set_opt(self, &opts, CURLOPT_POST, n1 TSRMLS_CC);
 	zval_ptr_dtor(&n1);
 	if(Z_TYPE_P(data) == IS_ARRAY){
 		zval *build_params[1] = {data};
@@ -359,7 +359,7 @@ PHP_METHOD(air_curl, exec) {
 
 PHP_METHOD(air_curl, data) {
 	AIR_INIT_THIS;
-	air_curl_execute(self);
+	air_curl_execute(self TSRMLS_CC);
 	zval *data = zend_read_property(air_curl_ce, self, ZEND_STRL("_data"), 1 TSRMLS_CC);
 	RETURN_ZVAL(data, 1, 0);
 }
