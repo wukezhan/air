@@ -131,7 +131,7 @@ int air_app_dispatch(air_app_t *self TSRMLS_DC) {
 		php_error(E_ERROR, "error router type");
 	}
 	zval *route = NULL;
-	air_call_object_method(&router, Z_OBJCE_P(router), "route", &route, 0, NULL TSRMLS_CC);
+	air_call_object_method(&router, Z_OBJCE_P(router), "route", &route, 0, NULL);
 	int status = FAILURE;
 	do{
 		if(Z_TYPE_P(route) == IS_NULL){
@@ -141,7 +141,7 @@ int air_app_dispatch(air_app_t *self TSRMLS_DC) {
 			status = air_app_try_route(self, route TSRMLS_CC);
 			zval_ptr_dtor(&route);
 			if(status == FAILURE){
-				air_call_object_method(&router, Z_OBJCE_P(router), "route", &route, 0, NULL TSRMLS_CC);
+				air_call_object_method(&router, Z_OBJCE_P(router), "route", &route, 0, NULL);
 			}else{
 				break;
 			}
