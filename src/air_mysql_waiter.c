@@ -100,7 +100,7 @@ PHP_METHOD(air_mysql_waiter, step_0) {
 				air_call_method(&mysqli, mysqli_ce, NULL, ZEND_STRL("query"), NULL, 2, query_params TSRMLS_CC);
 				add_next_index_zval(wait_pool, mysqli);
 				Z_ADDREF_P(service_id);
-				add_index_zval(m2s, air_mysqli_get_id(mysqli), service_id);
+				add_index_zval(m2s, air_mysqli_get_id(mysqli TSRMLS_CC), service_id);
 				zval_ptr_dtor(&sql);
 			}else{
 				//should not happen
@@ -167,7 +167,7 @@ PHP_METHOD(air_mysql_waiter, step_2) {
 	int key_len;
 	zval *mysqli;
 	AIR_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(reads), idx, key, key_len, mysqli){
-		zval *service_id = air_arr_idx_find(m2s, air_mysqli_get_id(mysqli));
+		zval *service_id = air_arr_idx_find(m2s, air_mysqli_get_id(mysqli TSRMLS_CC));
 		zval *service = air_arr_idx_find(services, Z_LVAL_P(service_id));
 		zval *mysql = zend_read_property(air_async_service_ce, service, ZEND_STRL("_request"), 0 TSRMLS_CC);
 		zval **trigger_params[2];
