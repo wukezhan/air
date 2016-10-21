@@ -1,6 +1,8 @@
 #!/bin/bash
 TEST_DIR="`pwd`/tests/"
 
+cat Makefile
+
 make test
 
 for file in `find $TEST_DIR -name "*.diff" 2>/dev/null`
@@ -13,13 +15,13 @@ then
     for fail in "${FAILS[@]}"
     do
         echo "========$fail.phpt========"
-        echo "\n--------$fail.php --------"
+        echo -e "\n--------$fail.php --------"
         cat -b $fail.php
-        echo "\n--------$fail.diff--------"
+        echo -e "\n--------$fail.diff--------"
         cat -b $fail.diff
-        echo "\n--------$fail.out --------"
+        echo -e "\n--------$fail.out --------"
         cat -b $fail.out
-        echo "\n########$fail.phpt########"
+        echo -e "\n########$fail.phpt########"
     done
     exit 1
 else
