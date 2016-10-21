@@ -13,11 +13,13 @@ then
     for fail in "${FAILS[@]}"
     do
         echo "========$fail.phpt========"
-        echo "--------$fail.diff--------"
-        cat $fail.diff
-        echo "--------$fail.out --------"
-        cat $fail.out
-        echo "########$fail.phpt########"
+        echo "\n--------$fail.php --------"
+        cat -b $fail.php
+        echo "\n--------$fail.diff--------"
+        cat -b $fail.diff
+        echo "\n--------$fail.out --------"
+        cat -b $fail.out
+        echo "\n########$fail.phpt########"
     done
     exit 1
 else
