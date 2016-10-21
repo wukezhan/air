@@ -1,6 +1,8 @@
 #!/bin/bash
 TEST_DIR="`pwd`/tests/"
 
+make test
+
 for file in `find $TEST_DIR -name "*.diff" 2>/dev/null`
 do
         FAILS[${#FAILS[@]}]=${file%%diff*}
