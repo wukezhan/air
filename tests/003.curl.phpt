@@ -1,7 +1,7 @@
 --TEST--
 Check for air\curl
 --SKIPIF--
-<?php if (!extension_loaded("air")) print "skip"; ?>
+<?php if (1 || !extension_loaded("air")) print "skip"; ?>
 --FILE--
 <?php
 include 'server.inc.php';

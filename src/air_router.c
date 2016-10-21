@@ -47,7 +47,7 @@ char* air_router_compile(char *key, uint key_len, int *result_len TSRMLS_DC) {
 	return ret;
 }
 
-ZEND_RESULT_CODE air_router_route_apply_subpats(zval *r, zval *subpats, char *key, int key_len, char *ro, int ro_len) {
+int air_router_route_apply_subpats(zval *r, zval *subpats, char *key, int key_len, char *ro, int ro_len) {
 	zval *tmp_val = air_arr_find(r, key, key_len);
 	if(tmp_val){
 		char *tmp = Z_STRVAL_P(tmp_val);
