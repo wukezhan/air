@@ -2,7 +2,7 @@
 
 一款使用 `C` 语言写成的、现代的高性能轻量级`PHP` `web`框架。
 
-> ####see [README_en.md](README_en.md) for english introduction.
+> ####see [README_en.md](README_en.md) for english introduction.(i'm sorry that the english document is out of date, i'll update it soon, please see [here](#全局的异步并发模式) for the latest features)
 
 ## 特性
 
