@@ -87,6 +87,7 @@ echo "time used: ", microtime(1)-$time,"s\n";
     * mysqlnd
     * mysqli
     * curl
+* PHP 7.0.0+
 
 ```sh
 # configure options
