@@ -107,7 +107,9 @@ zend_class_entry *air_loader_autoload_class(zend_string *classname) {
 	zend_class_entry *ce = NULL;
 	char *class_str = ZSTR_VAL(classname);
 	smart_str ss_app_ns = {0};
-	zval *app_path = air_config_path_get(NULL, zend_string_init(ZEND_STRS("app.path"), 1));
+	zend_string *path_name = zend_string_init(ZEND_STRS("app.path"), 1);
+	zval *app_path = air_config_path_get(NULL, path_name);
+	zend_string_release(path_name);
 	if(!app_path){
 		smart_str_appendl(&ss_app_ns, "app\\", 4);
 	}else{

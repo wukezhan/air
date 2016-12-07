@@ -289,6 +289,7 @@ PHP_METHOD(air_curl, get) {
 			smart_str_appendc(&s, (i<url_len?'&': '?'));
 			smart_str_appends(&s, Z_STRVAL_P(&qs));
 			smart_str_0(&s);
+			zval_ptr_dtor(&url);
 			ZVAL_STRINGL(url, ZSTR_VAL(s.s), ZSTR_LEN(s.s));
 			smart_str_free(&s);
 			zval_ptr_dtor(&qs);
