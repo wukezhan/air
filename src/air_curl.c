@@ -275,6 +275,7 @@ PHP_METHOD(air_curl, get) {
 		zval build_params[1] = { *params };
 		air_call_func("http_build_query", 1, build_params, &qs);
 		if(!Z_ISUNDEF(qs)){
+			zval _url;
 			char *url_str = Z_STRVAL_P(url);
 			int url_len = Z_STRLEN_P(url);
 			int i = 0;
@@ -289,13 +290,17 @@ PHP_METHOD(air_curl, get) {
 			smart_str_appendc(&s, (i<url_len?'&': '?'));
 			smart_str_appends(&s, Z_STRVAL_P(&qs));
 			smart_str_0(&s);
-			zval_ptr_dtor(&url);
-			ZVAL_STRINGL(url, ZSTR_VAL(s.s), ZSTR_LEN(s.s));
+			ZVAL_STRINGL(&_url, ZSTR_VAL(s.s), ZSTR_LEN(s.s));
 			smart_str_free(&s);
 			zval_ptr_dtor(&qs);
+			air_curl_set_opt(self, NULL, CURLOPT_URL, &_url);
+			zval_ptr_dtor(&_url);
+		} else {
+			air_curl_set_opt(self, NULL, CURLOPT_URL, url);
 		}
+	} else {
+		air_curl_set_opt(self, NULL, CURLOPT_URL, url);
 	}
-	air_curl_set_opt(self, NULL, CURLOPT_URL, url);
 	AIR_RET_THIS;
 }
 
